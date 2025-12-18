@@ -1,0 +1,106 @@
+class ApartmentModel {
+  final String id;
+  final ApartmentAttributes attributes;
+  final String ownerName;
+
+  ApartmentModel({
+    required this.id,
+    required this.attributes,
+    required this.ownerName,
+  });
+
+  factory ApartmentModel.fromJson(Map<String, dynamic> json) {
+    return ApartmentModel(
+      id: json['id'],
+      attributes: ApartmentAttributes.fromJson(json['attributes']),
+      ownerName:
+          json['relationships']['owner']['attributes']['full_name'] ??
+          'Unknown Owner',
+    );
+  }
+}
+
+class ApartmentAttributes {
+  final String title;
+  final String description;
+  final double price;
+  final String formattedPrice;
+  final ApartmentLocation location;
+  final ApartmentSpecs specs;
+  final List<String> features;
+  final List<String> galleryUrls;
+
+  ApartmentAttributes({
+    required this.title,
+    required this.description,
+    required this.price,
+    required this.formattedPrice,
+    required this.location,
+    required this.specs,
+    required this.features,
+    required this.galleryUrls,
+  });
+
+  factory ApartmentAttributes.fromJson(Map<String, dynamic> json) {
+    return ApartmentAttributes(
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      price: (json['price'] as num).toDouble(),
+      formattedPrice:
+          json['formatted_price']?.toString().replaceAll('S.P', 'USD') ?? '',
+      location: ApartmentLocation.fromJson(json['location']),
+      specs: ApartmentSpecs.fromJson(json['specs']),
+      features: List<String>.from(json['features'] ?? []),
+      galleryUrls: (json['gallery'] as List).map((item) {
+        String url = item['url'] as String;
+        if (url.startsWith('/storage')) {
+          url = 'http://10.0.2.2:8000$url';
+        }
+        return url.replaceAll('127.0.0.1:8000', '10.0.2.2:8000');
+      }).toList(),
+    );
+  }
+}
+
+class ApartmentLocation {
+  final String governorate;
+  final String city;
+  final String address;
+
+  ApartmentLocation({
+    required this.governorate,
+    required this.city,
+    required this.address,
+  });
+
+  factory ApartmentLocation.fromJson(Map<String, dynamic> json) {
+    return ApartmentLocation(
+      governorate: json['governorate'] ?? '',
+      city: json['city'] ?? '',
+      address: json['address'] ?? '',
+    );
+  }
+}
+
+class ApartmentSpecs {
+  final int area;
+  final int rooms;
+  final int floor;
+  final bool hasBalcony;
+
+  ApartmentSpecs({
+    required this.area,
+    required this.rooms,
+    required this.floor,
+    required this.hasBalcony,
+  });
+
+  factory ApartmentSpecs.fromJson(Map<String, dynamic> json) {
+    return ApartmentSpecs(
+      area: json['area'] ?? 0,
+      rooms: json['rooms'] ?? 0,
+      floor: json['floor'] ?? 0,
+      hasBalcony: json['has_balcony'] ?? false,
+    );
+  }
+}
