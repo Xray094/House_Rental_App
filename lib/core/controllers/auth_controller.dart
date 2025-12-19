@@ -51,4 +51,6 @@ class AuthController extends GetxController {
     await box.remove('token');
     user.value = null;
   }
+
+  bool get isTenant => user.value?.attributes.role == 'tenant';
 }

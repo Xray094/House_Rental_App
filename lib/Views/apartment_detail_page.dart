@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:house_rental_app/Services/auth_service.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
+import 'package:house_rental_app/core/controllers/auth_controller.dart';
+import 'package:intl/intl.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
   final ApartmentModel apartment;
@@ -14,6 +17,8 @@ class ApartmentDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ApartmentController ctrl = Get.find<ApartmentController>();
+    final AuthController authController = Get.find<AuthController>();
+
     final apt = ctrl.apartment.value!;
     final attr = apt.attributes;
     return Scaffold(
@@ -21,14 +26,14 @@ class ApartmentDetailsPage extends StatelessWidget {
         title: Text(attr.title),
         backgroundColor: primaryBlue,
         actions: [
-          Obx(
-            () => IconButton(
-              icon: Icon(
-                ctrl.isFavorite.value ? Icons.favorite : Icons.favorite_border,
-              ),
-              onPressed: ctrl.toggleFavorite,
-            ),
-          ),
+          // Obx(
+          //   () => IconButton(
+          //     icon: Icon(
+          //       ctrl.isFavorite.value ? Icons.favorite : Icons.favorite_border,
+          //     ),
+          //     onPressed: ctrl.toggleFavorite,
+          //   ),
+          // ),
         ],
       ),
       body: SingleChildScrollView(
@@ -107,45 +112,160 @@ class ApartmentDetailsPage extends StatelessWidget {
                 ),
               ),
             ),
+            if (authController.isTenant) ...[
+              const Divider(),
+              buildSectionTitle(context, 'Select Rental Dates'),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  children: [
+                    // --- START DATE PICKER ---
+                    Obx(
+                      () => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          Icons.calendar_today,
+                          color: primaryBlue,
+                          size: 24.w,
+                        ),
+                        title: Text(
+                          ctrl.startDate.value == null
+                              ? "Select Start Date"
+                              : DateFormat(
+                                  'yyyy-MM-dd',
+                                ).format(ctrl.startDate.value!),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Check-in Date",
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365),
+                            ),
+                          );
+                          if (picked != null) ctrl.startDate.value = picked;
+                        },
+                      ),
+                    ),
+                    const Divider(height: 1),
+                    Obx(
+                      () => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          Icons.event_available,
+                          color: primaryBlue,
+                          size: 24.w,
+                        ),
+                        title: Text(
+                          ctrl.endDate.value == null
+                              ? "Select End Date"
+                              : DateFormat(
+                                  'yyyy-MM-dd',
+                                ).format(ctrl.endDate.value!),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "Check-out Date",
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            context: context,
+                            // Ensure end date starts at least 1 day after start date if selected
+                            initialDate:
+                                ctrl.startDate.value?.add(
+                                  const Duration(days: 1),
+                                ) ??
+                                DateTime.now().add(const Duration(days: 1)),
+                            firstDate: ctrl.startDate.value ?? DateTime.now(),
+                            lastDate: DateTime.now().add(
+                              const Duration(days: 365),
+                            ),
+                          );
+                          if (picked != null) ctrl.endDate.value = picked;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.h),
+            ],
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 2,
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Obx(() {
-          final ApartmentController ctrl = Get.find<ApartmentController>();
-          return ElevatedButton.icon(
+
+      bottomNavigationBar: Obx(() {
+        if (!authController.isTenant) return const SizedBox.shrink();
+        return Container(
+          padding: EdgeInsets.all(16.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 5,
+              ),
+            ],
+          ),
+          child: ElevatedButton.icon(
             onPressed: ctrl.isBooking.value
                 ? null
                 : () async {
-                    Get.dialog(
-                      const Center(child: CircularProgressIndicator()),
+                    showDialog(
+                      context: context,
                       barrierDismissible: false,
+                      builder: (context) =>
+                          const Center(child: CircularProgressIndicator()),
                     );
-                    final success = await ctrl.book();
-                    Get.back();
-                    if (success) {
+                    final String? errorMessage = await ctrl.book();
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
+                    if (errorMessage == null) {
                       Get.snackbar(
-                        'Booked',
-                        'Your booking request was sent.',
+                        'Success',
+                        'Your request was sent successfully.',
+                        backgroundColor: Colors.green,
+                        colorText: Colors.white,
                         snackPosition: SnackPosition.BOTTOM,
                       );
                     } else {
-                      Get.snackbar(
-                        'Error',
-                        'Booking failed',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
+                      // Get.defaultDialog(
+                      //   title: "Booking Unavailable",
+                      //   titleStyle: const TextStyle(
+                      //     color: Colors.red,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      //   content: Padding(
+                      //     padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      //     child: Text(
+                      //       errorMessage,
+                      //       textAlign: TextAlign.center,
+                      //       style: TextStyle(
+                      //         fontSize: 16.sp,
+                      //         color: Colors.black,
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   textConfirm: "OK",
+                      //   confirmTextColor: Colors.white,
+                      //   buttonColor: primaryBlue,
+                      //   onConfirm: () => Get.back(),
+                      // );
                     }
                   },
             icon: const Icon(Icons.book_rounded),
@@ -155,9 +275,9 @@ class ApartmentDetailsPage extends StatelessWidget {
               backgroundColor: primaryBlue,
               foregroundColor: Colors.white,
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 

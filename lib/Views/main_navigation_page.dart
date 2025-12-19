@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Views/home_page.dart';
+import 'package:house_rental_app/Views/landlord_apartments_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
-import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/Views/booking_page.dart';
 import 'package:house_rental_app/core/controllers/navigation_controller.dart';
 
 class MainNavigationPage extends StatelessWidget {
@@ -11,13 +12,13 @@ class MainNavigationPage extends StatelessWidget {
 
   final List<Widget> tenantPages = [
     HomePage(),
-    const Center(child: Text('My Bookings (Tenant)')),
+    MyBookingsPage(),
     const SettingsPage(),
   ];
 
   final List<Widget> landlordPages = [
     HomePage(),
-    const Center(child: Text('My Apartments (Landlord)')),
+    LandlordApartmentsPage(),
     const SettingsPage(),
   ];
   final List<Widget> appBars = [
