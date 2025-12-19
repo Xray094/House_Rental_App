@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/core/controllers/apartment_controller.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
   final ApartmentModel apartment;
@@ -11,9 +13,24 @@ class ApartmentDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attr = apartment.attributes;
+    final ApartmentController ctrl = Get.find<ApartmentController>();
+    final apt = ctrl.apartment.value!;
+    final attr = apt.attributes;
     return Scaffold(
-      appBar: AppBar(title: Text(attr.title), backgroundColor: primaryBlue),
+      appBar: AppBar(
+        title: Text(attr.title),
+        backgroundColor: primaryBlue,
+        actions: [
+          Obx(
+            () => IconButton(
+              icon: Icon(
+                ctrl.isFavorite.value ? Icons.favorite : Icons.favorite_border,
+              ),
+              onPressed: ctrl.toggleFavorite,
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,18 +122,41 @@ class ApartmentDetailsPage extends StatelessWidget {
             ),
           ],
         ),
-        child: ElevatedButton.icon(
-          onPressed: () {
-            // to do in future
-          },
-          icon: const Icon(Icons.book_rounded),
-          label: const Text('Book Now'),
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size.fromHeight(50.h),
-            backgroundColor: primaryBlue,
-            foregroundColor: Colors.white,
-          ),
-        ),
+        child: Obx(() {
+          final ApartmentController ctrl = Get.find<ApartmentController>();
+          return ElevatedButton.icon(
+            onPressed: ctrl.isBooking.value
+                ? null
+                : () async {
+                    Get.dialog(
+                      const Center(child: CircularProgressIndicator()),
+                      barrierDismissible: false,
+                    );
+                    final success = await ctrl.book();
+                    Get.back();
+                    if (success) {
+                      Get.snackbar(
+                        'Booked',
+                        'Your booking request was sent.',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    } else {
+                      Get.snackbar(
+                        'Error',
+                        'Booking failed',
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                    }
+                  },
+            icon: const Icon(Icons.book_rounded),
+            label: Text(ctrl.isBooking.value ? 'Booking...' : 'Book Now'),
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size.fromHeight(50.h),
+              backgroundColor: primaryBlue,
+              foregroundColor: Colors.white,
+            ),
+          );
+        }),
       ),
     );
   }

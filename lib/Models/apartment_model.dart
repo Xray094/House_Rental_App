@@ -13,10 +13,19 @@ class ApartmentModel {
     return ApartmentModel(
       id: json['id'],
       attributes: ApartmentAttributes.fromJson(json['attributes']),
-      ownerName:
-          json['relationships']['owner']['attributes']['full_name'] ??
-          'Unknown Owner',
+      ownerName: json['relationships'] != null
+          ? json['relationships']['owner']['attributes']['full_name'] ??
+                'Unknown Owner'
+          : json['owner_name'] ?? 'Unknown Owner',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'attributes': attributes.toJson(),
+      'owner_name': ownerName,
+    };
   }
 }
 
@@ -45,20 +54,33 @@ class ApartmentAttributes {
     return ApartmentAttributes(
       title: json['title'] ?? '',
       description: json['description'] ?? '',
-      price: (json['price'] as num).toDouble(),
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       formattedPrice:
           json['formatted_price']?.toString().replaceAll('S.P', 'USD') ?? '',
-      location: ApartmentLocation.fromJson(json['location']),
-      specs: ApartmentSpecs.fromJson(json['specs']),
+      location: ApartmentLocation.fromJson(json['location'] ?? {}),
+      specs: ApartmentSpecs.fromJson(json['specs'] ?? {}),
       features: List<String>.from(json['features'] ?? []),
-      galleryUrls: (json['gallery'] as List).map((item) {
-        String url = item['url'] as String;
+      galleryUrls: ((json['gallery'] ?? []) as List).map((item) {
+        String url = item['url'] as String? ?? '';
         if (url.startsWith('/storage')) {
           url = 'http://10.0.2.2:8000$url';
         }
         return url.replaceAll('127.0.0.1:8000', '10.0.2.2:8000');
       }).toList(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'price': price,
+      'formatted_price': formattedPrice,
+      'location': location.toJson(),
+      'specs': specs.toJson(),
+      'features': features,
+      'gallery': galleryUrls.map((u) => {'url': u}).toList(),
+    };
   }
 }
 
@@ -75,10 +97,14 @@ class ApartmentLocation {
 
   factory ApartmentLocation.fromJson(Map<String, dynamic> json) {
     return ApartmentLocation(
-      governorate: json['governorate'] ?? '',
-      city: json['city'] ?? '',
+      governorate: json['governorate'] ?? json['governorate_name'] ?? '',
+      city: json['city'] ?? json['city_name'] ?? '',
       address: json['address'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'governorate': governorate, 'city': city, 'address': address};
   }
 }
 
@@ -102,5 +128,14 @@ class ApartmentSpecs {
       floor: json['floor'] ?? 0,
       hasBalcony: json['has_balcony'] ?? false,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'area': area,
+      'rooms': rooms,
+      'floor': floor,
+      'has_balcony': hasBalcony,
+    };
   }
 }

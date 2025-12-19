@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:house_rental_app/Models/apartment_model.dart';
-import 'package:house_rental_app/Models/user_model.dart';
-import 'package:house_rental_app/Services/apartment_service.dart';
 import 'package:house_rental_app/Views/home_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
-import 'package:house_rental_app/core/config/di.dart';
 
 class MainNavigationPage extends StatefulWidget {
   MainNavigationPage({super.key});
@@ -17,9 +13,7 @@ class MainNavigationPage extends StatefulWidget {
 class _MainNavigationPageState extends State<MainNavigationPage> {
   final Color primaryBlue = const Color(0xFF1E88E5);
 
-  final Future<List<ApartmentModel>> apartmentsFuture = apartmentService
-      .getApartments();
-  static final List<Widget> pages = [
+  final List<Widget> pages = [
     HomePage(),
     Center(child: Text('Bookings Page')),
     SettingsPage(),

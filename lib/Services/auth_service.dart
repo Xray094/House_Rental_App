@@ -3,32 +3,23 @@ import 'package:house_rental_app/Models/login_model.dart';
 import 'package:house_rental_app/Models/register_model.dart';
 import 'package:house_rental_app/Models/user_model.dart';
 import 'package:house_rental_app/core/config/di.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
 
-  Future<bool> login(LoginModule loginModule) async {
+  /// Attempts to login and returns [UserModel] on success, otherwise null.
+  Future<UserModel?> login(LoginModule loginModule) async {
     try {
-      Response response = await _dio.post('/login', data: loginModule.toMap());
+      final response = await _dio.post('/login', data: loginModule.toMap());
 
       if (response.statusCode == 200) {
-        sl.get<SharedPreferences>().setString(
-          'token',
-          response.data['data']['token'],
-        );
-        UserModel user = UserModel.fromJson(response.data);
-        if (sl.isRegistered<UserModel>()) {
-          sl.unregister<UserModel>();
-        }
-        sl.registerSingleton<UserModel>(user);
-        sl<SharedPreferences>().setString('token', user.token);
-        return true;
+        final user = UserModel.fromJson(response.data);
+        return user;
       }
-      return false;
+      return null;
     } catch (e) {
       print('Login Error: $e');
-      return false;
+      return null;
     }
   }
 
@@ -54,5 +45,3 @@ class AuthService {
     }
   }
 }
-
-final authService = AuthService();

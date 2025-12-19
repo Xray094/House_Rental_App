@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:house_rental_app/Models/user_model.dart';
-import 'package:house_rental_app/Services/logout_service.dart';
-import 'package:house_rental_app/Views/Login&Register/login_page.dart';
-import 'package:house_rental_app/core/config/di.dart';
-import 'package:house_rental_app/Views/profile_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:house_rental_app/core/controllers/settings_controller.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -18,10 +15,7 @@ class SettingsPage extends StatelessWidget {
           title: const Text('Personal Info'),
           trailing: const Icon(Icons.arrow_forward_ios, size: 16),
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfilePage()),
-            );
+            Get.toNamed(Routes.profile);
           },
         ),
         const Divider(),
@@ -47,20 +41,18 @@ class SettingsPage extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () async {
-                      showDialog(
-                        context: context,
+                      final SettingsController ctrl =
+                          Get.find<SettingsController>();
+                      Get.dialog(
+                        const Center(child: CircularProgressIndicator()),
                         barrierDismissible: false,
-                        builder: (context) =>
-                            const Center(child: CircularProgressIndicator()),
                       );
-                      await logout();
-                      await sl<SharedPreferences>().remove('token');
-                      await sl.unregister<UserModel>();
-                      if (context.mounted) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (route) => false,
-                        );
+                      final success = await ctrl.logout();
+                      Get.back();
+                      if (success) {
+                        Get.offAllNamed(Routes.login);
+                      } else {
+                        Get.snackbar('Error', 'Logout failed');
                       }
                     },
                     child: const Text(

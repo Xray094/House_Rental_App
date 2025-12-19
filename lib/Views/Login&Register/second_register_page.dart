@@ -6,6 +6,7 @@ import 'package:house_rental_app/Models/register_model.dart';
 import 'package:house_rental_app/Services/auth_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 
 class SecondRegisterPage extends StatefulWidget {
   final String role;
@@ -200,13 +201,11 @@ class _SecondRegisterPageState extends State<SecondRegisterPage> {
                   );
                   return;
                 }
-                showDialog(
-                  context: context,
+                Get.dialog(
+                  const Center(child: CircularProgressIndicator()),
                   barrierDismissible: false,
-                  builder: (ctx) =>
-                      const Center(child: CircularProgressIndicator()),
                 );
-                bool success = await authService.register(
+                bool success = await Get.find<AuthService>().register(
                   RegisterModule(
                     firstName: firstNameController.text,
                     lastName: lastNameController.text,
@@ -219,25 +218,22 @@ class _SecondRegisterPageState extends State<SecondRegisterPage> {
                   ),
                 );
 
-                if (!context.mounted) return;
-                Navigator.pop(context);
+                Get.back();
 
                 if (success) {
                   Navigator.pop(context);
                   Navigator.pop(context);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Registration successful! Wait for Admin approval.",
-                      ),
-                    ),
+                  Get.snackbar(
+                    'Success',
+                    'Registration successful! Wait for Admin approval.',
+                    snackPosition: SnackPosition.BOTTOM,
                   );
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Registration failed. Check your input."),
-                    ),
+                  Get.snackbar(
+                    'Error',
+                    'Registration failed. Check your input.',
+                    snackPosition: SnackPosition.BOTTOM,
                   );
                 }
               },

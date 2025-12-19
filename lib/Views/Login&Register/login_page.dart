@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
-import 'package:house_rental_app/Models/login_model.dart';
-import 'package:house_rental_app/Services/auth_service.dart';
-import 'package:house_rental_app/Views/main_navigation_page.dart';
-import 'package:house_rental_app/Views/Login&Register/first_register_page.dart';
+import 'package:get/get.dart';
+import 'package:house_rental_app/core/controllers/auth_controller.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -70,34 +69,23 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 40.h),
               ElevatedButton(
                 onPressed: () async {
-                  showDialog(
-                    context: context,
+                  final authC = Get.find<AuthController>();
+                  Get.dialog(
+                    const Center(child: CircularProgressIndicator()),
                     barrierDismissible: false,
-                    builder: (context) =>
-                        const Center(child: CircularProgressIndicator()),
                   );
-                  bool success = await authService.login(
-                    LoginModule(
-                      mobile: mobileController.text,
-                      password: passwordController.text,
-                    ),
+                  bool success = await authC.login(
+                    mobileController.text,
+                    passwordController.text,
                   );
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
+                  Get.back();
                   if (success) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MainNavigationPage(),
-                      ),
-                    );
+                    Get.offAllNamed(Routes.main);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          "Invalid mobile or password, or Account not approved.",
-                        ),
-                      ),
+                    Get.snackbar(
+                      'Login Failed',
+                      'Invalid mobile or password, or Account not approved.',
+                      snackPosition: SnackPosition.BOTTOM,
                     );
                   }
                 },
@@ -145,12 +133,7 @@ class LoginPage extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FirstRegisterPage(),
-                        ),
-                      );
+                      Get.toNamed(Routes.register);
                     },
                     child: Text(
                       'Sign Up',

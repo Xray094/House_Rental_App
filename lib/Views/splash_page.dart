@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:house_rental_app/Views/main_navigation_page.dart';
-import 'package:house_rental_app/Views/Login&Register/login_page.dart';
-import 'package:house_rental_app/core/config/di.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
@@ -11,10 +9,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 3), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
-      );
+      Get.offNamed(Routes.login);
     });
     return Scaffold(
       backgroundColor: Colors.white,

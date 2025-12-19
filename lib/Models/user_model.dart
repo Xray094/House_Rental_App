@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserModel {
   final String id;
   final String token;
@@ -11,6 +13,27 @@ class UserModel {
       id: userData['id'],
       token: json['data']['token'],
       attributes: UserAttributes.fromJson(userData['attributes']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'token': token, 'attributes': attributes.toJson()};
+  }
+
+  /// Some stored JSONs might be the full API response or just the compact user map.
+  static UserModel fromJsonString(String jsonStr) {
+    final decodedRaw = jsonDecode(jsonStr);
+    final decoded = decodedRaw is Map
+        ? Map<String, dynamic>.from(decodedRaw)
+        : <String, dynamic>{};
+    if (decoded.containsKey('data')) {
+      return UserModel.fromJson(decoded);
+    }
+    // assume compact form
+    return UserModel(
+      id: decoded['id'] ?? '',
+      token: decoded['token'] ?? '',
+      attributes: UserAttributes.fromJson(decoded['attributes'] ?? {}),
     );
   }
 }
@@ -36,15 +59,26 @@ class UserAttributes {
     return UserAttributes(
       fullName: json['full_name'] ?? '',
       role: json['role'] ?? '',
-      avatarUrl:
-          json['avatar_url'].toString().replaceAll(
-            '127.0.0.1:8000',
-            '10.0.2.2:8000',
-          ) ??
-          '',
+      avatarUrl: json['avatar_url'] != null
+          ? json['avatar_url'].toString().replaceAll(
+              '127.0.0.1:8000',
+              '10.0.2.2:8000',
+            )
+          : '',
       phoneNumber: json['phone_number'] ?? '',
       isVerified: json['is_verified'] ?? false,
-      birthDate: json['birth_date'],
+      birthDate: json['birth_date'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'full_name': fullName,
+      'role': role,
+      'avatar_url': avatarUrl,
+      'phone_number': phoneNumber,
+      'is_verified': isVerified,
+      'birth_date': birthDate,
+    };
   }
 }

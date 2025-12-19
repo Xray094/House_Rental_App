@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:house_rental_app/Views/splash_page.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:house_rental_app/core/bindings/app_binding.dart';
 import 'package:house_rental_app/core/config/di.dart';
+import 'package:house_rental_app/routes/app_pages.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setup();
+  // Initialize GetStorage and register it in Get
+  final box = await setup();
+  Get.put<GetStorage>(box, permanent: true);
   runApp(const MyApp());
 }
 
@@ -19,17 +25,19 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return MaterialApp(
+        return GetMaterialApp(
+          initialRoute: Routes.splash,
+          initialBinding: AppBinding(),
           debugShowCheckedModeBanner: false,
-          title: 'First Method',
+          title: 'House Rental',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
           ),
-          home: child,
+          getPages: AppPages.pages,
         );
       },
-      child: SplashPage(),
+      child: const SizedBox(),
     );
   }
 }

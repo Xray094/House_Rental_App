@@ -1,0 +1,31 @@
+import 'package:get/get.dart';
+import 'package:house_rental_app/Views/splash_page.dart';
+import 'package:house_rental_app/Views/Login&Register/login_page.dart';
+import 'package:house_rental_app/Views/Login&Register/first_register_page.dart';
+import 'package:house_rental_app/Views/main_navigation_page.dart';
+import 'package:house_rental_app/Views/profile_page.dart';
+import 'package:house_rental_app/Views/apartment_detail_page.dart';
+import 'package:house_rental_app/core/controllers/apartment_controller.dart';
+import 'app_routes.dart';
+
+class AppPages {
+  static final pages = [
+    GetPage(name: Routes.splash, page: () => const SplashPage()),
+    GetPage(name: Routes.login, page: () => LoginPage()),
+    GetPage(name: Routes.register, page: () => FirstRegisterPage()),
+    GetPage(name: Routes.main, page: () => MainNavigationPage()),
+    GetPage(name: Routes.profile, page: () => const ProfilePage()),
+
+    // Apartment details expects an ApartmentModel argument; binding will create the controller using the argument
+    GetPage(
+      name: Routes.apartmentDetails,
+      page: () => ApartmentDetailsPage(apartment: Get.arguments),
+      binding: BindingsBuilder(() {
+        final arg = Get.arguments;
+        if (arg != null) {
+          Get.put(ApartmentController(arg));
+        }
+      }),
+    ),
+  ];
+}
