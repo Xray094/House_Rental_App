@@ -1,18 +1,18 @@
-import 'package:get/get.dart';
-import 'package:house_rental_app/Models/user_model.dart';
+// import 'package:get/get.dart';
+// import 'package:house_rental_app/Models/user_model.dart';
 
-class ProfileController extends GetxController {
-  final Rxn<UserModel> user = Rxn<UserModel>();
+// class ProfileController extends GetxController {
+//   final Rxn<UserModel> user = Rxn<UserModel>();
 
-  @override
-  void onInit() {
-    super.onInit();
-    if (Get.isRegistered<UserModel>()) {
-      user.value = Get.find<UserModel>();
-    }
-  }
+//   @override
+//   void onInit() {
+//     super.onInit();
+//     if (Get.isRegistered<UserModel>()) {
+//       user.value = Get.find<UserModel>();
+//     }
+//   }
 
-  void setUser(UserModel u) {
-    user.value = u;
-  }
-}
+//   void setUser(UserModel u) {
+//     user.value = u;
+//   }
+// }

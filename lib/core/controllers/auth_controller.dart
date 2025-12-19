@@ -35,7 +35,7 @@ class AuthController extends GetxController {
       );
       if (result != null) {
         user.value = result;
-        // persist only token
+        Get.put<UserModel>(result, permanent: true);
         final box = Get.find<GetStorage>();
         box.write('token', result.token);
         return true;

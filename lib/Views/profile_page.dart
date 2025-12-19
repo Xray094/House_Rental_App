@@ -8,7 +8,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Point to AuthController instead of ProfileController
     final AuthController authCtrl = Get.find<AuthController>();
 
     return Scaffold(

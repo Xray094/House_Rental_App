@@ -23,8 +23,6 @@ class AppBinding extends Bindings {
     // --- Controllers ---
     // AuthController is often 'permanent' because you need to track login state everywhere
     Get.put(AuthController(), permanent: true);
-
-    Get.lazyPut(() => ProfileController(), fenix: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
   }

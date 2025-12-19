@@ -1,60 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:house_rental_app/Views/home_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
+import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/core/controllers/navigation_controller.dart';
 
-class MainNavigationPage extends StatefulWidget {
+class MainNavigationPage extends StatelessWidget {
   MainNavigationPage({super.key});
 
-  @override
-  State<MainNavigationPage> createState() => _MainNavigationPageState();
-}
-
-class _MainNavigationPageState extends State<MainNavigationPage> {
-  final Color primaryBlue = const Color(0xFF1E88E5);
-
-  final List<Widget> pages = [
+  final List<Widget> tenantPages = [
     HomePage(),
-    Center(child: Text('Bookings Page')),
-    SettingsPage(),
+    const Center(child: Text('My Bookings (Tenant)')),
+    const SettingsPage(),
   ];
-  int selectedIndex = 0;
 
+  final List<Widget> landlordPages = [
+    HomePage(),
+    const Center(child: Text('My Apartments (Landlord)')),
+    const SettingsPage(),
+  ];
   final List<Widget> appBars = [
     const HomeAppBar(),
-    BookingAppBar(),
-    SettingsAppBar(),
+    const BookingAppBar(),
+    const SettingsAppBar(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(NavigationController());
+    const Color primaryBlue = Color(0xFF1E88E5);
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
-      appBar: selectedIndex == 0
-          ? const PreferredSize(
-              preferredSize: Size.fromHeight(56),
-              child: HomeAppBar(),
-            )
-          : null,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(56.h),
+        child: Obx(() => appBars[controller.selectedIndex.value]),
+      ),
 
-      body: pages[selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: (value) {
-          setState(() {
-            selectedIndex = value;
-          });
-        },
-        selectedItemColor: primaryBlue,
-        unselectedItemColor: Colors.grey,
-        currentIndex: selectedIndex,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Bookings',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-        ],
+      body: Obx(() {
+        if (controller.user.value == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return controller.isTenant
+            ? tenantPages[controller.selectedIndex.value]
+            : landlordPages[controller.selectedIndex.value];
+      }),
+
+      bottomNavigationBar: Obx(
+        () => BottomNavigationBar(
+          onTap: controller.changeIndex,
+          selectedItemColor: primaryBlue,
+          unselectedItemColor: Colors.grey,
+          currentIndex: controller.selectedIndex.value,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                controller.isTenant ? Icons.calendar_month : Icons.apartment,
+              ),
+              label: controller.isTenant ? 'Bookings' : 'Apartments',
+            ),
+
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -92,9 +109,16 @@ class SettingsAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(0),
-      child: SizedBox(),
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        'Settings',
+        style: TextStyle(
+          color: Color(0xFF1E88E5),
+          fontSize: 30.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }
@@ -104,9 +128,16 @@ class BookingAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(0),
-      child: SizedBox(),
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        'Booking',
+        style: TextStyle(
+          color: Color(0xFF1E88E5),
+          fontSize: 30.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

@@ -22,7 +22,11 @@ class ApartmentService {
       final response = await _dio.get(
         '/apartments',
         options: Options(
-          headers: {'Authorization': token != null ? 'Bearer $token' : null},
+          headers: {
+            'Authorization': 'Bearer $token',
+            'accept': 'application/json',
+            'content-type': 'application/json',
+          },
         ),
       );
 
