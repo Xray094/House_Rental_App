@@ -4,7 +4,15 @@ import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/core/config/di.dart';
 
 class ApartmentService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+      },
+    ),
+  );
 
   Future<List<ApartmentModel>> getApartments() async {
     try {
@@ -14,11 +22,7 @@ class ApartmentService {
       final response = await _dio.get(
         '/apartments',
         options: Options(
-          headers: {
-            'Authorization': token != null ? 'Bearer $token' : null,
-            'accept': 'application/json',
-            'content-type': 'application/json',
-          },
+          headers: {'Authorization': token != null ? 'Bearer $token' : null},
         ),
       );
 

@@ -1,63 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/Views/Login&Register/second_register_page.dart';
+import 'package:house_rental_app/core/controllers/register_controller.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
-class FirstRegisterPage extends StatefulWidget {
+class FirstRegisterPage extends StatelessWidget {
   const FirstRegisterPage({super.key});
 
   @override
-  State<FirstRegisterPage> createState() => _FirstRegisterPageState();
-}
-
-class _FirstRegisterPageState extends State<FirstRegisterPage> {
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  String? selectedRole;
-
-  @override
   Widget build(BuildContext context) {
+    // We use Get.put here because this is the start of the registration flow
+    final controller = Get.put(RegisterController());
+    const Color primaryBlue = Color(0xFF1E88E5);
+
     Widget roleCard(String role, IconData icon, String label) {
-      final bool isSelected = selectedRole == role;
-      return InkWell(
-        onTap: () => setState(() => selectedRole = role),
-        child: Container(
-          height: 120.h,
-          width: 140.w,
-          decoration: BoxDecoration(
-            color: isSelected
-                ? Color(0xFF1E88E5).withOpacity(0.1)
-                : Colors.white,
-            borderRadius: BorderRadius.circular(15.r),
-            border: Border.all(
-              color: isSelected ? Color(0xFF1E88E5) : Colors.grey.shade300,
-              width: 2.w,
+      return Obx(() {
+        final bool isSelected = controller.selectedRole.value == role;
+        return InkWell(
+          onTap: () => controller.selectedRole.value = role,
+          child: Container(
+            height: 120.h,
+            width: 140.w,
+            decoration: BoxDecoration(
+              color: isSelected ? primaryBlue.withOpacity(0.1) : Colors.white,
+              borderRadius: BorderRadius.circular(15.r),
+              border: Border.all(
+                color: isSelected ? primaryBlue : Colors.grey.shade300,
+                width: 2.w,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 40.w,
+                  color: isSelected ? primaryBlue : Colors.grey.shade600,
+                ),
+                SizedBox(height: 5.h),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: isSelected ? primaryBlue : Colors.black,
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 40.w,
-                color: isSelected ? Color(0xFF1E88E5) : Colors.grey.shade600,
-              ),
-              SizedBox(height: 5.h),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected ? Color(0xFF1E88E5) : Colors.black,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+        );
+      });
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -67,23 +68,18 @@ class _FirstRegisterPageState extends State<FirstRegisterPage> {
         ),
         centerTitle: true,
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 25.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             LinearProgressIndicator(
               value: 0.5,
               backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF1E88E5),
-              ),
+              valueColor: const AlwaysStoppedAnimation<Color>(primaryBlue),
               minHeight: 5.h,
             ),
             Text(
               "1/2",
-              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12.sp, color: Colors.grey),
             ),
             Image.asset("assets/images/imageForFirstRegisterPage.png"),
@@ -95,52 +91,46 @@ class _FirstRegisterPageState extends State<FirstRegisterPage> {
               ],
             ),
             SizedBox(height: 40.h),
-
             CustomTextField(
               name: 'Phone Number',
               hint: 'Ex: 9xx xxx xxx',
               prefixIcon: Icons.phone_android,
               inputType: TextInputType.phone,
-              controller: mobileController,
+              controller: controller.mobileController,
             ),
             SizedBox(height: 20.h),
             CustomTextField(
               name: 'Password',
               hint: 'Enter your password',
               prefixIcon: Icons.lock_outline,
-              inputType: TextInputType.text,
               obscureText: true,
-              controller: passwordController,
+              controller: controller.passwordController,
+              inputType: TextInputType.visiblePassword,
             ),
             SizedBox(height: 40.h),
             ElevatedButton(
               onPressed: () {
-                if (selectedRole == null ||
-                    mobileController.text.isEmpty ||
-                    passwordController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        "Please select a role and fill in credentials.",
-                      ),
-                    ),
+                if (controller.selectedRole.value == null ||
+                    controller.mobileController.text.isEmpty ||
+                    controller.passwordController.text.isEmpty) {
+                  Get.snackbar(
+                    "Error",
+                    "Please select a role and fill in credentials.",
                   );
                   return;
                 }
-                selectedRole = selectedRole!.toLowerCase();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SecondRegisterPage(
-                      role: selectedRole!,
-                      mobile: mobileController.text,
-                      password: passwordController.text,
-                    ),
-                  ),
+                // Use Named Routes with arguments
+                Get.toNamed(
+                  Routes.secondRegister,
+                  arguments: {
+                    'role': controller.selectedRole.value,
+                    'mobile': controller.mobileController.text,
+                    'password': controller.passwordController.text,
+                  },
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF1E88E5),
+                backgroundColor: primaryBlue,
                 minimumSize: Size(double.infinity, 55.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
@@ -150,29 +140,6 @@ class _FirstRegisterPageState extends State<FirstRegisterPage> {
                 "Next",
                 style: TextStyle(color: Colors.white, fontSize: 16.sp),
               ),
-            ),
-            SizedBox(height: 20.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Have an account? ",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: Text(
-                    "Sign In",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E88E5),
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),

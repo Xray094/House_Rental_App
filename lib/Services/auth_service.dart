@@ -5,7 +5,15 @@ import 'package:house_rental_app/Models/user_model.dart';
 import 'package:house_rental_app/core/config/di.dart';
 
 class AuthService {
-  final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: baseUrl,
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+      },
+    ),
+  );
 
   /// Attempts to login and returns [UserModel] on success, otherwise null.
   Future<UserModel?> login(LoginModule loginModule) async {
@@ -23,25 +31,46 @@ class AuthService {
     }
   }
 
-  Future<bool> register(RegisterModule registerModule) async {
+  /// Attempts to register a user and returns a structured result
+  /// Map keys: 'success' (bool), 'message' (String?), 'errors' (Map?)
+  Future<Map<String, dynamic>> register(RegisterModule registerModule) async {
     try {
       FormData data = await registerModule.toFormData();
 
-      Response response = await _dio.post('/register', data: data);
+      final response = await _dio.post('/register', data: data);
 
       if (response.statusCode == 200) {
-        return true;
+        final msg = (response.data is Map && response.data['message'] != null)
+            ? response.data['message']
+            : 'Registration successful';
+        return {'success': true, 'message': msg};
       } else {
-        return false;
+        final data = response.data;
+        final msg = (data is Map && data['message'] != null)
+            ? data['message']
+            : 'Registration failed';
+        return {
+          'success': false,
+          'message': msg,
+          'errors': data is Map ? data['errors'] : null,
+        };
       }
     } on DioException catch (e) {
       if (e.response != null) {
-        print('HTTP Error Status: ${e.response?.statusCode}');
-        print('Response Data: ${e.response?.data}');
+        final data = e.response?.data;
+        final msg = (data is Map && data['message'] != null)
+            ? data['message']
+            : 'Registration failed';
+        return {
+          'success': false,
+          'message': msg,
+          'errors': data is Map ? data['errors'] : null,
+        };
       } else {
-        print('Registration Connection Error: $e');
+        return {'success': false, 'message': 'Connection error: ${e.message}'};
       }
-      return false;
+    } catch (e) {
+      return {'success': false, 'message': 'Unexpected error: $e'};
     }
   }
 }

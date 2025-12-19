@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:house_rental_app/Views/Login&Register/second_register_page.dart';
 import 'package:house_rental_app/Views/splash_page.dart';
 import 'package:house_rental_app/Views/Login&Register/login_page.dart';
 import 'package:house_rental_app/Views/Login&Register/first_register_page.dart';
@@ -15,8 +16,7 @@ class AppPages {
     GetPage(name: Routes.register, page: () => FirstRegisterPage()),
     GetPage(name: Routes.main, page: () => MainNavigationPage()),
     GetPage(name: Routes.profile, page: () => const ProfilePage()),
-
-    // Apartment details expects an ApartmentModel argument; binding will create the controller using the argument
+    GetPage(name: Routes.firstRegister, page: () => const FirstRegisterPage()),
     GetPage(
       name: Routes.apartmentDetails,
       page: () => ApartmentDetailsPage(apartment: Get.arguments),
@@ -26,6 +26,14 @@ class AppPages {
           Get.put(ApartmentController(arg));
         }
       }),
+    ),
+    GetPage(
+      name: Routes.secondRegister,
+      page: () => SecondRegisterPage(
+        role: Get.arguments['role'],
+        mobile: Get.arguments['mobile'],
+        password: Get.arguments['password'],
+      ),
     ),
   ];
 }
