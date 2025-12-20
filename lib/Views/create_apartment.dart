@@ -8,20 +8,13 @@ class CreateApartment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Controller is initialized here.
+    // All TextEditingControllers are stored inside the GetxController.
     final controller = Get.put(CreateApartmentController());
-
-    final titleCtrl = TextEditingController();
-    final descCtrl = TextEditingController();
-    final priceCtrl = TextEditingController();
-    final govCtrl = TextEditingController();
-    final cityCtrl = TextEditingController();
-    final addressCtrl = TextEditingController();
-    final areaCtrl = TextEditingController();
-    final roomsCtrl = TextEditingController();
-    final floorCtrl = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Add New Apartment"),
         centerTitle: true,
@@ -40,15 +33,15 @@ class CreateApartment extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildSectionTitle("Basic Details"),
-                      _buildField(titleCtrl, "Title", Icons.title),
+                      _buildField(controller.titleCtrl, "Title", Icons.title),
                       _buildField(
-                        descCtrl,
+                        controller.descCtrl,
                         "Description",
                         Icons.description,
                         maxLines: 3,
                       ),
                       _buildField(
-                        priceCtrl,
+                        controller.priceCtrl,
                         "Price per Night",
                         Icons.attach_money,
                         isNum: true,
@@ -56,9 +49,17 @@ class CreateApartment extends StatelessWidget {
 
                       const SizedBox(height: 16),
                       _buildSectionTitle("Location"),
-                      _buildField(govCtrl, "Governorate", Icons.map),
-                      _buildField(cityCtrl, "City", Icons.location_city),
-                      _buildField(addressCtrl, "Exact Address", Icons.home),
+                      _buildField(controller.govCtrl, "Governorate", Icons.map),
+                      _buildField(
+                        controller.cityCtrl,
+                        "City",
+                        Icons.location_city,
+                      ),
+                      _buildField(
+                        controller.addressCtrl,
+                        "Exact Address",
+                        Icons.home,
+                      ),
 
                       const SizedBox(height: 16),
                       _buildSectionTitle("Specifications"),
@@ -66,7 +67,7 @@ class CreateApartment extends StatelessWidget {
                         children: [
                           Expanded(
                             child: _buildField(
-                              areaCtrl,
+                              controller.areaCtrl,
                               "Area (m²)",
                               Icons.square_foot,
                               isNum: true,
@@ -75,7 +76,7 @@ class CreateApartment extends StatelessWidget {
                           SizedBox(width: 10.w),
                           Expanded(
                             child: _buildField(
-                              roomsCtrl,
+                              controller.roomsCtrl,
                               "Rooms",
                               Icons.bed,
                               isNum: true,
@@ -84,18 +85,61 @@ class CreateApartment extends StatelessWidget {
                         ],
                       ),
                       _buildField(
-                        floorCtrl,
+                        controller.floorCtrl,
                         "Floor",
                         Icons.layers,
                         isNum: true,
                       ),
 
+                      // Balcony Toggle
                       Obx(
                         () => CheckboxListTile(
                           title: const Text("Has Balcony"),
                           value: controller.hasBalcony.value,
                           activeColor: const Color(0xFF1E88E5),
                           onChanged: controller.toggleBalcony,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+                      _buildSectionTitle("Features"),
+                      // Features Selection Logic
+                      Obx(
+                        () => Wrap(
+                          spacing: 8.w,
+                          runSpacing: 0,
+                          children: controller.availableFeatures.map((feature) {
+                            final isSelected = controller.selectedFeatures
+                                .contains(feature);
+                            return FilterChip(
+                              label: Text(feature),
+                              selected: isSelected,
+                              selectedColor: const Color(
+                                0xFF1E88E5,
+                              ).withOpacity(0.2),
+                              checkmarkColor: const Color(0xFF1E88E5),
+                              labelStyle: TextStyle(
+                                color: isSelected
+                                    ? const Color(0xFF1E88E5)
+                                    : Colors.black54,
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                              onSelected: (bool value) =>
+                                  controller.toggleFeature(feature),
+                              backgroundColor: Colors.grey[100],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.r),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? const Color(0xFF1E88E5)
+                                      : Colors.transparent,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
 
@@ -104,6 +148,7 @@ class CreateApartment extends StatelessWidget {
                       _buildImagePicker(controller),
 
                       const SizedBox(height: 32),
+                      // Submit Button
                       SizedBox(
                         width: double.infinity,
                         height: 50.h,
@@ -115,19 +160,8 @@ class CreateApartment extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            print(areaCtrl);
                             if (formKey.currentState!.validate()) {
-                              controller.submitApartment(
-                                title: titleCtrl.text,
-                                description: descCtrl.text,
-                                price: priceCtrl.text,
-                                gov: govCtrl.text,
-                                city: cityCtrl.text,
-                                address: addressCtrl.text,
-                                area: areaCtrl.text,
-                                rooms: roomsCtrl.text,
-                                floor: floorCtrl.text,
-                              );
+                              controller.submitApartment();
                             }
                           },
                           child: Text(
@@ -135,10 +169,12 @@ class CreateApartment extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
+                      SizedBox(height: 20.h),
                     ],
                   ),
                 ),
@@ -174,13 +210,21 @@ class CreateApartment extends StatelessWidget {
         controller: ctrl,
         maxLines: maxLines,
         keyboardType: isNum ? TextInputType.number : TextInputType.text,
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: const Color(0xFF1E88E5)),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.r),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.r),
+            borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+          ),
         ),
-        validator: (v) => v!.isEmpty ? "Required" : null,
+        validator: (v) => (v == null || v.isEmpty) ? "Required" : null,
       ),
     );
   }
@@ -194,8 +238,9 @@ class CreateApartment extends StatelessWidget {
             width: double.infinity,
             height: 100.h,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
+              border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(10.r),
+              color: Colors.grey.shade50,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -211,46 +256,48 @@ class CreateApartment extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Obx(
-          () => SizedBox(
-            height: 100.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: controller.gallery.length,
-              itemBuilder: (context, index) {
-                return Stack(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(right: 10.w),
-                      width: 100.w,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        image: DecorationImage(
-                          image: FileImage(controller.gallery[index]),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 5,
-                      right: 15,
-                      child: GestureDetector(
-                        onTap: () => controller.removeImage(index),
-                        child: const CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.red,
-                          child: Icon(
-                            Icons.close,
-                            size: 16,
-                            color: Colors.white,
+          () => controller.gallery.isEmpty
+              ? const SizedBox()
+              : SizedBox(
+                  height: 100.h,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: controller.gallery.length,
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 10.w),
+                            width: 100.w,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.r),
+                              image: DecorationImage(
+                                image: FileImage(controller.gallery[index]),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                          Positioned(
+                            top: 5,
+                            right: 15,
+                            child: GestureDetector(
+                              onTap: () => controller.removeImage(index),
+                              child: const CircleAvatar(
+                                radius: 12,
+                                backgroundColor: Colors.red,
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
         ),
       ],
     );

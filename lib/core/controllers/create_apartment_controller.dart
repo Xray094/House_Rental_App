@@ -6,11 +6,35 @@ import 'package:house_rental_app/core/controllers/landlord_aparments_controller.
 import 'package:image_picker/image_picker.dart';
 
 class CreateApartmentController extends GetxController {
+  // Text Controllers moved here to persist data
+  final titleCtrl = TextEditingController();
+  final descCtrl = TextEditingController();
+  final priceCtrl = TextEditingController();
+  final govCtrl = TextEditingController();
+  final cityCtrl = TextEditingController();
+  final addressCtrl = TextEditingController();
+  final areaCtrl = TextEditingController();
+  final roomsCtrl = TextEditingController();
+  final floorCtrl = TextEditingController();
+
   final ImagePicker _picker = ImagePicker();
+  final ApartmentService _apartmentService = ApartmentService();
 
   var gallery = <File>[].obs;
   var hasBalcony = false.obs;
   var isLoading = false.obs;
+
+  // Features Logic
+  var selectedFeatures = <String>[].obs;
+  final List<String> availableFeatures = ["Wifi", "Elevator", "Gym", "Parking"];
+
+  void toggleFeature(String feature) {
+    if (selectedFeatures.contains(feature)) {
+      selectedFeatures.remove(feature);
+    } else {
+      selectedFeatures.add(feature);
+    }
+  }
 
   Future<void> pickImages() async {
     final List<XFile> pickedFiles = await _picker.pickMultiImage();
@@ -27,37 +51,36 @@ class CreateApartmentController extends GetxController {
     hasBalcony.value = val ?? false;
   }
 
-  final ApartmentService _apartmentService = ApartmentService();
-
-  Future<void> submitApartment({
-    required String title,
-    required String description,
-    required String price,
-    required String gov,
-    required String city,
-    required String address,
-    required String area,
-    required String rooms,
-    required String floor,
-  }) async {
+  Future<void> submitApartment() async {
     if (gallery.isEmpty) {
       Get.snackbar("Error", "Please add at least one photo");
+      return;
+    }
+    if (selectedFeatures.isEmpty) {
+      Get.snackbar(
+        "Features Required",
+        "Please select at least one feature (e.g., Wifi, Elevator)",
+        backgroundColor: Colors.orange.shade800,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
       return;
     }
 
     isLoading.value = true;
 
     final result = await _apartmentService.createApartment(
-      title: title,
-      description: description,
-      price: price,
-      governorate: gov,
-      city: city,
-      address: address,
-      area: area,
-      roomsCount: rooms,
-      floor: floor,
+      title: titleCtrl.text,
+      description: descCtrl.text,
+      price: priceCtrl.text,
+      governorate: govCtrl.text,
+      city: cityCtrl.text,
+      address: addressCtrl.text,
+      area: areaCtrl.text,
+      roomsCount: roomsCtrl.text,
+      floor: floorCtrl.text,
       hasBalcony: hasBalcony.value,
+      features: selectedFeatures.toList(),
       images: gallery.toList(),
     );
 
@@ -80,5 +103,20 @@ class CreateApartmentController extends GetxController {
         colorText: Colors.white,
       );
     }
+  }
+
+  @override
+  void onClose() {
+    // Clean up controllers
+    titleCtrl.dispose();
+    descCtrl.dispose();
+    priceCtrl.dispose();
+    govCtrl.dispose();
+    cityCtrl.dispose();
+    addressCtrl.dispose();
+    areaCtrl.dispose();
+    roomsCtrl.dispose();
+    floorCtrl.dispose();
+    super.onClose();
   }
 }

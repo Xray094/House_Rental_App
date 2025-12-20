@@ -1,18 +1,16 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
-import 'package:house_rental_app/core/controllers/auth_controller.dart';
 
 class LandlordApartmentsController extends GetxController {
-  final ApartmentService service = Get.find<ApartmentService>();
-  final AuthController authC = Get.find<AuthController>();
   var myApartments = <ApartmentModel>[].obs;
   var isLoading = false.obs;
+  final ApartmentService service = ApartmentService();
 
   @override
   void onInit() {
     fetchMyApartments();
-    print(myApartments);
     super.onInit();
   }
 
@@ -21,5 +19,45 @@ class LandlordApartmentsController extends GetxController {
     final response = await service.getLandlordApartments();
     myApartments.value = response;
     isLoading.value = false;
+  }
+
+  Future<void> deleteApartment(String id) async {
+    Get.defaultDialog(
+      title: "Delete Property",
+      titleStyle: const TextStyle(
+        color: Colors.red,
+        fontWeight: FontWeight.bold,
+      ),
+      middleTextStyle: TextStyle(color: Colors.black),
+      middleText:
+          "Are you sure you want to remove this listing? This cannot be undone.",
+      textConfirm: "Delete",
+      textCancel: "Cancel",
+      confirmTextColor: Colors.black,
+      buttonColor: Colors.red,
+      onConfirm: () async {
+        Get.back();
+        isLoading.value = true;
+        final result = await service.deleteApartment(id);
+        isLoading.value = false;
+        if (result['success']) {
+          myApartments.removeWhere((element) => element.id == id);
+          Get.snackbar(
+            "Deleted",
+            "Apartment removed successfully",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        } else {
+          Get.snackbar(
+            "Error",
+            result['message'],
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      },
+    );
   }
 }

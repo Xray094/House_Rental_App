@@ -97,12 +97,14 @@ class ApartmentDetailsPage extends StatelessWidget {
                       children: [
                         Icon(Icons.location_on, size: 16.h, color: primaryBlue),
                         SizedBox(width: 4.w),
-                        Text(
-                          '${attr.location.city}, ${attr.location.governorate}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.w600,
+                        Expanded(
+                          child: Text(
+                            '${attr.location.city}, ${attr.location.governorate}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],

@@ -55,6 +55,7 @@ class ApartmentService {
     required String roomsCount,
     required String floor,
     required bool hasBalcony,
+    required List<String> features,
     required List<File> images,
   }) async {
     try {
@@ -78,6 +79,7 @@ class ApartmentService {
         'rooms_count': roomsCount,
         'floor': floor,
         'has_balcony': hasBalcony ? 1 : 0,
+        'features[]': features,
         'images[]': imageFiles,
       });
 
@@ -94,6 +96,21 @@ class ApartmentService {
       return {'success': false, 'message': errorMessage};
     } catch (e) {
       return {'success': false, 'message': 'An unexpected error occurred: $e'};
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteApartment(String id) async {
+    try {
+      final response = await _dio.delete('/apartments/$id');
+      return {
+        'success': true,
+        'message': response.data['message'] ?? 'Deleted successfully',
+      };
+    } on DioException catch (e) {
+      return {
+        'success': false,
+        'message': e.response?.data['message'] ?? 'Failed to delete',
+      };
     }
   }
 }

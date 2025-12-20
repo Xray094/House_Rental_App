@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Models/booking_model.dart';
+import 'package:intl/intl.dart';
 
 class ApartmentBookingsPage extends StatelessWidget {
   const ApartmentBookingsPage({super.key});
@@ -25,7 +26,11 @@ class ApartmentBookingsPage extends StatelessWidget {
                   child: ListTile(
                     title: Text("Guest Request #${booking.id}"),
                     subtitle: Text(
-                      "Dates: ${booking.startDate} to ${booking.endDate}\nTotal: ${booking.totalPriceFormatted}",
+                      "Dates: ${DateFormat('yyyy-MM-dd').format(booking.startDate)} to ${DateFormat('yyyy-MM-dd').format(booking.endDate)}\nTotal: ${booking.totalPriceFormatted}",
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
