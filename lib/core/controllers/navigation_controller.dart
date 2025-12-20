@@ -22,14 +22,6 @@ class NavigationController extends GetxController {
 
   void changeIndex(int index) {
     selectedIndex.value = index;
-    if (index == 0) {
-      if (Get.isRegistered<HomeController>()) {
-        Get.find<HomeController>().loadApartments();
-      } else {
-        // Instantiate and fetch
-        Get.find<HomeController>().loadApartments();
-      }
-    }
     // If tenant navigated to the Bookings tab (index 1), refresh bookings list
     if (isTenant && index == 1) {
       try {

@@ -15,16 +15,30 @@ class HomeController extends GetxController {
     loadApartments();
   }
 
-  Future<void> loadApartments({bool forceRefresh = false}) async {
+  Future<void> loadApartments() async {
+    // Prevent multiple simultaneous calls
+    if (isLoading.value) return;
+
     try {
       isLoading.value = true;
       error.value = null;
-      final list = await _repo.getApartments(forceRefresh: forceRefresh);
-      apartments.assignAll(list);
+
+      final list = await _repo.getApartments();
+
+      // Update list only if valid data returned
+      if (list.isNotEmpty || apartments.isEmpty) {
+        apartments.assignAll(list);
+      }
     } catch (e) {
-      error.value = e.toString();
-      apartments.clear();
+      // Catch specific FormatException or general errors
+      if (e.toString().contains("FormatException")) {
+        error.value = "Data was incomplete. Please try again.";
+      } else {
+        error.value = "Check your internet connection";
+      }
+      print("Home Fetch Error: $e");
     } finally {
+      // Ensuring loading stops regardless of success or failure
       isLoading.value = false;
     }
   }
