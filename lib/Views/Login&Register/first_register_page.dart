@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
-import 'package:house_rental_app/Views/Login&Register/second_register_page.dart';
 import 'package:house_rental_app/core/controllers/register_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
@@ -11,7 +10,6 @@ class FirstRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // We use Get.put here because this is the start of the registration flow
     final controller = Get.put(RegisterController());
     const Color primaryBlue = Color(0xFF1E88E5);
 
@@ -119,7 +117,6 @@ class FirstRegisterPage extends StatelessWidget {
                   );
                   return;
                 }
-                // Use Named Routes with arguments
                 Get.toNamed(
                   Routes.secondRegister,
                   arguments: {

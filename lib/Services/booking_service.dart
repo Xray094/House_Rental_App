@@ -120,7 +120,6 @@ class BookingService {
 
       return {'success': true, 'message': 'Review submitted!'};
     } on DioException catch (e) {
-      // Extract the message from the backend response
       String errorMessage = "An error occurred";
       if (e.response?.data != null && e.response?.data['message'] != null) {
         errorMessage = e.response?.data['message'];

@@ -8,8 +8,6 @@ class CreateApartment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Controller is initialized here.
-    // All TextEditingControllers are stored inside the GetxController.
     final controller = Get.put(CreateApartmentController());
     final formKey = GlobalKey<FormState>();
 
@@ -90,8 +88,6 @@ class CreateApartment extends StatelessWidget {
                         Icons.layers,
                         isNum: true,
                       ),
-
-                      // Balcony Toggle
                       Obx(
                         () => CheckboxListTile(
                           title: const Text("Has Balcony"),
@@ -104,7 +100,6 @@ class CreateApartment extends StatelessWidget {
 
                       const SizedBox(height: 16),
                       _buildSectionTitle("Features"),
-                      // Features Selection Logic
                       Obx(
                         () => Wrap(
                           spacing: 8.w,
@@ -146,9 +141,7 @@ class CreateApartment extends StatelessWidget {
                       const SizedBox(height: 16),
                       _buildSectionTitle("Gallery"),
                       _buildImagePicker(controller),
-
                       const SizedBox(height: 32),
-                      // Submit Button
                       SizedBox(
                         width: double.infinity,
                         height: 50.h,

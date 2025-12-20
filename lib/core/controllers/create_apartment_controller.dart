@@ -6,7 +6,6 @@ import 'package:house_rental_app/core/controllers/landlord_aparments_controller.
 import 'package:image_picker/image_picker.dart';
 
 class CreateApartmentController extends GetxController {
-  // Text Controllers moved here to persist data
   final titleCtrl = TextEditingController();
   final descCtrl = TextEditingController();
   final priceCtrl = TextEditingController();
@@ -24,7 +23,6 @@ class CreateApartmentController extends GetxController {
   var hasBalcony = false.obs;
   var isLoading = false.obs;
 
-  // Features Logic
   var selectedFeatures = <String>[].obs;
   final List<String> availableFeatures = ["Wifi", "Elevator", "Gym", "Parking"];
 
@@ -107,7 +105,6 @@ class CreateApartmentController extends GetxController {
 
   @override
   void onClose() {
-    // Clean up controllers
     titleCtrl.dispose();
     descCtrl.dispose();
     priceCtrl.dispose();

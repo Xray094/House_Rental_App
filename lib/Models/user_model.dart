@@ -20,7 +20,6 @@ class UserModel {
     return {'id': id, 'token': token, 'attributes': attributes.toJson()};
   }
 
-  /// Some stored JSONs might be the full API response or just the compact user map.
   static UserModel fromJsonString(String jsonStr) {
     final decodedRaw = jsonDecode(jsonStr);
     final decoded = decodedRaw is Map
@@ -29,7 +28,6 @@ class UserModel {
     if (decoded.containsKey('data')) {
       return UserModel.fromJson(decoded);
     }
-    // assume compact form
     return UserModel(
       id: decoded['id'] ?? '',
       token: decoded['token'] ?? '',

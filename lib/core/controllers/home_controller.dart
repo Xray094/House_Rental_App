@@ -16,7 +16,6 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadApartments() async {
-    // Prevent multiple simultaneous calls
     if (isLoading.value) return;
 
     try {
@@ -24,13 +23,10 @@ class HomeController extends GetxController {
       error.value = null;
 
       final list = await _repo.getApartments();
-
-      // Update list only if valid data returned
       if (list.isNotEmpty || apartments.isEmpty) {
         apartments.assignAll(list);
       }
     } catch (e) {
-      // Catch specific FormatException or general errors
       if (e.toString().contains("FormatException")) {
         error.value = "Data was incomplete. Please try again.";
       } else {
@@ -38,7 +34,6 @@ class HomeController extends GetxController {
       }
       print("Home Fetch Error: $e");
     } finally {
-      // Ensuring loading stops regardless of success or failure
       isLoading.value = false;
     }
   }

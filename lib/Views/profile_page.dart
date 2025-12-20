@@ -19,20 +19,17 @@ class ProfilePage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.only(right: 20.w, left: 20.w, top: 50.h),
         child: Obx(() {
-          // 2. Access the user from the AuthController
           final user = authCtrl.user.value;
-
           if (user == null) {
             return const Center(child: Text('No user data available'));
           }
-
           final attr = user.attributes;
 
           return Column(
             children: [
               Center(
                 child: SizedBox(
-                  height: 150.r, // Use .r for responsive circle
+                  height: 150.r,
                   width: 150.r,
                   child: ClipOval(
                     child: Image.network(

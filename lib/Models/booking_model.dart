@@ -46,8 +46,6 @@ class BookingModel {
 
     final startDate = parseDate(attributes['start_date']?.toString());
     final endDate = parseDate(attributes['end_date']?.toString());
-
-    // Apartment info
     String apartmentId = '';
     String apartmentTitle = '';
     List<String> gallery = [];
@@ -59,8 +57,6 @@ class BookingModel {
       apartmentId = apartmentRel['id']?.toString() ?? '';
       final aptAttr = apartmentRel['attributes'] ?? {};
       apartmentTitle = aptAttr['title'] ?? '';
-
-      // Ensure gallery is handled
       final galleryList = aptAttr['gallery'] as List<dynamic>?;
       if (galleryList != null) {
         gallery = galleryList

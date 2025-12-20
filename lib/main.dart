@@ -9,7 +9,6 @@ import 'package:house_rental_app/routes/app_routes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize GetStorage and register it in Get
   final box = await setup();
   Get.put<GetStorage>(box, permanent: true);
   runApp(const MyApp());

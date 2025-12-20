@@ -19,7 +19,6 @@ class SecondRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access the controller (already created in Step 1)
     final controller = Get.find<RegisterController>();
 
     return Scaffold(
@@ -119,8 +118,6 @@ class SecondRegisterPage extends StatelessWidget {
               "Birth Date",
               style: TextStyle(fontSize: 12.sp, color: Colors.grey.shade700),
             ),
-
-            // Date Picker Section (Original UI)
             Obx(
               () => ListTile(
                 contentPadding: EdgeInsets.zero,

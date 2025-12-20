@@ -20,7 +20,6 @@ class ApartmentController extends GetxController {
   var isBooking = false.obs;
   var apartmentService = ApartmentService();
 
-  // Date variables
   var startDate = Rxn<DateTime>();
   var endDate = Rxn<DateTime>();
   final isLoading = false.obs;
@@ -33,7 +32,6 @@ class ApartmentController extends GetxController {
     }
   }
 
-  // Check if user is tenant
   bool get isTenant => _box.read('role') == 'tenant';
 
   void toggleFavorite() {
@@ -82,7 +80,6 @@ class ApartmentController extends GetxController {
       return "This time slot is already booked. Please choose different dates.";
     } catch (e) {
       isBooking.value = false;
-      // This returns the actual error message from your backend
       return e.toString().replaceAll('Exception: ', '');
     }
   }

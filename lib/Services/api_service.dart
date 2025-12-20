@@ -32,7 +32,6 @@ class ApiService extends GetxService {
         },
         onError: (DioException e, handler) {
           if (e.response?.statusCode == 401) {
-            // You can trigger a global logout here if the token is invalid
             print("Unauthorized: Token might be expired.");
           }
           return handler.next(e);

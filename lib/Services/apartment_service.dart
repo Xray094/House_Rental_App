@@ -32,7 +32,6 @@ class ApartmentService {
     }
   }
 
-  //landlord get apartments
   Future<List<ApartmentModel>> getLandlordApartments() async {
     try {
       final response = await _dio.get('/my-apartments');

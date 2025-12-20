@@ -6,18 +6,13 @@ import 'package:house_rental_app/Models/user_model.dart';
 import 'package:house_rental_app/Services/api_service.dart';
 
 class AuthService extends GetxService {
-  // Use the centralized Dio instance from ApiService
   final Dio _dio = Get.find<ApiService>().dio;
 
-  /// Attempts to login and returns [UserModel] on success, otherwise null.
   Future<UserModel?> login(LoginModule loginModule) async {
     try {
-      // POST to /login using the base config from ApiService
       final response = await _dio.post('/login', data: loginModule.toMap());
 
       if (response.statusCode == 200) {
-        // Assuming your Laravel backend returns the user data directly
-        // or inside a 'data' wrapper.
         return UserModel.fromJson(response.data);
       }
       return null;
@@ -30,11 +25,8 @@ class AuthService extends GetxService {
     }
   }
 
-  /// Attempts to register a user and returns a structured result
-  /// Map keys: 'success' (bool), 'message' (String?), 'errors' (Map?)
   Future<Map<String, dynamic>> register(RegisterModule registerModule) async {
     try {
-      // Converts register fields + images into multipart/form-data
       FormData data = await registerModule.toFormData();
 
       final response = await _dio.post('/register', data: data);
@@ -48,7 +40,6 @@ class AuthService extends GetxService {
 
       return {'success': false, 'message': 'Registration failed'};
     } on DioException catch (e) {
-      // Handles Laravel Validation Errors (422 Unprocessable Entity)
       if (e.response != null) {
         final responseData = e.response?.data;
         final msg = (responseData is Map && responseData['message'] != null)

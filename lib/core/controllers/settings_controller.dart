@@ -13,9 +13,7 @@ class SettingsController extends GetxController {
       isLoading.value = true;
       final success = await _logoutService.logout();
       if (success) {
-        // clear local persisted state
         _repo.clearCache();
-        // delegate clearing user/token to AuthController
         final authC = Get.find<AuthController>();
         await authC.logout();
       }

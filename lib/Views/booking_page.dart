@@ -195,10 +195,7 @@ void _showReviewDialog(String bookingId) {
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () => Get.back(), // GetX way to close dialog
-          child: const Text("Cancel"),
-        ),
+        TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
           onPressed: () {
@@ -219,7 +216,7 @@ void _showReviewDialog(String bookingId) {
               rating: selectedRating.value,
             );
 
-            Get.back(); // Close the dialog
+            Get.back();
           },
           child: const Text("Submit", style: TextStyle(color: Colors.white)),
         ),
@@ -228,72 +225,3 @@ void _showReviewDialog(String bookingId) {
     barrierDismissible: true,
   );
 }
-// void _showReviewDialog(BuildContext context, String bookingId) {
-//   final TextEditingController reviewController = TextEditingController();
-//   double selectedRating = 5; // Default rating
-
-//   showDialog(
-//     context: context,
-//     builder: (context) => AlertDialog(
-//       title: const Text("Rate your stay"),
-//       content: StatefulBuilder(
-//         builder: (context, setState) {
-//           return Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: [
-//               // Star Rating Row
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: List.generate(5, (index) {
-//                   return IconButton(
-//                     icon: Icon(
-//                       index < selectedRating ? Icons.star : Icons.star_border,
-//                       color: Colors.amber,
-//                     ),
-//                     onPressed: () =>
-//                         setState(() => selectedRating = index + 1.0),
-//                   );
-//                 }),
-//               ),
-//               const SizedBox(height: 10),
-//               TextField(
-//                 controller: reviewController,
-//                 maxLines: 3,
-//                 decoration: const InputDecoration(
-//                   hintText: "Tell us about your experience...",
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//             ],
-//           );
-//         },
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () => Navigator.pop(context),
-//           child: const Text("Cancel"),
-//         ),
-//         ElevatedButton(
-//           style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
-//           onPressed: () {
-//             if (reviewController.text.trim().isEmpty) {
-//               Get.snackbar("Required", "Please write a comment.");
-//               return;
-//             }
-//             final booking = Get.find<BookingController>().myBookings.firstWhere(
-//               (b) => b.id == bookingId,
-//             );
-//             Get.find<BookingController>().submitReview(
-//               apartmentId: booking.apartmentId,
-//               bookingId: bookingId,
-//               comment: reviewController.text.trim(),
-//               rating: selectedRating,
-//             );
-//             Navigator.pop(context);
-//           },
-//           child: const Text("Submit", style: TextStyle(color: Colors.white)),
-//         ),
-//       ],
-//     ),
-//   );
-// }

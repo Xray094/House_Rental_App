@@ -85,7 +85,6 @@ class BookingController extends GetxController {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            // This overrides the 'GetMaterialApp' theme locally for this picker
             colorScheme: ColorScheme.light(
               primary: primaryBlue,
               onPrimary: Colors.white,
@@ -101,8 +100,6 @@ class BookingController extends GetxController {
               rangeSelectionOverlayColor: WidgetStateProperty.all(
                 primaryBlue.withOpacity(0.1),
               ),
-
-              // Styling the 'Cancel' and 'Save' buttons
               confirmButtonStyle: ButtonStyle(
                 foregroundColor: WidgetStateProperty.all(primaryBlue),
                 textStyle: WidgetStateProperty.all(
@@ -110,7 +107,6 @@ class BookingController extends GetxController {
                 ),
               ),
             ),
-            // This ensures the "Done" and "Cancel" buttons at the bottom match
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(foregroundColor: primaryBlue),
             ),
@@ -135,7 +131,7 @@ class BookingController extends GetxController {
         endDate: end,
       );
 
-      Get.back(); // Close loading
+      Get.back();
 
       if (res['success'] == true) {
         Get.snackbar(
@@ -143,7 +139,7 @@ class BookingController extends GetxController {
           res['message'] ?? 'Booking updated',
           snackPosition: SnackPosition.BOTTOM,
         );
-        fetchMyBookings(); // Refresh list
+        fetchMyBookings();
       } else {
         final msg = (res['message'] ?? 'Failed to update booking').toString();
         Get.dialog(
@@ -159,7 +155,6 @@ class BookingController extends GetxController {
     }
   }
 
-  // Cancel Logic
   Future<void> cancelBooking(String bookingId) async {
     final confirmed = await Get.defaultDialog<bool>(
       title: "Cancel Booking",
@@ -181,7 +176,7 @@ class BookingController extends GetxController {
       final Map<String, dynamic> res = await bookingService.cancelBooking(
         bookingId,
       );
-      Get.back(); // close loading
+      Get.back();
       if (res['success'] == true) {
         Get.snackbar(
           'Success',

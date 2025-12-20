@@ -13,18 +13,6 @@ class AuthController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadFromPrefs();
-  }
-
-  Future<void> _loadFromPrefs() async {
-    final box = Get.find<GetStorage>();
-    final token = box.read('token');
-
-    // If token exists, keep it available; user will be fetched later via API if needed
-    if (token != null && token is String && token.isNotEmpty) {
-      // No user persisted as per guideline; we only keep token in storage
-      // Optionally, expose token via a getter
-    }
   }
 
   Future<bool> login(String mobile, String password) async {
