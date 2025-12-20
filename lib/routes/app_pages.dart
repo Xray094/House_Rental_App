@@ -23,7 +23,6 @@ class AppPages {
       page: () => ApartmentDetailsPage(),
       binding: BindingsBuilder(() {
         final arg = Get.arguments;
-        // If the route arg is the full model, pass it as initial; otherwise pass null and let the controller load by id
         if (arg is ApartmentModel) {
           Get.put(ApartmentController(arg));
         } else {

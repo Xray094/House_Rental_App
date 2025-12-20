@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Services/api_service.dart';
 
-class BookingService extends GetxService {
+class BookingService {
   final Dio _dio = Get.find<ApiService>().dio;
 
   Future<bool> storeBooking({
@@ -33,7 +33,6 @@ class BookingService extends GetxService {
     }
   }
 
-  /// Update existing booking dates
   Future<Map<String, dynamic>> updateBooking({
     required String bookingId,
     required String startDate,

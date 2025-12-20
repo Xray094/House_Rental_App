@@ -16,15 +16,11 @@ class ApartmentDetailsPage extends StatelessWidget {
     final ApartmentController ctrl = Get.find<ApartmentController>();
     final AuthController authController = Get.find<AuthController>();
     final arg = Get.arguments;
-
-    // If the route arg is an id (String) load details, otherwise controller was initialized with a model
     if (arg is String) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ctrl.loadDetails(arg);
       });
     } else if (arg is ApartmentModel) {
-      // If we got a partial ApartmentModel (e.g., from bookings) that lacks reviews,
-      // fetch the full details so reviews and other relations are available.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final current = ctrl.apartment.value;
         if (current != null && (current.reviews.isEmpty)) {
@@ -32,7 +28,6 @@ class ApartmentDetailsPage extends StatelessWidget {
         }
       });
     } else {
-      // Also handle the case where controller was initialized with a model via binding
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final current = ctrl.apartment.value;
         if (current != null && current.reviews.isEmpty) {
@@ -245,52 +240,74 @@ class ApartmentDetailsPage extends StatelessWidget {
             ],
           ),
         ),
-        //   return Container(
-        //     padding: EdgeInsets.all(16.w),
-        //     decoration: BoxDecoration(
-        //       color: Colors.white,
-        //       boxShadow: [
-        //         BoxShadow(
-        //           color: Colors.grey.withOpacity(0.2),
-        //           spreadRadius: 2,
-        //           blurRadius: 5,
-        //         ),
-        //       ],
-        //     ),
-        //     child: ElevatedButton.icon(
-        //       onPressed: ctrl.isBooking.value
-        //           ? null
-        //           : () async {
-        //               showDialog(
-        //                 context: context,
-        //                 barrierDismissible: false,
-        //                 builder: (context) =>
-        //                     const Center(child: CircularProgressIndicator()),
-        //               );
-        //               final String? errorMessage = await ctrl.book();
-        //               if (Navigator.canPop(context)) {
-        //                 Navigator.pop(context);
-        //               }
-        //               if (errorMessage == null) {
-        //                 Get.snackbar(
-        //                   'Success',
-        //                   'Your request was sent successfully.',
-        //                   backgroundColor: Colors.green,
-        //                   colorText: Colors.white,
-        //                   snackPosition: SnackPosition.BOTTOM,
-        //                 );
-        //               }
-        //             },
-        //       icon: const Icon(Icons.book_rounded),
-        //       label: Text(ctrl.isBooking.value ? 'Booking...' : 'Book Now'),
-        //       style: ElevatedButton.styleFrom(
-        //         minimumSize: Size.fromHeight(50.h),
-        //         backgroundColor: primaryBlue,
-        //         foregroundColor: Colors.white,
-        //       ),
-        //     ),
-        //   );
-        // }),
+        bottomNavigationBar: Obx(() {
+          if (!authController.isTenant) return const SizedBox.shrink();
+
+          return Container(
+            padding: EdgeInsets.all(16.w),
+
+            decoration: BoxDecoration(
+              color: Colors.white,
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+
+                  spreadRadius: 2,
+
+                  blurRadius: 5,
+                ),
+              ],
+            ),
+
+            child: ElevatedButton.icon(
+              onPressed: ctrl.isBooking.value
+                  ? null
+                  : () async {
+                      showDialog(
+                        context: context,
+
+                        barrierDismissible: false,
+
+                        builder: (context) =>
+                            const Center(child: CircularProgressIndicator()),
+                      );
+
+                      final String? errorMessage = await ctrl.book();
+
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+
+                      if (errorMessage == null) {
+                        Get.snackbar(
+                          'Success',
+
+                          'Your request was sent successfully.',
+
+                          backgroundColor: Colors.green,
+
+                          colorText: Colors.white,
+
+                          snackPosition: SnackPosition.BOTTOM,
+                        );
+                      }
+                    },
+
+              icon: const Icon(Icons.book_rounded),
+
+              label: Text(ctrl.isBooking.value ? 'Booking...' : 'Book Now'),
+
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size.fromHeight(50.h),
+
+                backgroundColor: primaryBlue,
+
+                foregroundColor: Colors.white,
+              ),
+            ),
+          );
+        }),
       );
     });
   }
@@ -348,8 +365,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  review
-                      .createdAt, // Assumes the API returns a string like "2 days ago"
+                  review.createdAt,
                   style: TextStyle(color: Colors.grey, fontSize: 12.sp),
                 ),
               ],

@@ -39,40 +39,37 @@ class BookingController extends GetxController {
       context: context,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      initialDateRange: DateTimeRange(
-        start: booking.startDate,
-        end: booking.endDate,
-      ),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            // 1. Controls general color scheme (Headers/Selection)
+            // This overrides the 'GetMaterialApp' theme locally for this picker
             colorScheme: ColorScheme.light(
               primary: primaryBlue,
-              onPrimary: Colors.black,
-              onSurface: Colors.black, // This controls the active month numbers
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black87,
             ),
-            // 2. Controls the specific look of the calendar grid
             datePickerTheme: DatePickerThemeData(
-              // Background of the entire picker
-              backgroundColor: Colors.black,
+              headerBackgroundColor: primaryBlue,
+              headerForegroundColor: Colors.white,
+              backgroundColor: Colors.white,
+              dayShape: WidgetStateProperty.all(const CircleBorder()),
+              rangeSelectionBackgroundColor: primaryBlue.withOpacity(0.12),
+              rangeSelectionOverlayColor: WidgetStateProperty.all(
+                primaryBlue.withOpacity(0.1),
+              ),
 
-              // Style for the numbers (Day text)
-              dayStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
-
-              // This ensures January numbers aren't faint/greyed out
-              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
-                if (states.contains(WidgetState.selected)) {
-                  return Colors.black; // Selected text color
-                }
-                if (states.contains(WidgetState.disabled)) {
-                  return Colors.grey.shade400; // Dates outside your range
-                }
-                return Colors.black; // Default color for all other numbers
-              }),
-
-              // Controls the faint purple background color in your screenshot
-              rangeSelectionBackgroundColor: primaryBlue.withOpacity(0.15),
+              // Styling the 'Cancel' and 'Save' buttons
+              confirmButtonStyle: ButtonStyle(
+                foregroundColor: WidgetStateProperty.all(primaryBlue),
+                textStyle: WidgetStateProperty.all(
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+                ),
+              ),
+            ),
+            // This ensures the "Done" and "Cancel" buttons at the bottom match
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: primaryBlue),
             ),
           ),
           child: child!,
@@ -127,7 +124,7 @@ class BookingController extends GetxController {
       middleText: "Are you sure you want to cancel this booking?",
       middleTextStyle: TextStyle(color: Colors.black),
       textConfirm: "Yes, Cancel",
-      confirmTextColor: Colors.white,
+      confirmTextColor: Colors.black,
       textCancel: "No",
       onConfirm: () => Get.back(result: true),
       onCancel: () => Get.back(result: false),

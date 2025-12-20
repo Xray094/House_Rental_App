@@ -86,73 +86,64 @@ class BookingPage extends StatelessWidget {
                   ],
                 ),
                 isThreeLine: true,
-                trailing:
-                    (booking.status.toLowerCase() == 'cancelled' ||
-                        booking.status.toLowerCase() == 'completed')
-                    ? Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
+                trailing: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: statusColor.withOpacity(0.4)),
+                      ),
+                      child: Text(
+                        booking.status.toUpperCase(),
+                        style: TextStyle(color: statusColor, fontSize: 10.sp),
+                      ),
+                    ),
+                    if (booking.status.toLowerCase() == 'completed')
+                      TextButton.icon(
+                        onPressed: () => _showReviewDialog(context, booking.id),
+                        icon: Icon(
+                          Icons.star_rate,
+                          size: 16.sp,
+                          color: Colors.amber,
                         ),
-                        decoration: BoxDecoration(
-                          color: statusColor.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: statusColor.withOpacity(0.4),
-                          ),
-                        ),
-                        child: Text(
-                          booking.status.toUpperCase(),
-                          style: TextStyle(color: statusColor, fontSize: 12.sp),
+                        label: Text(
+                          "Review",
+                          style: TextStyle(fontSize: 12.sp),
                         ),
                       )
-                    : Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: statusColor.withOpacity(0.4),
+                    else if (booking.status.toLowerCase() == 'pending')
+                      Expanded(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.orange,
+                                size: 20,
                               ),
+                              onPressed: () =>
+                                  ctrl.editBookingDates(context, booking),
                             ),
-                            child: Text(
-                              booking.status.toUpperCase(),
-                              style: TextStyle(
-                                color: statusColor,
-                                fontSize: 12.sp,
+                            IconButton(
+                              icon: const Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                                size: 20,
                               ),
+                              onPressed: () => ctrl.cancelBooking(booking.id),
                             ),
-                          ),
-                          Expanded(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.orange,
-                                  ),
-                                  onPressed: () =>
-                                      ctrl.editBookingDates(context, booking),
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.cancel,
-                                    color: Colors.red,
-                                  ),
-                                  onPressed: () =>
-                                      ctrl.cancelBooking(booking.id),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                  ],
+                ),
               ),
             );
           },
@@ -160,4 +151,68 @@ class BookingPage extends StatelessWidget {
       }),
     );
   }
+}
+
+void _showReviewDialog(BuildContext context, String bookingId) {
+  final TextEditingController reviewController = TextEditingController();
+  double selectedRating = 5; // Default rating
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Rate your stay"),
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Star Rating Row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return IconButton(
+                    icon: Icon(
+                      index < selectedRating ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+                    onPressed: () =>
+                        setState(() => selectedRating = index + 1.0),
+                  );
+                }),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: reviewController,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  hintText: "Tell us about your experience...",
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
+          onPressed: () {
+            // submit review later
+            // Get.find<BookingController>().submitReview(bookingId, selectedRating, reviewController.text);
+            Navigator.pop(context);
+            Get.snackbar(
+              "Success",
+              "Thank you for your review!",
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          },
+          child: const Text("Submit", style: TextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
 }
