@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:house_rental_app/Views/Login&Register/login_page.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/booking_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
@@ -105,16 +106,18 @@ class BookingPage extends StatelessWidget {
                       ),
                     ),
                     if (booking.status.toLowerCase() == 'completed')
-                      TextButton.icon(
-                        onPressed: () => _showReviewDialog(context, booking.id),
-                        icon: Icon(
-                          Icons.star_rate,
-                          size: 16.sp,
-                          color: Colors.amber,
-                        ),
-                        label: Text(
-                          "Review",
-                          style: TextStyle(fontSize: 12.sp),
+                      Expanded(
+                        child: TextButton.icon(
+                          onPressed: () => _showReviewDialog(booking.id),
+                          icon: Icon(
+                            Icons.star_rate,
+                            size: 16.sp,
+                            color: Colors.amber,
+                          ),
+                          label: Text(
+                            "Review",
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
                         ),
                       )
                     else if (booking.status.toLowerCase() == 'pending')
@@ -153,66 +156,144 @@ class BookingPage extends StatelessWidget {
   }
 }
 
-void _showReviewDialog(BuildContext context, String bookingId) {
+void _showReviewDialog(String bookingId) {
   final TextEditingController reviewController = TextEditingController();
-  double selectedRating = 5; // Default rating
+  final RxDouble selectedRating = 5.0.obs;
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text("Rate your stay"),
-      content: StatefulBuilder(
-        builder: (context, setState) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Star Rating Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  return IconButton(
-                    icon: Icon(
-                      index < selectedRating ? Icons.star : Icons.star_border,
-                      color: Colors.amber,
-                    ),
-                    onPressed: () =>
-                        setState(() => selectedRating = index + 1.0),
-                  );
-                }),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: reviewController,
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  hintText: "Tell us about your experience...",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          );
-        },
+  Get.dialog(
+    AlertDialog(
+      backgroundColor: Colors.black,
+      title: Text("Rate your stay", style: TextStyle(color: primaryBlue)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(5, (index) {
+                return IconButton(
+                  icon: Icon(
+                    index < selectedRating.value
+                        ? Icons.star
+                        : Icons.star_border,
+                    color: Colors.amber,
+                  ),
+                  onPressed: () => selectedRating.value = index + 1.0,
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: reviewController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: "Tell us about your experience...",
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Get.back(), // GetX way to close dialog
           child: const Text("Cancel"),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
           onPressed: () {
-            // submit review later
-            // Get.find<BookingController>().submitReview(bookingId, selectedRating, reviewController.text);
-            Navigator.pop(context);
-            Get.snackbar(
-              "Success",
-              "Thank you for your review!",
-              snackPosition: SnackPosition.BOTTOM,
+            if (reviewController.text.trim().isEmpty) {
+              Get.snackbar("Required", "Please write a comment.");
+              return;
+            }
+
+            final bookingCtrl = Get.find<BookingController>();
+            final booking = bookingCtrl.myBookings.firstWhere(
+              (b) => b.id == bookingId,
             );
+
+            bookingCtrl.submitReview(
+              apartmentId: booking.apartmentId,
+              bookingId: bookingId,
+              comment: reviewController.text.trim(),
+              rating: selectedRating.value,
+            );
+
+            Get.back(); // Close the dialog
           },
           child: const Text("Submit", style: TextStyle(color: Colors.white)),
         ),
       ],
     ),
+    barrierDismissible: true,
   );
 }
+// void _showReviewDialog(BuildContext context, String bookingId) {
+//   final TextEditingController reviewController = TextEditingController();
+//   double selectedRating = 5; // Default rating
+
+//   showDialog(
+//     context: context,
+//     builder: (context) => AlertDialog(
+//       title: const Text("Rate your stay"),
+//       content: StatefulBuilder(
+//         builder: (context, setState) {
+//           return Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               // Star Rating Row
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: List.generate(5, (index) {
+//                   return IconButton(
+//                     icon: Icon(
+//                       index < selectedRating ? Icons.star : Icons.star_border,
+//                       color: Colors.amber,
+//                     ),
+//                     onPressed: () =>
+//                         setState(() => selectedRating = index + 1.0),
+//                   );
+//                 }),
+//               ),
+//               const SizedBox(height: 10),
+//               TextField(
+//                 controller: reviewController,
+//                 maxLines: 3,
+//                 decoration: const InputDecoration(
+//                   hintText: "Tell us about your experience...",
+//                   border: OutlineInputBorder(),
+//                 ),
+//               ),
+//             ],
+//           );
+//         },
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: () => Navigator.pop(context),
+//           child: const Text("Cancel"),
+//         ),
+//         ElevatedButton(
+//           style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
+//           onPressed: () {
+//             if (reviewController.text.trim().isEmpty) {
+//               Get.snackbar("Required", "Please write a comment.");
+//               return;
+//             }
+//             final booking = Get.find<BookingController>().myBookings.firstWhere(
+//               (b) => b.id == bookingId,
+//             );
+//             Get.find<BookingController>().submitReview(
+//               apartmentId: booking.apartmentId,
+//               bookingId: bookingId,
+//               comment: reviewController.text.trim(),
+//               rating: selectedRating,
+//             );
+//             Navigator.pop(context);
+//           },
+//           child: const Text("Submit", style: TextStyle(color: Colors.white)),
+//         ),
+//       ],
+//     ),
+//   );
+// }

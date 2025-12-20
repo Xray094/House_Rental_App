@@ -31,6 +31,49 @@ class BookingController extends GetxController {
     isLoading.value = false;
   }
 
+  Future<void> submitReview({
+    required String apartmentId,
+    required String bookingId,
+    required String comment,
+    required double rating,
+  }) async {
+    try {
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+      final Map<String, dynamic> result = await bookingService.submitReview(
+        apartmentId: apartmentId,
+        bookingId: bookingId,
+        comment: comment,
+        rating: rating.toInt().toString(),
+      );
+      Get.back();
+      if (result['success'] == true) {
+        Get.snackbar(
+          "Success",
+          result['message'],
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        fetchMyBookings();
+      } else {
+        Get.snackbar(
+          "Review Failed",
+          result['message'],
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    } catch (e) {
+      Get.back();
+      print("Controller Review Error: $e");
+    }
+  }
+
   Future<void> editBookingDates(
     BuildContext context,
     BookingModel booking,

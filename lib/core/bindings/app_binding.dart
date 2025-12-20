@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Services/api_service.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
-import 'package:house_rental_app/core/controllers/profile_controller.dart';
+import 'package:house_rental_app/core/controllers/landlord_aparments_controller.dart';
 import 'package:house_rental_app/core/controllers/settings_controller.dart';
 import 'package:house_rental_app/Services/auth_service.dart';
 import 'package:house_rental_app/Services/apartment_repository.dart';
@@ -15,10 +15,11 @@ class AppBinding extends Bindings {
   void dependencies() {
     //Services
     Get.put(ApiService());
+    Get.put(ApartmentService());
+    Get.lazyPut(() => BookingService(), fenix: true);
     Get.lazyPut(() => AuthService(), fenix: true);
-    Get.lazyPut(() => ApartmentService(), fenix: true);
     Get.lazyPut(() => LogoutService(), fenix: true);
-    Get.lazyPut(() => BookingService());
+
     //Repositories
     Get.lazyPut(() => ApartmentRepository(), fenix: true);
 
@@ -26,5 +27,6 @@ class AppBinding extends Bindings {
     Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
+    Get.lazyPut(() => LandlordApartmentsController(), fenix: true);
   }
 }

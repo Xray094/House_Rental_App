@@ -5,7 +5,9 @@ import 'package:house_rental_app/Views/home_page.dart';
 import 'package:house_rental_app/Views/landlord_apartments_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
 import 'package:house_rental_app/Views/booking_page.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/navigation_controller.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 class MainNavigationPage extends StatelessWidget {
   MainNavigationPage({super.key});
@@ -21,9 +23,15 @@ class MainNavigationPage extends StatelessWidget {
     LandlordApartmentsPage(),
     const SettingsPage(),
   ];
-  final List<Widget> appBars = [
+  final List<Widget> tenantAppBars = [
     const HomeAppBar(),
     const BookingAppBar(),
+    const SettingsAppBar(),
+  ];
+
+  final List<Widget> landlordAppBars = [
+    const HomeAppBar(),
+    const LandlordApartmentAppBar(),
     const SettingsAppBar(),
   ];
 
@@ -36,7 +44,11 @@ class MainNavigationPage extends StatelessWidget {
       backgroundColor: Colors.grey.shade50,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(56.h),
-        child: Obx(() => appBars[controller.selectedIndex.value]),
+        child: Obx(
+          () => controller.isTenant
+              ? tenantAppBars[controller.selectedIndex.value]
+              : landlordAppBars[controller.selectedIndex.value],
+        ),
       ),
 
       body: Obx(() {
@@ -139,6 +151,48 @@ class BookingAppBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+}
+
+class LandlordApartmentAppBar extends StatelessWidget {
+  const LandlordApartmentAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      centerTitle: true,
+      elevation: 0,
+      title: Text(
+        'My Apartments',
+        style: TextStyle(
+          color: const Color(0xFF1E88E5),
+          fontSize: 24.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: 12.w),
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: primaryBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(13.r),
+              ),
+            ),
+            onPressed: () {
+              Get.toNamed(Routes.createApartment);
+            },
+            child: Text(
+              "Create",
+              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:house_rental_app/Views/Login&Register/second_register_page.dart';
+import 'package:house_rental_app/Views/create_apartment.dart';
 import 'package:house_rental_app/Views/splash_page.dart';
 import 'package:house_rental_app/Views/Login&Register/login_page.dart';
 import 'package:house_rental_app/Views/Login&Register/first_register_page.dart';
@@ -18,6 +19,7 @@ class AppPages {
     GetPage(name: Routes.main, page: () => MainNavigationPage()),
     GetPage(name: Routes.profile, page: () => const ProfilePage()),
     GetPage(name: Routes.firstRegister, page: () => const FirstRegisterPage()),
+    GetPage(name: Routes.createApartment, page: () => const CreateApartment()),
     GetPage(
       name: Routes.apartmentDetails,
       page: () => ApartmentDetailsPage(),

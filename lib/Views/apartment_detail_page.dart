@@ -211,7 +211,6 @@ class ApartmentDetailsPage extends StatelessWidget {
                           onTap: () async {
                             DateTime? picked = await showDatePicker(
                               context: context,
-                              // Ensure end date starts at least 1 day after start date if selected
                               initialDate:
                                   ctrl.startDate.value?.add(
                                     const Duration(days: 1),
@@ -226,17 +225,14 @@ class ApartmentDetailsPage extends StatelessWidget {
                           },
                         ),
                       ),
-                      const Divider(),
-                      buildSectionTitle(
-                        context,
-                        'Reviews (${apt.reviews.length})',
-                      ),
-                      _buildReviewsList(apt.reviews),
                     ],
                   ),
                 ),
                 SizedBox(height: 20.h),
               ],
+              const Divider(),
+              buildSectionTitle(context, 'Reviews (${apt.reviews.length})'),
+              _buildReviewsList(apt.reviews),
             ],
           ),
         ),
@@ -245,16 +241,12 @@ class ApartmentDetailsPage extends StatelessWidget {
 
           return Container(
             padding: EdgeInsets.all(16.w),
-
             decoration: BoxDecoration(
               color: Colors.white,
-
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
-
                   spreadRadius: 2,
-
                   blurRadius: 5,
                 ),
               ],

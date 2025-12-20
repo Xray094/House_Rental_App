@@ -100,4 +100,34 @@ class BookingService {
       return {'success': false, 'message': 'Cancel failed'};
     }
   }
+
+  Future<Map<String, dynamic>> submitReview({
+    required String apartmentId,
+    required String bookingId,
+    required String comment,
+    required String rating,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/reviews',
+        data: {
+          'apartment_id': apartmentId,
+          'booking_id': bookingId,
+          'comment': comment,
+          'rating': rating,
+        },
+      );
+
+      return {'success': true, 'message': 'Review submitted!'};
+    } on DioException catch (e) {
+      // Extract the message from the backend response
+      String errorMessage = "An error occurred";
+      if (e.response?.data != null && e.response?.data['message'] != null) {
+        errorMessage = e.response?.data['message'];
+      }
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {'success': false, 'message': e.toString()};
+    }
+  }
 }

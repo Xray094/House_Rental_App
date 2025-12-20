@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:get/get.dart' hide Response, FormData;
+import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/api_service.dart';
 
@@ -33,9 +33,9 @@ class ApartmentService {
   }
 
   //landlord get apartments
-  Future<List<ApartmentModel>> getLandlordApartments(String landlordId) async {
+  Future<List<ApartmentModel>> getLandlordApartments() async {
     try {
-      final response = await _dio.get('/apartments/landlord/$landlordId');
+      final response = await _dio.get('/my-apartments');
       final List<dynamic> data = response.data['data'];
       return data.map((json) => ApartmentModel.fromJson(json)).toList();
     } catch (e) {
@@ -44,21 +44,56 @@ class ApartmentService {
     }
   }
 
-  // Future<Response> createApartment(
-  //   Map<String, dynamic> data,
-  //   List<File> images,
-  // ) async {
-  //   final formData = FormData({
-  //     ...data,
-  //     'gallery[]': images
-  //         .map((image) => MultipartFile(image, filename: 'apt.jpg'))
-  //         .toList(),
-  //   });
+  Future<Map<String, dynamic>> createApartment({
+    required String title,
+    required String description,
+    required String price,
+    required String governorate,
+    required String city,
+    required String address,
+    required String area,
+    required String roomsCount,
+    required String floor,
+    required bool hasBalcony,
+    required List<File> images,
+  }) async {
+    try {
+      List<MultipartFile> imageFiles = [];
+      for (File file in images) {
+        imageFiles.add(
+          await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        );
+      }
+      FormData formData = FormData.fromMap({
+        'title': title,
+        'description': description,
+        'price': price,
+        'governorate': governorate,
+        'city': city,
+        'address': address,
+        'area_in_square_meters': area,
+        'rooms_count': roomsCount,
+        'floor': floor,
+        'has_balcony': hasBalcony ? 1 : 0,
+        'images[]': imageFiles,
+      });
 
-  //   return await post(
-  //     '/apartments',
-  //     formData,
-  //     headers: {'Authorization': 'Bearer ${box.read('token')}'},
-  //   );
-  // }
+      final response = await _dio.post('/apartments', data: formData);
+
+      return {
+        'success': true,
+        'message': 'Apartment created successfully',
+        'data': response.data,
+      };
+    } on DioException catch (e) {
+      String errorMessage =
+          e.response?.data['message'] ?? "Failed to create apartment";
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {'success': false, 'message': 'An unexpected error occurred: $e'};
+    }
+  }
 }
