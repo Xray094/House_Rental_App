@@ -7,7 +7,7 @@ import 'package:house_rental_app/routes/app_routes.dart';
 
 import 'package:intl/intl.dart';
 
-class MyBookingsPage extends StatelessWidget {
+class BookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.put(BookingController());
@@ -30,16 +30,11 @@ class MyBookingsPage extends StatelessWidget {
           padding: EdgeInsets.all(16.w),
           itemBuilder: (context, index) {
             final booking = ctrl.myBookings[index];
-
-            // Use total price from booking (already provided by API)
-            final priceText = booking.totalPriceFormatted.isNotEmpty
-                ? booking.totalPriceFormatted
-                : NumberFormat('#,##0.00').format(booking.totalPrice);
-
+            final priceText = booking.totalPriceFormatted;
             Color statusColor;
             switch (booking.status.toLowerCase()) {
               case 'approved':
-              case 'confirmed':
+              case 'completed':
                 statusColor = Colors.green;
                 break;
               case 'pending':
@@ -54,22 +49,18 @@ class MyBookingsPage extends StatelessWidget {
             }
 
             return Card(
+              elevation: 5,
               child: ListTile(
+                minTileHeight: 20,
                 onTap:
                     (booking.status.toLowerCase() == 'cancelled' ||
-                        booking.status.toLowerCase() == 'canceled' ||
-                        booking.apartment == null)
+                        (booking.apartmentId.isEmpty &&
+                            booking.apartment == null))
                     ? null
                     : () => Get.toNamed(
                         Routes.apartmentDetails,
-                        arguments: booking.apartment,
+                        arguments: booking.apartment ?? booking.apartmentId,
                       ),
-                leading: booking.gallery.isNotEmpty
-                    ? CircleAvatar(
-                        backgroundImage: NetworkImage(booking.gallery.first),
-                        radius: 28,
-                      )
-                    : const CircleAvatar(child: Icon(Icons.home_outlined)),
                 title: Row(
                   children: [
                     Expanded(
@@ -77,22 +68,6 @@ class MyBookingsPage extends StatelessWidget {
                         booking.apartmentTitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: statusColor.withOpacity(0.4)),
-                      ),
-                      child: Text(
-                        booking.status.toUpperCase(),
-                        style: TextStyle(color: statusColor, fontSize: 12.sp),
                       ),
                     ),
                   ],
@@ -105,7 +80,7 @@ class MyBookingsPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '${booking.nightsCount} night(s) · ${priceText}',
+                      '${booking.nightsCount} night(s) · $priceText',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -113,19 +88,68 @@ class MyBookingsPage extends StatelessWidget {
                 isThreeLine: true,
                 trailing:
                     (booking.status.toLowerCase() == 'cancelled' ||
-                        booking.status.toLowerCase() == 'canceled')
-                    ? null
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.orange),
-                            onPressed: () =>
-                                ctrl.editBookingDates(context, booking),
+                        booking.status.toLowerCase() == 'completed')
+                    ? Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: statusColor.withOpacity(0.4),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.cancel, color: Colors.red),
-                            onPressed: () => ctrl.cancelBooking(booking.id),
+                        ),
+                        child: Text(
+                          booking.status.toUpperCase(),
+                          style: TextStyle(color: statusColor, fontSize: 12.sp),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: statusColor.withOpacity(0.4),
+                              ),
+                            ),
+                            child: Text(
+                              booking.status.toUpperCase(),
+                              style: TextStyle(
+                                color: statusColor,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.orange,
+                                  ),
+                                  onPressed: () =>
+                                      ctrl.editBookingDates(context, booking),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.cancel,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () =>
+                                      ctrl.cancelBooking(booking.id),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),

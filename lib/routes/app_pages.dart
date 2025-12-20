@@ -7,6 +7,7 @@ import 'package:house_rental_app/Views/main_navigation_page.dart';
 import 'package:house_rental_app/Views/profile_page.dart';
 import 'package:house_rental_app/Views/apartment_detail_page.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
+import 'package:house_rental_app/Models/apartment_model.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -19,11 +20,14 @@ class AppPages {
     GetPage(name: Routes.firstRegister, page: () => const FirstRegisterPage()),
     GetPage(
       name: Routes.apartmentDetails,
-      page: () => ApartmentDetailsPage(apartment: Get.arguments),
+      page: () => ApartmentDetailsPage(),
       binding: BindingsBuilder(() {
         final arg = Get.arguments;
-        if (arg != null) {
+        // If the route arg is the full model, pass it as initial; otherwise pass null and let the controller load by id
+        if (arg is ApartmentModel) {
           Get.put(ApartmentController(arg));
+        } else {
+          Get.put(ApartmentController(null));
         }
       }),
     ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:intl/intl.dart';
 import 'package:house_rental_app/Models/booking_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
@@ -29,7 +31,6 @@ class BookingController extends GetxController {
     isLoading.value = false;
   }
 
-  // Edit Logic: Shows a date picker and updates backend
   Future<void> editBookingDates(
     BuildContext context,
     BookingModel booking,
@@ -42,6 +43,41 @@ class BookingController extends GetxController {
         start: booking.startDate,
         end: booking.endDate,
       ),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            // 1. Controls general color scheme (Headers/Selection)
+            colorScheme: ColorScheme.light(
+              primary: primaryBlue,
+              onPrimary: Colors.black,
+              onSurface: Colors.black, // This controls the active month numbers
+            ),
+            // 2. Controls the specific look of the calendar grid
+            datePickerTheme: DatePickerThemeData(
+              // Background of the entire picker
+              backgroundColor: Colors.black,
+
+              // Style for the numbers (Day text)
+              dayStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+
+              // This ensures January numbers aren't faint/greyed out
+              dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return Colors.black; // Selected text color
+                }
+                if (states.contains(WidgetState.disabled)) {
+                  return Colors.grey.shade400; // Dates outside your range
+                }
+                return Colors.black; // Default color for all other numbers
+              }),
+
+              // Controls the faint purple background color in your screenshot
+              rangeSelectionBackgroundColor: primaryBlue.withOpacity(0.15),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {

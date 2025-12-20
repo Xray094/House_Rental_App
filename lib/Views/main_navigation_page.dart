@@ -12,7 +12,7 @@ class MainNavigationPage extends StatelessWidget {
 
   final List<Widget> tenantPages = [
     HomePage(),
-    MyBookingsPage(),
+    BookingPage(),
     const SettingsPage(),
   ];
 

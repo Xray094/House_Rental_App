@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/user_model.dart';
+import 'package:house_rental_app/Services/apartment_service.dart';
+import 'package:house_rental_app/Services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
 
 class ApartmentController extends GetxController {
-  final ApartmentModel initialApt;
+  final ApartmentModel? initialApt;
   ApartmentController(this.initialApt);
 
   final BookingService _bookingService = Get.find<BookingService>();
@@ -16,15 +18,19 @@ class ApartmentController extends GetxController {
   var apartment = Rxn<ApartmentModel>();
   var isFavorite = false.obs;
   var isBooking = false.obs;
+  var apartmentService = ApartmentService();
 
   // Date variables
   var startDate = Rxn<DateTime>();
   var endDate = Rxn<DateTime>();
+  final isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    apartment.value = initialApt;
+    if (initialApt != null) {
+      apartment.value = initialApt;
+    }
   }
 
   // Check if user is tenant
@@ -48,6 +54,13 @@ class ApartmentController extends GetxController {
       startDate.value = picked.start;
       endDate.value = picked.end;
     }
+  }
+
+  Future<void> loadDetails(String id) async {
+    isLoading(true);
+    final result = await apartmentService.getApartmentById(id);
+    apartment.value = result;
+    isLoading(false);
   }
 
   Future<String?> book() async {

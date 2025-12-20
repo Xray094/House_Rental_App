@@ -1,31 +1,51 @@
+import 'package:house_rental_app/Models/booking_model.dart';
+import 'package:house_rental_app/Models/review_model.dart';
+
 class ApartmentModel {
   final String id;
   final ApartmentAttributes attributes;
   final String ownerName;
+  final List<ReviewModel> reviews;
+  final List<BookingModel> bookings;
 
   ApartmentModel({
     required this.id,
     required this.attributes,
     required this.ownerName,
+    required this.reviews,
+    this.bookings = const [],
   });
 
   factory ApartmentModel.fromJson(Map<String, dynamic> json) {
-    return ApartmentModel(
-      id: json['id'],
-      attributes: ApartmentAttributes.fromJson(json['attributes']),
-      ownerName: json['relationships'] != null
-          ? json['relationships']['owner']['attributes']['full_name'] ??
-                'Unknown Owner'
-          : json['owner_name'] ?? 'Unknown Owner',
-    );
-  }
+    final rel = json['relationships'] ?? {};
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'attributes': attributes.toJson(),
-      'owner_name': ownerName,
-    };
+    String extractedOwner = 'Unknown Owner';
+    if (rel['landlord'] != null) {
+      extractedOwner =
+          rel['landlord']['attributes']?['full_name'] ?? 'Unknown Owner';
+    }
+
+    List<ReviewModel> reviewList = [];
+    if (rel['reviews'] != null && rel['reviews'] is List) {
+      reviewList = (rel['reviews'] as List)
+          .map((r) => ReviewModel.fromJson(r))
+          .toList();
+    }
+
+    List<BookingModel> bookingList = [];
+    if (rel['bookings'] != null && rel['bookings'] is List) {
+      bookingList = (rel['bookings'] as List)
+          .map((b) => BookingModel.fromApiJson(b))
+          .toList();
+    }
+
+    return ApartmentModel(
+      id: json['id']?.toString() ?? '',
+      attributes: ApartmentAttributes.fromJson(json['attributes'] ?? {}),
+      ownerName: extractedOwner,
+      reviews: reviewList,
+      bookings: bookingList,
+    );
   }
 }
 

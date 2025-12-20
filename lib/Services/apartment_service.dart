@@ -19,6 +19,19 @@ class ApartmentService {
     }
   }
 
+  Future<ApartmentModel?> getApartmentById(String id) async {
+    try {
+      final response = await _dio.get('/apartments/$id');
+      if (response.statusCode == 200) {
+        return ApartmentModel.fromJson(response.data['data']);
+      }
+      return null;
+    } catch (e) {
+      print("Error fetching apartment details: $e");
+      return null;
+    }
+  }
+
   //landlord get apartments
   Future<List<ApartmentModel>> getLandlordApartments(String landlordId) async {
     try {

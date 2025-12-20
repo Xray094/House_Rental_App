@@ -13,18 +13,16 @@ import 'package:house_rental_app/Services/logout_service.dart';
 class AppBinding extends Bindings {
   @override
   void dependencies() {
-    // --- Services ---
-    // Use fenix: true so if the service is disposed, it can be re-initialized
+    //Services
     Get.put(ApiService());
     Get.lazyPut(() => AuthService(), fenix: true);
     Get.lazyPut(() => ApartmentService(), fenix: true);
     Get.lazyPut(() => LogoutService(), fenix: true);
     Get.lazyPut(() => BookingService());
-    // Repositories
+    //Repositories
     Get.lazyPut(() => ApartmentRepository(), fenix: true);
 
-    // --- Controllers ---
-    // AuthController is often 'permanent' because you need to track login state everywhere
+    //Controllers
     Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);

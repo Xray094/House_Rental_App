@@ -51,8 +51,6 @@ class SecondRegisterPage extends StatelessWidget {
               style: TextStyle(fontSize: 12.sp, color: Colors.grey),
             ),
             SizedBox(height: 10.h),
-
-            // Profile Image Picker Section (Original UI)
             Center(
               child: InkWell(
                 onTap: () => controller.pickImage(true),

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Models/user_model.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
 import 'package:house_rental_app/core/controllers/booking_controller.dart';
+import 'package:house_rental_app/core/controllers/home_controller.dart';
 
 class NavigationController extends GetxController {
   // Reactive index for the bottom bar
@@ -21,7 +22,14 @@ class NavigationController extends GetxController {
 
   void changeIndex(int index) {
     selectedIndex.value = index;
-
+    if (index == 0) {
+      if (Get.isRegistered<HomeController>()) {
+        Get.find<HomeController>().loadApartments();
+      } else {
+        // Instantiate and fetch
+        Get.find<HomeController>().loadApartments();
+      }
+    }
     // If tenant navigated to the Bookings tab (index 1), refresh bookings list
     if (isTenant && index == 1) {
       try {

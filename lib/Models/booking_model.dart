@@ -9,7 +9,6 @@ class BookingModel {
   final DateTime endDate;
   final int nightsCount;
   final double totalPrice;
-  final double apartmentPricePerNight;
   final String totalPriceFormatted;
   final String status;
   final String createdAtHuman;
@@ -24,7 +23,6 @@ class BookingModel {
     required this.endDate,
     required this.nightsCount,
     required this.totalPrice,
-    required this.apartmentPricePerNight,
     required this.totalPriceFormatted,
     required this.status,
     required this.createdAtHuman,
@@ -33,7 +31,6 @@ class BookingModel {
   });
 
   factory BookingModel.fromApiJson(Map<String, dynamic> json) {
-    // json is expected to be the full booking resource object as in the API
     final id = json['id']?.toString() ?? '';
     final attributes = json['attributes'] ?? {};
     final relationships = json['relationships'] ?? {};
@@ -63,6 +60,7 @@ class BookingModel {
       final aptAttr = apartmentRel['attributes'] ?? {};
       apartmentTitle = aptAttr['title'] ?? '';
 
+      // Ensure gallery is handled
       final galleryList = aptAttr['gallery'] as List<dynamic>?;
       if (galleryList != null) {
         gallery = galleryList
@@ -96,16 +94,7 @@ class BookingModel {
           ? (attributes['total_price'] ?? 0) as double
           : double.tryParse((attributes['total_price'] ?? '0').toString()) ??
                 0.0,
-      apartmentPricePerNight:
-          (apartmentRel != null &&
-              (apartmentRel['attributes'] ?? {})['price'] != null)
-          ? ((apartmentRel['attributes']['price'] is double)
-                ? apartmentRel['attributes']['price'] as double
-                : double.tryParse(
-                        apartmentRel['attributes']['price'].toString(),
-                      ) ??
-                      0.0)
-          : 0.0,
+
       totalPriceFormatted:
           attributes['total_price_formatted']?.toString() ?? '',
       status: attributes['status']?.toString() ?? '',
