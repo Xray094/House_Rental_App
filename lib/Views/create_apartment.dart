@@ -137,7 +137,6 @@ class CreateApartment extends StatelessWidget {
                           }).toList(),
                         ),
                       ),
-
                       const SizedBox(height: 16),
                       _buildSectionTitle("Gallery"),
                       _buildImagePicker(controller),

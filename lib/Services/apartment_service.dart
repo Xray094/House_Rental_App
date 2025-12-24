@@ -11,6 +11,7 @@ class ApartmentService {
   Future<List<ApartmentModel>> getApartments() async {
     try {
       final response = await _dio.get('/apartments');
+      response.data['data'];
       final List<dynamic> data = response.data['data'];
       return data.map((json) => ApartmentModel.fromJson(json)).toList();
     } catch (e) {

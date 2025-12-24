@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:house_rental_app/Models/user_model.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
-import 'package:house_rental_app/Services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
