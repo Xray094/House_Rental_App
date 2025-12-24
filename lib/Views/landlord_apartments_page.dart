@@ -147,9 +147,10 @@ class LandlordApartmentsPage extends StatelessWidget {
                                       Icons.edit,
                                       color: Colors.blueGrey,
                                     ),
-                                    onPressed: () {
-                                      //not now
-                                    },
+                                    onPressed: () => Get.toNamed(
+                                      Routes.editApartment,
+                                      arguments: apartment,
+                                    ),
                                   ),
                                   IconButton(
                                     icon: const Icon(

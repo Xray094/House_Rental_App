@@ -8,4 +8,5 @@ class Routes {
   static const String firstRegister = '/register-step-1';
   static const String secondRegister = '/register-step-2';
   static const String createApartment = '/create-apartment';
+  static const String editApartment = '/edit-apartment';
 }

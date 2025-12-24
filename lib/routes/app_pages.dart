@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:house_rental_app/Views/Login&Register/second_register_page.dart';
 import 'package:house_rental_app/Views/create_apartment.dart';
+import 'package:house_rental_app/Views/edit_apartment.dart';
 import 'package:house_rental_app/Views/splash_page.dart';
 import 'package:house_rental_app/Views/Login&Register/login_page.dart';
 import 'package:house_rental_app/Views/Login&Register/first_register_page.dart';
@@ -8,6 +9,7 @@ import 'package:house_rental_app/Views/main_navigation_page.dart';
 import 'package:house_rental_app/Views/profile_page.dart';
 import 'package:house_rental_app/Views/apartment_detail_page.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
+import 'package:house_rental_app/core/controllers/edit_apartment_controller.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'app_routes.dart';
 
@@ -20,6 +22,13 @@ class AppPages {
     GetPage(name: Routes.profile, page: () => const ProfilePage()),
     GetPage(name: Routes.firstRegister, page: () => const FirstRegisterPage()),
     GetPage(name: Routes.createApartment, page: () => const CreateApartment()),
+    GetPage(
+      name: Routes.editApartment,
+      page: () => EditApartment(apartment: Get.arguments as ApartmentModel),
+      binding: BindingsBuilder(() {
+        Get.put(EditApartmentController());
+      }),
+    ),
     GetPage(
       name: Routes.apartmentDetails,
       page: () => ApartmentDetailsPage(),

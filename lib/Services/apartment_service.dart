@@ -99,6 +99,65 @@ class ApartmentService {
     }
   }
 
+  Future<Map<String, dynamic>> updateApartment({
+    required String id,
+    required String title,
+    required String description,
+    required String price,
+    required String governorate,
+    required String city,
+    required String address,
+    required String area,
+    required String roomsCount,
+    required String floor,
+    required bool hasBalcony,
+    required List<String> features,
+    required List<String> existingImageUrls,
+    required List<File> newImages,
+  }) async {
+    try {
+      List<MultipartFile> imageFiles = [];
+      for (File file in newImages) {
+        imageFiles.add(
+          await MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        );
+      }
+
+      FormData formData = FormData.fromMap({
+        'title': title,
+        'description': description,
+        'price': price,
+        'governorate': governorate,
+        'city': city,
+        'address': address,
+        'area_in_square_meters': area,
+        'rooms_count': roomsCount,
+        'floor': floor,
+        'has_balcony': hasBalcony ? 1 : 0,
+        'features[]': features,
+        'existing_images[]': existingImageUrls,
+        'new_images[]': imageFiles,
+      });
+
+      final response = await _dio.patch('/apartments/$id', data: formData);
+
+      return {
+        'success': true,
+        'message': 'Apartment updated successfully',
+        'data': response.data,
+      };
+    } on DioException catch (e) {
+      String errorMessage =
+          e.response?.data['message'] ?? "Failed to update apartment";
+      return {'success': false, 'message': errorMessage};
+    } catch (e) {
+      return {'success': false, 'message': 'An unexpected error occurred: $e'};
+    }
+  }
+
   Future<Map<String, dynamic>> deleteApartment(String id) async {
     try {
       final response = await _dio.delete('/apartments/$id');
