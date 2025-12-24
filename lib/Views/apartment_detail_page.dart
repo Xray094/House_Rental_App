@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
-  const ApartmentDetailsPage({Key? key}) : super(key: key);
+  const ApartmentDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

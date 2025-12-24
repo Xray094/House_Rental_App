@@ -5,6 +5,7 @@ import 'package:house_rental_app/Views/apartment_booking_page.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/landlord_aparments_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:house_rental_app/routes/app_routes.dart';
 
 class LandlordApartmentsPage extends StatelessWidget {
   const LandlordApartmentsPage({super.key});
@@ -188,6 +189,15 @@ class LandlordApartmentsPage extends StatelessWidget {
           ),
         );
       }),
+      floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadiusGeometry.circular(16.r),
+        ),
+        backgroundColor: primaryBlue,
+        elevation: 5,
+        onPressed: () => Get.toNamed(Routes.createApartment),
+        child: Icon(Icons.add_home_outlined, size: 30.sp, color: Colors.white),
+      ),
     );
   }
 }

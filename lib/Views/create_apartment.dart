@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/core/controllers/create_apartment_controller.dart';
@@ -202,6 +203,9 @@ class CreateApartment extends StatelessWidget {
         controller: ctrl,
         maxLines: maxLines,
         keyboardType: isNum ? TextInputType.number : TextInputType.text,
+        inputFormatters: isNum
+            ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+            : null,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,

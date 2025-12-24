@@ -9,6 +9,8 @@ import 'package:house_rental_app/routes/app_routes.dart';
 import 'package:intl/intl.dart';
 
 class BookingPage extends StatelessWidget {
+  const BookingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final ctrl = Get.put(BookingController());

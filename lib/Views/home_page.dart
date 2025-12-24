@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
@@ -6,18 +7,217 @@ import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final Color primaryBlue = const Color(0xFF1E88E5);
   final HomeController ctrl = Get.find<HomeController>();
+
+  // TextEditingControllers for form fields
+  final TextEditingController minPriceController = TextEditingController();
+  final TextEditingController maxPriceController = TextEditingController();
+  final TextEditingController minRoomsController = TextEditingController();
+  final TextEditingController minAreaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Obx(
+          () => AnimatedContainer(
+            duration: const Duration(milliseconds: 2000),
+            height: ctrl.isFiltersVisible.value ? null : 0,
+            child: Container(
+              padding: EdgeInsets.all(10.w),
+              color: Colors.grey.shade100,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Obx(
+                          () => DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              labelText: 'Governorate',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                              ),
+                            ),
+                            value: ctrl.selectedGovernorate.value,
+                            items: _getGovernorates().map((gov) {
+                              return DropdownMenuItem(
+                                value: gov,
+                                child: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  gov,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: ctrl.setGovernorate,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: Obx(
+                          () => DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                              labelText: 'City',
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12.w,
+                              ),
+                            ),
+                            value: ctrl.selectedCity.value,
+                            items: _getCities().map((city) {
+                              return DropdownMenuItem(
+                                value: city,
+                                child: Text(
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  city,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: ctrl.setCity,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: minPriceController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: const TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: 'Min Price',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMinPrice(double.tryParse(value));
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: TextFormField(
+                          controller: maxPriceController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: const TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: 'Max Price',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMaxPrice(double.tryParse(value));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: minRoomsController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: const TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: 'Min Rooms',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMinRooms(int.tryParse(value));
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: TextFormField(
+                          controller: minAreaController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: const TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            labelText: 'Min Area (m²)',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMinArea(int.tryParse(value));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Visual separator
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    child: Divider(color: Colors.grey.shade400, thickness: 1),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      ctrl.clearFilters();
+                      minPriceController.clear();
+                      maxPriceController.clear();
+                      minRoomsController.clear();
+                      minAreaController.clear();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryBlue,
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text('Clear Filters'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         Expanded(
           child: Obx(() {
+            final filteredList = ctrl.filteredApartments;
             if (ctrl.isLoading.value) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -26,16 +226,21 @@ class HomePage extends StatelessWidget {
                 child: Text('Error loading apartments: ${ctrl.error.value}'),
               );
             }
-            if (ctrl.apartments.isEmpty) {
-              return const Center(child: Text('No apartments found.'));
+            if (filteredList.isEmpty) {
+              return const Center(
+                child: Text(
+                  'No apartments found matching filters.',
+                  style: TextStyle(color: Colors.black),
+                ),
+              );
             }
             return RefreshIndicator(
               onRefresh: () => ctrl.loadApartments(),
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                itemCount: ctrl.apartments.length,
+                itemCount: filteredList.length,
                 itemBuilder: (context, index) {
-                  final ApartmentModel apartment = ctrl.apartments[index];
+                  final ApartmentModel apartment = filteredList[index];
                   final attr = apartment.attributes;
                   return InkWell(
                     onTap: () {
@@ -187,5 +392,25 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  List<String> _getGovernorates() {
+    // Extract unique governorates from apartments
+    return ctrl.apartments
+        .map((a) => a.attributes.location.governorate)
+        .where((g) => g.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
+  }
+
+  List<String> _getCities() {
+    // Extract unique cities from apartments
+    return ctrl.apartments
+        .map((a) => a.attributes.location.city)
+        .where((c) => c.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
   }
 }

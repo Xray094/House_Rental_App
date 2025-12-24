@@ -6,6 +6,7 @@ import 'package:house_rental_app/Views/landlord_apartments_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
 import 'package:house_rental_app/Views/booking_page.dart';
 import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/core/controllers/navigation_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
@@ -59,7 +60,6 @@ class MainNavigationPage extends StatelessWidget {
             ? tenantPages[controller.selectedIndex.value]
             : landlordPages[controller.selectedIndex.value];
       }),
-
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
           onTap: controller.changeIndex,
@@ -95,24 +95,47 @@ class HomeAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+    const Color primaryBlue = Color(0xFF1E88E5);
+
     return AppBar(
       backgroundColor: Colors.white,
       automaticallyImplyLeading: false,
       centerTitle: true,
       elevation: 0,
       leading: SizedBox(
-        height: 40.h,
-        width: 40.w,
+        height: 30.h,
+        width: 30.w,
         child: Image.asset('assets/images/appLogo.png'),
       ),
       title: Text(
-        'Welcome',
+        'Home',
         style: TextStyle(
           color: Color(0xFF1E88E5),
           fontSize: 30.sp,
           fontWeight: FontWeight.bold,
         ),
       ),
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: 12.w),
+          child: Obx(
+            () => IconButton(
+              onPressed: controller.toggleFilters,
+              icon: Icon(
+                controller.isFiltersVisible.value
+                    ? Icons.keyboard_arrow_up
+                    : Icons.filter_list,
+                color: primaryBlue,
+                size: 28.sp,
+              ),
+              tooltip: controller.isFiltersVisible.value
+                  ? 'Hide Filters'
+                  : 'Show Filters',
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -172,27 +195,27 @@ class LandlordApartmentAppBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      actions: [
-        Padding(
-          padding: EdgeInsets.only(right: 12.w),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: primaryBlue,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(13.r),
-              ),
-            ),
-            onPressed: () {
-              Get.toNamed(Routes.createApartment);
-            },
-            child: Text(
-              "Create",
-              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-      ],
+      // actions: [
+      //   Padding(
+      //     padding: EdgeInsets.only(right: 12.w),
+      //     child: FilledButton(
+      //       style: FilledButton.styleFrom(
+      //         backgroundColor: primaryBlue,
+      //         foregroundColor: Colors.white,
+      //         shape: RoundedRectangleBorder(
+      //           borderRadius: BorderRadius.circular(13.r),
+      //         ),
+      //       ),
+      //       onPressed: () {
+      //         Get.toNamed(Routes.createApartment);
+      //       },
+      //       child: Text(
+      //         "Create",
+      //         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
+      //       ),
+      //     ),
+      //   ),
+      // ],
     );
   }
 }
