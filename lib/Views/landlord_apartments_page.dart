@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Views/apartment_booking_page.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/landlord_aparments_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class LandlordApartmentsPage extends StatelessWidget {
   const LandlordApartmentsPage({super.key});
@@ -55,13 +56,47 @@ class LandlordApartmentsPage extends StatelessWidget {
                   children: [
                     Stack(
                       children: [
-                        Image.network(
-                          attr.galleryUrls.isNotEmpty
+                        CachedNetworkImage(
+                          imageUrl: attr.galleryUrls.isNotEmpty
                               ? attr.galleryUrls.first
-                              : 'https://via.placeholder.com/160',
+                              : "https://via.placeholder.com/160",
                           height: 180.h,
                           width: double.infinity,
                           fit: BoxFit.cover,
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Container(
+                                height: 180.h,
+                                width: double.infinity,
+                                color: Colors.grey.shade100,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: downloadProgress.progress,
+                                    color: primaryBlue,
+                                  ),
+                                ),
+                              ),
+                          memCacheHeight: 360,
+                          maxWidthDiskCache: 800,
+                          errorWidget: (context, url, error) => Container(
+                            color: Colors.grey.shade200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  "No Image",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         if (bookingCount > 0)
                           Positioned(

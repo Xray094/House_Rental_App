@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,11 +34,45 @@ class ProfilePage extends StatelessWidget {
                   height: 150.r,
                   width: 150.r,
                   child: ClipOval(
-                    child: Image.network(
-                      attr.avatarUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: attr.avatarUrl,
+                      height: 160.h,
+                      width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Center(child: Icon(Icons.person, size: 50)),
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) => Container(
+                            height: 160.h,
+                            width: double.infinity,
+                            color: Colors.grey.shade100,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: downloadProgress.progress,
+                                color: primaryBlue,
+                              ),
+                            ),
+                          ),
+                      memCacheHeight: 400,
+                      maxWidthDiskCache: 800,
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              "No Image",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

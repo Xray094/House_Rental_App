@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/core/config/di.dart';
 
@@ -38,5 +38,34 @@ class ApiService extends GetxService {
         },
       ),
     );
+    dio.interceptors.add(LoggingInterceptor());
+  }
+}
+
+class LoggingInterceptor extends Interceptor {
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    print("🚀 REQUEST: ${options.method} ${options.uri}");
+    if (options.data != null) print("📄 Data: ${options.data}");
+    return handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print("✅ RESPONSE: ${response.statusCode} ${response.requestOptions.uri}");
+    String dataStr = response.data.toString();
+    print(
+      "📊 Data: ${dataStr.length > 2000 ? '${dataStr.substring(0, 2000)}...' : dataStr}",
+    );
+    return handler.next(response);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    print(
+      "❌ ERROR: ${err.type} ${err.response?.statusCode} ${err.requestOptions.uri}",
+    );
+    print("🚫 Message: ${err.message}");
+    return handler.next(err);
   }
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -49,22 +50,47 @@ class HomePage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.network(
-                            attr.galleryUrls.isNotEmpty
+                          CachedNetworkImage(
+                            imageUrl: attr.galleryUrls.isNotEmpty
                                 ? attr.galleryUrls.first
-                                : 'https://via.placeholder.com/160',
+                                : "",
                             height: 160.h,
                             width: double.infinity,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) => Container(
                                   height: 160.h,
-                                  color: Colors.grey.shade200,
-                                  child: const Icon(
-                                    Icons.broken_image,
-                                    color: Colors.grey,
+                                  width: double.infinity,
+                                  color: Colors.grey.shade100,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value: downloadProgress.progress,
+                                      color: primaryBlue,
+                                    ),
                                   ),
                                 ),
+                            memCacheHeight: 400,
+                            maxWidthDiskCache: 800,
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey.shade200,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    "No Image",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(12.w),

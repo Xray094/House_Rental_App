@@ -7,6 +7,7 @@ import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
 import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
   const ApartmentDetailsPage({Key? key}) : super(key: key);
@@ -414,11 +415,39 @@ class ApartmentDetailsPage extends StatelessWidget {
       child: PageView.builder(
         itemCount: galleryUrls.length,
         itemBuilder: (context, index) {
-          return Image.network(
-            galleryUrls[index],
+          return CachedNetworkImage(
+            imageUrl: galleryUrls[index],
+            height: 250.h,
+            width: double.infinity,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                const Center(child: Icon(Icons.image_not_supported)),
+            progressIndicatorBuilder: (context, url, downloadProgress) =>
+                Container(
+                  height: 250.h,
+                  width: double.infinity,
+                  color: Colors.grey.shade100,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      value: downloadProgress.progress,
+                      color: primaryBlue,
+                    ),
+                  ),
+                ),
+            memCacheHeight: 500,
+            maxWidthDiskCache: 800,
+            errorWidget: (context, url, error) => Container(
+              color: Colors.grey.shade200,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.image_not_supported, color: Colors.grey),
+                  SizedBox(height: 4.h),
+                  Text(
+                    "No Image",
+                    style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       ),
