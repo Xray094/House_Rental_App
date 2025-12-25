@@ -101,6 +101,58 @@ class BookingService {
     }
   }
 
+  Future<Map<String, dynamic>> approveBooking(String bookingId) async {
+    try {
+      final response = await _dio.post('/bookings/$bookingId/approve');
+      final data = response.data;
+      final msg = (data is Map && data['message'] != null)
+          ? data['message']
+          : 'Booking approved';
+      return {
+        'success':
+            response.statusCode == 200 ||
+            response.statusCode == 201 ||
+            response.statusCode == 204,
+        'message': msg,
+      };
+    } on DioException catch (e) {
+      final data = e.response?.data;
+      final msg = (data is Map && data['message'] != null)
+          ? data['message']
+          : (e.message ?? 'Approve failed');
+      return {'success': false, 'message': msg};
+    } catch (e) {
+      print("Approve Booking Error: $e");
+      return {'success': false, 'message': 'Approve failed'};
+    }
+  }
+
+  // Future<Map<String, dynamic>> rejectBooking(String bookingId) async {
+  //   try {
+  //     final response = await _dio.post('/bookings/$bookingId/cancel');
+  //     final data = response.data;
+  //     final msg = (data is Map && data['message'] != null)
+  //         ? data['message']
+  //         : 'Booking rejected';
+  //     return {
+  //       'success':
+  //           response.statusCode == 200 ||
+  //           response.statusCode == 201 ||
+  //           response.statusCode == 204,
+  //       'message': msg,
+  //     };
+  //   } on DioException catch (e) {
+  //     final data = e.response?.data;
+  //     final msg = (data is Map && data['message'] != null)
+  //         ? data['message']
+  //         : (e.message ?? 'Reject failed');
+  //     return {'success': false, 'message': msg};
+  //   } catch (e) {
+  //     print("Reject Booking Error: $e");
+  //     return {'success': false, 'message': 'Reject failed'};
+  //   }
+  // }
+
   Future<Map<String, dynamic>> submitReview({
     required String apartmentId,
     required String bookingId,
