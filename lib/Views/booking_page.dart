@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/booking_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
 import 'package:intl/intl.dart';
@@ -20,7 +21,7 @@ class BookingPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (ctrl.myBookings.isEmpty) {
-          return _buildEmptyState();
+          return _buildEmptyState(context);
         }
 
         return ListView.builder(
@@ -33,17 +34,17 @@ class BookingPage extends StatelessWidget {
             switch (booking.status.toLowerCase()) {
               case 'approved':
               case 'completed':
-                statusColor = Colors.green;
+                statusColor = LightThemeColors.success;
                 break;
               case 'pending':
-                statusColor = Colors.orange;
+                statusColor = LightThemeColors.warning;
                 break;
               case 'cancelled':
               case 'canceled':
-                statusColor = Colors.red;
+                statusColor = LightThemeColors.error;
                 break;
               default:
-                statusColor = Colors.grey;
+                statusColor = context.currentTextSecondary;
             }
 
             return Card(
@@ -105,7 +106,8 @@ class BookingPage extends StatelessWidget {
                     if (booking.status.toLowerCase() == 'completed')
                       Expanded(
                         child: TextButton.icon(
-                          onPressed: () => _showReviewDialog(booking.id),
+                          onPressed: () =>
+                              _showReviewDialog(context, booking.id),
                           icon: Icon(
                             Icons.star_rate,
                             size: 16.sp,
@@ -123,18 +125,18 @@ class BookingPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.edit,
-                                color: Colors.orange,
+                                color: LightThemeColors.warning,
                                 size: 20,
                               ),
                               onPressed: () =>
                                   ctrl.editBookingDates(context, booking),
                             ),
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.cancel,
-                                color: Colors.red,
+                                color: LightThemeColors.error,
                                 size: 20,
                               ),
                               onPressed: () => ctrl.cancelBooking(booking.id),
@@ -152,28 +154,35 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.calendar_month, size: 80.sp, color: Colors.grey),
+            Icon(
+              Icons.calendar_month,
+              size: 80.sp,
+              color: context.currentTextSecondary,
+            ),
             SizedBox(height: 24.h),
             Text(
               'No Bookings Yet',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: context.currentTextPrimary,
               ),
             ),
             SizedBox(height: 12.h),
             Text(
               'Browse apartments and book your first stay!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: context.currentTextSecondary,
+              ),
             ),
           ],
         ),
@@ -182,14 +191,14 @@ class BookingPage extends StatelessWidget {
   }
 }
 
-void _showReviewDialog(String bookingId) {
+void _showReviewDialog(BuildContext context, String bookingId) {
   final TextEditingController reviewController = TextEditingController();
   final RxDouble selectedRating = 5.0.obs;
 
   Get.dialog(
     AlertDialog(
-      backgroundColor: Colors.black,
-      title: Text("Rate your stay", style: TextStyle(color: primaryBlue)),
+      backgroundColor: context.currentSurfaceColor,
+      title: Text("Rate your stay", style: TextStyle(color: context.primary)),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -223,7 +232,9 @@ void _showReviewDialog(String bookingId) {
       actions: [
         TextButton(onPressed: () => Get.back(), child: const Text("Cancel")),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: primaryBlue),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: context.currentButtonPrimary,
+          ),
           onPressed: () {
             if (reviewController.text.trim().isEmpty) {
               Get.snackbar("Required", "Please write a comment.");
@@ -244,7 +255,10 @@ void _showReviewDialog(String bookingId) {
 
             Get.back();
           },
-          child: const Text("Submit", style: TextStyle(color: Colors.white)),
+          child: Text(
+            "Submit",
+            style: TextStyle(color: context.currentButtonPrimaryText),
+          ),
         ),
       ],
     ),

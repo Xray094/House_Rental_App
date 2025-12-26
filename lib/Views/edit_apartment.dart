@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/core/controllers/edit_apartment_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class EditApartment extends StatelessWidget {
   final ApartmentModel apartment;
@@ -19,12 +20,14 @@ class EditApartment extends StatelessWidget {
     controller.loadApartmentData(apartment);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.currentBackgroundColor,
       appBar: AppBar(
-        title: const Text("Edit Apartment"),
+        title: Text(
+          "Edit Apartment",
+          style: TextStyle(color: context.currentAppBarTitleColor),
+        ),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E88E5),
+        backgroundColor: context.currentAppBarBackground,
         elevation: 0,
       ),
       body: Obx(
@@ -37,37 +40,51 @@ class EditApartment extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSectionTitle("Basic Details"),
-                      _buildField(controller.titleCtrl, "Title", Icons.title),
+                      _buildSectionTitle("Basic Details", context),
+                      _buildField(
+                        controller.titleCtrl,
+                        "Title",
+                        Icons.title,
+                        context,
+                      ),
                       _buildField(
                         controller.descCtrl,
                         "Description",
                         Icons.description,
+                        context,
                         maxLines: 3,
                       ),
                       _buildField(
                         controller.priceCtrl,
                         "Price per Night",
                         Icons.attach_money,
+                        context,
                         isNum: true,
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Location"),
-                      _buildField(controller.govCtrl, "Governorate", Icons.map),
+                      _buildSectionTitle("Location", context),
+                      _buildField(
+                        controller.govCtrl,
+                        "Governorate",
+                        Icons.map,
+                        context,
+                      ),
                       _buildField(
                         controller.cityCtrl,
                         "City",
                         Icons.location_city,
+                        context,
                       ),
                       _buildField(
                         controller.addressCtrl,
                         "Exact Address",
                         Icons.home,
+                        context,
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Specifications"),
+                      _buildSectionTitle("Specifications", context),
                       Row(
                         children: [
                           Expanded(
@@ -75,6 +92,7 @@ class EditApartment extends StatelessWidget {
                               controller.areaCtrl,
                               "Area (m²)",
                               Icons.square_foot,
+                              context,
                               isNum: true,
                             ),
                           ),
@@ -84,6 +102,7 @@ class EditApartment extends StatelessWidget {
                               controller.roomsCtrl,
                               "Rooms",
                               Icons.bed,
+                              context,
                               isNum: true,
                             ),
                           ),
@@ -93,20 +112,21 @@ class EditApartment extends StatelessWidget {
                         controller.floorCtrl,
                         "Floor",
                         Icons.layers,
+                        context,
                         isNum: true,
                       ),
                       Obx(
                         () => CheckboxListTile(
                           title: const Text("Has Balcony"),
                           value: controller.hasBalcony.value,
-                          activeColor: const Color(0xFF1E88E5),
+                          activeColor: context.primary,
                           onChanged: controller.toggleBalcony,
                           contentPadding: EdgeInsets.zero,
                         ),
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Features"),
+                      _buildSectionTitle("Features", context),
                       Obx(
                         () => Wrap(
                           spacing: 8.w,
@@ -117,26 +137,24 @@ class EditApartment extends StatelessWidget {
                             return FilterChip(
                               label: Text(feature),
                               selected: isSelected,
-                              selectedColor: const Color(
-                                0xFF1E88E5,
-                              ).withOpacity(0.2),
-                              checkmarkColor: const Color(0xFF1E88E5),
+                              selectedColor: context.primary.withOpacity(0.2),
+                              checkmarkColor: context.primary,
                               labelStyle: TextStyle(
                                 color: isSelected
-                                    ? const Color(0xFF1E88E5)
-                                    : Colors.black54,
+                                    ? context.primary
+                                    : context.currentTextSecondary,
                                 fontWeight: isSelected
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                               ),
                               onSelected: (bool value) =>
                                   controller.toggleFeature(feature),
-                              backgroundColor: Colors.grey[100],
+                              backgroundColor: context.currentInputFillColor,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.r),
                                 side: BorderSide(
                                   color: isSelected
-                                      ? const Color(0xFF1E88E5)
+                                      ? context.primary
                                       : Colors.transparent,
                                 ),
                               ),
@@ -145,15 +163,15 @@ class EditApartment extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Gallery"),
-                      _buildImagePicker(controller),
+                      _buildSectionTitle("Gallery", context),
+                      _buildImagePicker(controller, context),
                       const SizedBox(height: 32),
                       SizedBox(
                         width: double.infinity,
                         height: 50.h,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1E88E5),
+                            backgroundColor: context.currentButtonPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.r),
                             ),
@@ -166,13 +184,13 @@ class EditApartment extends StatelessWidget {
                                   }
                                 },
                           child: controller.isUpdating.value
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
+                              ? CircularProgressIndicator(
+                                  color: context.currentButtonPrimaryText,
                                 )
                               : Text(
                                   "Update Apartment",
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: context.currentButtonPrimaryText,
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -188,7 +206,7 @@ class EditApartment extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(
@@ -196,7 +214,7 @@ class EditApartment extends StatelessWidget {
         style: TextStyle(
           fontSize: 18.sp,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF1E88E5),
+          color: context.primary,
         ),
       ),
     );
@@ -205,7 +223,8 @@ class EditApartment extends StatelessWidget {
   Widget _buildField(
     TextEditingController ctrl,
     String label,
-    IconData icon, {
+    IconData icon,
+    BuildContext context, {
     bool isNum = false,
     int maxLines = 1,
   }) {
@@ -218,18 +237,18 @@ class EditApartment extends StatelessWidget {
         inputFormatters: isNum
             ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
             : null,
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(color: context.currentTextPrimary),
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: const Color(0xFF1E88E5)),
+          prefixIcon: Icon(icon, color: context.primary),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide(color: Colors.grey.shade300),
+            borderSide: BorderSide(color: context.currentDividerColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.r),
-            borderSide: const BorderSide(color: Color(0xFF1E88E5)),
+            borderSide: BorderSide(color: context.primary),
           ),
         ),
         validator: (v) => (v == null || v.isEmpty) ? "Required" : null,
@@ -237,7 +256,10 @@ class EditApartment extends StatelessWidget {
     );
   }
 
-  Widget _buildImagePicker(EditApartmentController controller) {
+  Widget _buildImagePicker(
+    EditApartmentController controller,
+    BuildContext context,
+  ) {
     return Column(
       children: [
         // Existing Images
@@ -252,10 +274,10 @@ class EditApartment extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[700],
+                        color: context.currentTextSecondary,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8.h),
                     SizedBox(
                       height: 100.h,
                       child: ListView.builder(
@@ -283,13 +305,13 @@ class EditApartment extends StatelessWidget {
                                 child: GestureDetector(
                                   onTap: () =>
                                       controller.removeExistingImage(index),
-                                  child: const CircleAvatar(
+                                  child: CircleAvatar(
                                     radius: 12,
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: context.error,
                                     child: Icon(
                                       Icons.close,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: context.currentButtonPrimaryText,
                                     ),
                                   ),
                                 ),
@@ -299,7 +321,7 @@ class EditApartment extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 8.h),
                   ],
                 ),
         ),
@@ -310,14 +332,18 @@ class EditApartment extends StatelessWidget {
             width: double.infinity,
             height: 100.h,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: context.currentDividerColor),
               borderRadius: BorderRadius.circular(10.r),
-              color: Colors.grey.shade50,
+              color: context.currentSurfaceColor,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.add_a_photo, color: Colors.grey, size: 40),
+                Icon(
+                  Icons.add_a_photo,
+                  color: context.currentTextSecondary,
+                  size: 40,
+                ),
                 Text(
                   "Click to add new photos",
                   style: TextStyle(color: Colors.grey, fontSize: 12.sp),
@@ -367,13 +393,13 @@ class EditApartment extends StatelessWidget {
                                 right: 15,
                                 child: GestureDetector(
                                   onTap: () => controller.removeNewImage(index),
-                                  child: const CircleAvatar(
+                                  child: CircleAvatar(
                                     radius: 12,
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: context.error,
                                     child: Icon(
                                       Icons.close,
                                       size: 16,
-                                      color: Colors.white,
+                                      color: context.currentButtonPrimaryText,
                                     ),
                                   ),
                                 ),

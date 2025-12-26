@@ -8,6 +8,7 @@ import 'package:house_rental_app/Views/booking_page.dart';
 import 'package:house_rental_app/Views/favorites_page.dart';
 import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/core/controllers/navigation_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class MainNavigationPage extends StatelessWidget {
   MainNavigationPage({super.key});
@@ -40,10 +41,9 @@ class MainNavigationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(NavigationController());
-    const Color primaryBlue = Color(0xFF1E88E5);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: context.currentBackgroundColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(56.h),
         child: Obx(
@@ -64,8 +64,8 @@ class MainNavigationPage extends StatelessWidget {
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
           onTap: controller.changeIndex,
-          selectedItemColor: primaryBlue,
-          unselectedItemColor: Colors.grey,
+          selectedItemColor: context.currentBottomNavigationBarSelected,
+          unselectedItemColor: context.currentBottomNavigationBarUnselected,
           currentIndex: controller.selectedIndex.value,
           type: BottomNavigationBarType.fixed,
           items: [
@@ -105,22 +105,24 @@ class HomeAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
-    const Color primaryBlue = Color(0xFF1E88E5);
 
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: context.currentAppBarBackground,
       automaticallyImplyLeading: false,
       centerTitle: true,
       elevation: 0,
-      leading: SizedBox(
-        height: 30.h,
-        width: 30.w,
-        child: Image.asset('assets/images/appLogo.png'),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 3),
+        child: SizedBox(
+          height: 30.h,
+          width: 30.w,
+          child: Image.asset('assets/images/appLogo.png'),
+        ),
       ),
       title: Text(
         'Home',
         style: TextStyle(
-          color: Color(0xFF1E88E5),
+          color: context.currentAppBarTitleColor,
           fontSize: 30.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -135,7 +137,7 @@ class HomeAppBar extends StatelessWidget {
                 controller.isFiltersVisible.value
                     ? Icons.keyboard_arrow_up
                     : Icons.filter_list,
-                color: primaryBlue,
+                color: context.currentAppBarTitleColor,
                 size: 28.sp,
               ),
               tooltip: controller.isFiltersVisible.value
@@ -159,7 +161,7 @@ class SettingsAppBar extends StatelessWidget {
       title: Text(
         'Settings',
         style: TextStyle(
-          color: Color(0xFF1E88E5),
+          color: context.currentAppBarTitleColor,
           fontSize: 30.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -178,7 +180,7 @@ class BookingAppBar extends StatelessWidget {
       title: Text(
         'Booking',
         style: TextStyle(
-          color: Color(0xFF1E88E5),
+          color: context.currentAppBarTitleColor,
           fontSize: 30.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -193,13 +195,13 @@ class LandlordApartmentAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: context.currentAppBarBackground,
       centerTitle: true,
       elevation: 0,
       title: Text(
         'My Apartments',
         style: TextStyle(
-          color: const Color(0xFF1E88E5),
+          color: context.currentAppBarTitleColor,
           fontSize: 24.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -218,7 +220,7 @@ class FavoritesAppBar extends StatelessWidget {
       title: Text(
         'Favorites',
         style: TextStyle(
-          color: Color(0xFF1E88E5),
+          color: context.currentAppBarTitleColor,
           fontSize: 30.sp,
           fontWeight: FontWeight.bold,
         ),

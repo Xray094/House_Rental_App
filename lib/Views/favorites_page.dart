@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Views/apartment_detail_page.dart';
 import 'package:house_rental_app/core/controllers/favorites_controller.dart';
-import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class FavoritesPage extends StatelessWidget {
@@ -15,17 +15,22 @@ class FavoritesPage extends StatelessWidget {
     final FavoritesController controller = Get.put(FavoritesController());
 
     return Scaffold(
+      backgroundColor: context.currentBackgroundColor,
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator(color: primaryBlue));
+          return Center(
+            child: CircularProgressIndicator(
+              color: context.currentButtonPrimary,
+            ),
+          );
         }
 
         if (controller.favoriteApartments.isEmpty) {
-          return _buildEmptyState();
+          return _buildEmptyState(context);
         }
 
         return RefreshIndicator(
-          color: primaryBlue,
+          color: context.currentButtonPrimary,
           onRefresh: controller.loadFavorites,
           child: ListView.separated(
             padding: EdgeInsets.all(16.w),
@@ -41,28 +46,35 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.favorite_border, size: 80.sp, color: Colors.grey),
+            Icon(
+              Icons.favorite_border,
+              size: 80.sp,
+              color: context.currentTextSecondary,
+            ),
             SizedBox(height: 24.h),
             Text(
               'No Favorite Apartments',
               style: TextStyle(
                 fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: context.currentTextPrimary,
               ),
             ),
             SizedBox(height: 12.h),
             Text(
               'Start exploring and tap the heart icon to save your favorite apartments!',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: context.currentTextSecondary,
+              ),
             ),
           ],
         ),
@@ -79,6 +91,7 @@ class FavoritesPage extends StatelessWidget {
 
     return Card(
       elevation: 2,
+      color: context.currentCardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: InkWell(
         onTap: () =>
@@ -101,28 +114,28 @@ class FavoritesPage extends StatelessWidget {
                           fit: BoxFit.cover,
                           progressIndicatorBuilder: (context, url, progress) =>
                               Container(
-                                color: Colors.grey.shade100,
+                                color: context.currentCardColor,
                                 child: Center(
                                   child: CircularProgressIndicator(
                                     value: progress.progress,
-                                    color: primaryBlue,
+                                    color: context.currentButtonPrimary,
                                   ),
                                 ),
                               ),
                           errorWidget: (context, url, error) => Container(
-                            color: Colors.grey.shade200,
+                            color: context.currentCardColor,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.image_not_supported,
-                                  color: Colors.grey,
+                                  color: context.currentTextSecondary,
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
                                   'No Image',
                                   style: TextStyle(
-                                    color: Colors.grey,
+                                    color: context.currentTextSecondary,
                                     fontSize: 12.sp,
                                   ),
                                 ),
@@ -131,21 +144,21 @@ class FavoritesPage extends StatelessWidget {
                           ),
                         )
                       : Container(
-                          color: Colors.grey.shade200,
+                          color: context.currentCardColor,
                           child: Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.apartment,
-                                  color: Colors.grey,
+                                  color: context.currentTextSecondary,
                                   size: 40,
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
                                   'No Image',
                                   style: TextStyle(
-                                    color: Colors.grey,
+                                    color: context.currentTextSecondary,
                                     fontSize: 12.sp,
                                   ),
                                 ),
@@ -169,7 +182,7 @@ class FavoritesPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black87,
+                            color: context.currentTextPrimary,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -180,7 +193,7 @@ class FavoritesPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color: primaryBlue,
+                            color: context.currentButtonPrimary,
                           ),
                         ),
                         SizedBox(height: 8.h),
@@ -189,7 +202,7 @@ class FavoritesPage extends StatelessWidget {
                             Icon(
                               Icons.location_on,
                               size: 16.sp,
-                              color: Colors.grey[600],
+                              color: context.currentTextSecondary,
                             ),
                             SizedBox(width: 4.w),
                             Expanded(
@@ -197,7 +210,7 @@ class FavoritesPage extends StatelessWidget {
                                 '${attr.location.city}, ${attr.location.governorate}',
                                 style: TextStyle(
                                   fontSize: 14.sp,
-                                  color: Colors.grey[600],
+                                  color: context.currentTextSecondary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -209,11 +222,13 @@ class FavoritesPage extends StatelessWidget {
                         Row(
                           children: [
                             _buildSpecChip(
+                              context,
                               Icons.bed,
                               '${attr.specs.rooms} rooms',
                             ),
                             SizedBox(width: 8.w),
                             _buildSpecChip(
+                              context,
                               Icons.square_foot,
                               '${attr.specs.area} m²',
                             ),
@@ -232,7 +247,7 @@ class FavoritesPage extends StatelessWidget {
                         },
                         icon: Icon(
                           Icons.favorite,
-                          color: Colors.red,
+                          color: context.error,
                           size: 28.sp,
                         ),
                         tooltip: 'Remove from favorites',
@@ -248,23 +263,23 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecChip(IconData icon, String text) {
+  Widget _buildSpecChip(BuildContext context, IconData icon, String text) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: primaryBlue.withOpacity(0.1),
+        color: context.currentButtonPrimary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14.sp, color: primaryBlue),
+          Icon(icon, size: 14.sp, color: context.currentButtonPrimary),
           SizedBox(width: 4.w),
           Text(
             text,
             style: TextStyle(
               fontSize: 12.sp,
-              color: primaryBlue,
+              color: context.currentButtonPrimary,
               fontWeight: FontWeight.w500,
             ),
           ),

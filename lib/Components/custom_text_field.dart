@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class CustomTextField extends StatelessWidget {
   final String name;
@@ -31,28 +32,39 @@ class CustomTextField extends StatelessWidget {
         obscureText: obscureText,
         keyboardType: inputType,
         textAlign: TextAlign.start,
-        style: TextStyle(color: Colors.black, fontSize: 16),
-        cursorColor: Colors.black,
+        style: TextStyle(color: context.currentTextPrimary, fontSize: 16),
+        cursorColor: context.currentTextPrimary,
 
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          prefixIcon: Icon(prefixIcon),
+          prefixIcon: Icon(prefixIcon, color: context.currentTextSecondary),
           isDense: true,
           labelText: name,
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+          hintStyle: TextStyle(color: context.currentTextHint, fontSize: 16),
           counterText: "",
-          labelStyle: const TextStyle(color: Colors.black),
+          labelStyle: TextStyle(color: context.currentTextPrimary),
+          filled: true,
+          fillColor: context.currentInputFillColor,
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2),
+            borderSide: BorderSide(
+              color: context.currentInputBorderColor,
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2),
+            borderSide: BorderSide(
+              color: context.currentInputFocusedBorderColor,
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 2),
+            borderSide: BorderSide(
+              color: context.currentInputBorderColor,
+              width: 2,
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
         ),

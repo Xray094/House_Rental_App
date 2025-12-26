@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/core/controllers/settings_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -18,33 +19,62 @@ class SettingsPage extends StatelessWidget {
             Get.toNamed(Routes.profile);
           },
         ),
+        ListTile(
+          leading: Icon(
+            ThemeControllerExtensions(context).isDarkMode
+                ? Icons.light_mode
+                : Icons.dark_mode,
+          ),
+          title: Text(
+            ThemeControllerExtensions(context).isDarkMode
+                ? 'Light Mode'
+                : 'Dark Mode',
+          ),
+          trailing: Switch(
+            value: ThemeControllerExtensions(context).isDarkMode,
+            onChanged: (value) {
+              ThemeControllerExtensions(context).toggleTheme();
+            },
+          ),
+          onTap: () {
+            ThemeControllerExtensions(context).toggleTheme();
+          },
+        ),
         const Divider(),
         ListTile(
-          leading: const Icon(Icons.logout, color: Colors.red),
-          title: const Text('Logout', style: TextStyle(color: Colors.red)),
+          leading: Icon(Icons.logout, color: context.error),
+          title: Text('Logout', style: TextStyle(color: context.error)),
           onTap: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
-                title: const Text(
+                backgroundColor: context.currentCardColor,
+                title: Text(
                   "Logout",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: context.currentTextPrimary),
                 ),
-                content: const Text(
+                content: Text(
                   "Are you sure you want to logout?",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: context.currentTextSecondary),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: context.currentTextSecondary),
+                    ),
                   ),
                   TextButton(
                     onPressed: () async {
                       final SettingsController ctrl =
                           Get.find<SettingsController>();
                       Get.dialog(
-                        const Center(child: CircularProgressIndicator()),
+                        Center(
+                          child: CircularProgressIndicator(
+                            color: context.currentButtonPrimary,
+                          ),
+                        ),
                         barrierDismissible: false,
                       );
                       final success = await ctrl.logout();
@@ -55,9 +85,9 @@ class SettingsPage extends StatelessWidget {
                         Get.snackbar('Error', 'Logout failed');
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       "Logout",
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: context.error),
                     ),
                   ),
                 ],

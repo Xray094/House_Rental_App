@@ -6,6 +6,7 @@ import 'package:house_rental_app/Models/booking_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:intl/intl.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class ApartmentBookingsPage extends StatelessWidget {
   const ApartmentBookingsPage({super.key});
@@ -19,10 +20,15 @@ class ApartmentBookingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Bookings: ${apartment.attributes.title}"),
-        backgroundColor: primaryBlue,
+        backgroundColor: context.primary,
       ),
       body: bookings.isEmpty
-          ? const Center(child: Text("No requests for this apartment"))
+          ? Center(
+              child: Text(
+                "No requests for this apartment",
+                style: TextStyle(color: context.currentTextSecondary),
+              ),
+            )
           : ListView.builder(
               itemCount: bookings.length,
               itemBuilder: (context, index) {
@@ -49,7 +55,7 @@ class ApartmentBookingsPage extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: primaryBlue,
+                                  color: context.primary,
                                 ),
                               ),
                             ),
@@ -85,7 +91,7 @@ class ApartmentBookingsPage extends StatelessWidget {
                           "Dates: ${DateFormat('MMM d, yyyy').format(booking.startDate)} to ${DateFormat('MMM d, yyyy').format(booking.endDate)}",
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: Colors.grey.shade700,
+                            color: context.currentTextSecondary,
                           ),
                         ),
                         SizedBox(height: 4.h),
@@ -93,7 +99,7 @@ class ApartmentBookingsPage extends StatelessWidget {
                           "Duration: ${booking.nightsCount} night(s)",
                           style: TextStyle(
                             fontSize: 14.sp,
-                            color: Colors.grey.shade700,
+                            color: context.currentTextSecondary,
                           ),
                         ),
                         SizedBox(height: 4.h),
@@ -102,7 +108,7 @@ class ApartmentBookingsPage extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            color: LightThemeColors.success,
                           ),
                         ),
                         if (canTakeAction)
@@ -120,17 +126,17 @@ class ApartmentBookingsPage extends StatelessWidget {
                                   icon: Icon(
                                     Icons.check_circle,
                                     size: 18.sp,
-                                    color: Colors.white,
+                                    color: context.currentButtonPrimaryText,
                                   ),
                                   label: Text(
                                     "Approve",
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: context.currentButtonPrimaryText,
                                       fontSize: 14.sp,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
+                                    backgroundColor: LightThemeColors.success,
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 16.w,
                                       vertical: 8.h,
@@ -150,17 +156,17 @@ class ApartmentBookingsPage extends StatelessWidget {
                                   icon: Icon(
                                     Icons.cancel,
                                     size: 18.sp,
-                                    color: Colors.white,
+                                    color: context.currentButtonPrimaryText,
                                   ),
                                   label: Text(
                                     "Reject",
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: context.currentButtonPrimaryText,
                                       fontSize: 14.sp,
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: LightThemeColors.error,
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 16.w,
                                       vertical: 8.h,
@@ -185,17 +191,17 @@ class ApartmentBookingsPage extends StatelessWidget {
   static Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
-        return Colors.green;
+        return LightThemeColors.success;
       case 'pending':
-        return Colors.orange;
+        return LightThemeColors.warning;
       case 'rejected':
       case 'cancelled':
       case 'canceled':
-        return Colors.red;
+        return LightThemeColors.error;
       case 'completed':
-        return Colors.blue;
+        return LightThemeColors.info;
       default:
-        return Colors.grey;
+        return LightThemeColors.textSecondary;
     }
   }
 
@@ -206,11 +212,14 @@ class ApartmentBookingsPage extends StatelessWidget {
   ) async {
     final confirmed = await Get.defaultDialog<bool>(
       title: "Approve Booking",
-      titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+        color: context.currentTextPrimary,
+        fontWeight: FontWeight.bold,
+      ),
       middleText: "Are you sure you want to approve this booking?",
-      middleTextStyle: TextStyle(color: Colors.black),
+      middleTextStyle: TextStyle(color: context.currentTextSecondary),
       textConfirm: "Yes, Approve",
-      confirmTextColor: Colors.black,
+      confirmTextColor: context.currentButtonPrimaryText,
       textCancel: "No",
       onConfirm: () => Get.back(result: true),
       onCancel: () => Get.back(result: false),
@@ -232,8 +241,8 @@ class ApartmentBookingsPage extends StatelessWidget {
         Get.snackbar(
           'Success',
           res['message'] ?? 'Booking approved',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+          backgroundColor: LightThemeColors.success,
+          colorText: context.currentButtonPrimaryText,
           snackPosition: SnackPosition.BOTTOM,
         );
         // Refresh the page by popping and navigating back
@@ -261,11 +270,14 @@ class ApartmentBookingsPage extends StatelessWidget {
   ) async {
     final confirmed = await Get.defaultDialog<bool>(
       title: "Reject Booking",
-      titleStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      titleStyle: TextStyle(
+        color: context.currentTextPrimary,
+        fontWeight: FontWeight.bold,
+      ),
       middleText: "Are you sure you want to reject this booking?",
-      middleTextStyle: TextStyle(color: Colors.black),
+      middleTextStyle: TextStyle(color: context.currentTextSecondary),
       textConfirm: "Yes, Reject",
-      confirmTextColor: Colors.black,
+      confirmTextColor: context.currentButtonPrimaryText,
       textCancel: "No",
       onConfirm: () => Get.back(result: true),
       onCancel: () => Get.back(result: false),
@@ -287,8 +299,8 @@ class ApartmentBookingsPage extends StatelessWidget {
         Get.snackbar(
           'Success',
           res['message'] ?? 'Booking rejected',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          backgroundColor: LightThemeColors.error,
+          colorText: context.currentButtonPrimaryText,
           snackPosition: SnackPosition.BOTTOM,
         );
         // Refresh the page by popping and navigating back

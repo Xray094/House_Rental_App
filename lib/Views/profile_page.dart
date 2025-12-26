@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -14,8 +15,11 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text('Profile', style: TextStyle(color: Colors.black)),
+        backgroundColor: context.currentAppBarBackground,
+        title: Text(
+          'Profile',
+          style: TextStyle(color: context.currentAppBarTitleColor),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -43,7 +47,7 @@ class ProfilePage extends StatelessWidget {
                           (context, url, downloadProgress) => Container(
                             height: 160.h,
                             width: double.infinity,
-                            color: Colors.grey.shade100,
+                            color: context.currentCardColor,
                             child: Center(
                               child: CircularProgressIndicator(
                                 value: downloadProgress.progress,
@@ -54,19 +58,19 @@ class ProfilePage extends StatelessWidget {
                       memCacheHeight: 400,
                       maxWidthDiskCache: 800,
                       errorWidget: (context, url, error) => Container(
-                        color: Colors.grey.shade200,
+                        color: context.currentCardColor,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.image_not_supported,
-                              color: Colors.grey,
+                              color: context.currentTextSecondary,
                             ),
                             SizedBox(height: 4.h),
                             Text(
                               "No Image",
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: context.currentTextSecondary,
                                 fontSize: 12.sp,
                               ),
                             ),
@@ -78,10 +82,10 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-              _infoTile('Full Name', attr.fullName),
-              _infoTile('Phone Number', attr.phoneNumber),
-              _infoTile('Role', attr.role),
-              _infoTile('Birthday', attr.birthDate),
+              _infoTile('Full Name', attr.fullName, context),
+              _infoTile('Phone Number', attr.phoneNumber, context),
+              _infoTile('Role', attr.role, context),
+              _infoTile('Birthday', attr.birthDate, context),
             ],
           );
         }),
@@ -90,7 +94,7 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-Widget _infoTile(String label, String value) {
+Widget _infoTile(String label, String value, BuildContext context) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10.h),
     child: Row(
@@ -98,12 +102,12 @@ Widget _infoTile(String label, String value) {
       children: [
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: context.currentTextPrimary,
           ),
         ),
-        Text(value, style: const TextStyle(color: Colors.grey)),
+        Text(value, style: TextStyle(color: context.currentTextSecondary)),
       ],
     ),
   );

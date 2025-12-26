@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/core/controllers/register_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class SecondRegisterPage extends StatelessWidget {
   final String role;
@@ -23,10 +24,10 @@ class SecondRegisterPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
+        backgroundColor: context.currentAppBarBackground,
+        title: Text(
           "Personal Information",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: context.currentAppBarTitleColor),
         ),
         centerTitle: true,
       ),
@@ -37,17 +38,18 @@ class SecondRegisterPage extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               value: 1,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFF1E88E5),
-              ),
+              backgroundColor: context.currentDividerColor,
+              valueColor: AlwaysStoppedAnimation<Color>(context.primary),
               minHeight: 5.h,
             ),
             SizedBox(height: 10.h),
             Text(
               "2/2",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: context.currentTextSecondary,
+              ),
             ),
             SizedBox(height: 10.h),
             Center(
@@ -59,11 +61,8 @@ class SecondRegisterPage extends StatelessWidget {
                     height: 120.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFF1E88E5).withOpacity(0.1),
-                      border: Border.all(
-                        color: const Color(0xFF1E88E5),
-                        width: 2.w,
-                      ),
+                      color: context.primary.withOpacity(0.1),
+                      border: Border.all(color: context.primary, width: 2.w),
                     ),
                     child: controller.profileImage.value != null
                         ? ClipOval(
@@ -75,7 +74,7 @@ class SecondRegisterPage extends StatelessWidget {
                         : Icon(
                             Icons.camera_alt_outlined,
                             size: 40.w,
-                            color: const Color(0xFF1E88E5),
+                            color: context.primary,
                           ),
                   ),
                 ),
@@ -90,7 +89,7 @@ class SecondRegisterPage extends StatelessWidget {
                       : "Add Profile Photo",
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: Colors.grey.shade700,
+                    color: context.currentTextSecondary,
                   ),
                 ),
               ),
@@ -123,7 +122,7 @@ class SecondRegisterPage extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
                   Icons.calendar_today,
-                  color: const Color(0xFF1E88E5),
+                  color: context.primary,
                   size: 24.w,
                 ),
                 title: Text(
@@ -153,15 +152,15 @@ class SecondRegisterPage extends StatelessWidget {
                   height: 100.h,
                   width: double.infinity.w,
                   color: controller.idImage.value != null
-                      ? const Color(0xFF1E88E5).withOpacity(0.1)
-                      : Colors.grey.withOpacity(0.1),
+                      ? context.primary.withOpacity(0.1)
+                      : context.currentInputFillColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.cloud_upload_outlined,
                         size: 40.w,
-                        color: const Color(0xFF1E88E5),
+                        color: context.primary,
                       ),
                       SizedBox(height: 5.h),
                       Text(
@@ -170,7 +169,7 @@ class SecondRegisterPage extends StatelessWidget {
                             : "Upload ID Photo",
                         style: TextStyle(
                           fontSize: 14.sp,
-                          color: const Color(0xFF1E88E5),
+                          color: context.primary,
                         ),
                       ),
                     ],
@@ -189,17 +188,22 @@ class SecondRegisterPage extends StatelessWidget {
                         password: password,
                       ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1E88E5),
+                  backgroundColor: context.currentButtonPrimary,
                   minimumSize: Size(double.infinity, 55.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
                 child: controller.isLoading.value
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? CircularProgressIndicator(
+                        color: context.currentButtonPrimaryText,
+                      )
                     : Text(
                         "Next",
-                        style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                        style: TextStyle(
+                          color: context.currentButtonPrimaryText,
+                          fontSize: 16.sp,
+                        ),
                       ),
               ),
             ),

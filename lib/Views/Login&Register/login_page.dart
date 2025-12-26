@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
 class LoginPage extends StatelessWidget {
@@ -10,12 +11,11 @@ class LoginPage extends StatelessWidget {
 
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  static const Color primaryBlue = Color(0xFF1E88E5);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 25.w),
@@ -28,8 +28,8 @@ class LoginPage extends StatelessWidget {
                   height: 150.h,
                   width: double.infinity,
                   child: Image.asset(
-                    "assets/images/loginimage.jpg",
-                    fit: BoxFit.fill,
+                    "assets/images/loginimage.png",
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -40,14 +40,17 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: context.currentTextPrimary,
                 ),
               ),
               SizedBox(height: 8.h),
               Text(
                 'Sign in to continue ',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.sp, color: Colors.grey[600]),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: context.currentTextSecondary,
+                ),
               ),
               SizedBox(height: 40.h),
               CustomTextField(
@@ -90,7 +93,7 @@ class LoginPage extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryBlue,
+                  backgroundColor: context.currentButtonPrimary,
                   minimumSize: Size(double.infinity, 55.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -100,7 +103,7 @@ class LoginPage extends StatelessWidget {
                 child: Text(
                   'Sign In',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: context.currentButtonPrimaryText,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
                   ),
@@ -109,18 +112,18 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 30.h),
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey[400])),
+                  Expanded(child: Divider(color: context.currentDividerColor)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
                     child: Text(
                       'OR',
                       style: TextStyle(
-                        color: Colors.grey[600],
+                        color: context.currentTextSecondary,
                         fontSize: 12.sp,
                       ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey[400])),
+                  Expanded(child: Divider(color: context.currentDividerColor)),
                 ],
               ),
               SizedBox(height: 30.h),
@@ -129,7 +132,10 @@ class LoginPage extends StatelessWidget {
                 children: [
                   Text(
                     "Don't have an account? ",
-                    style: TextStyle(fontSize: 12.sp, color: Colors.grey[700]),
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: context.currentTextSecondary,
+                    ),
                   ),
                   InkWell(
                     onTap: () {
@@ -140,7 +146,7 @@ class LoginPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.bold,
-                        color: primaryBlue,
+                        color: context.primary,
                       ),
                     ),
                   ),

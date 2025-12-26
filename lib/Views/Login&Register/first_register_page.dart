@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/core/controllers/register_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class FirstRegisterPage extends StatelessWidget {
   const FirstRegisterPage({super.key});
@@ -11,7 +12,6 @@ class FirstRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(RegisterController());
-    const Color primaryBlue = Color(0xFF1E88E5);
 
     Widget roleCard(String role, IconData icon, String label) {
       return Obx(() {
@@ -22,10 +22,14 @@ class FirstRegisterPage extends StatelessWidget {
             height: 120.h,
             width: 140.w,
             decoration: BoxDecoration(
-              color: isSelected ? primaryBlue.withOpacity(0.1) : Colors.white,
+              color: isSelected
+                  ? context.primary.withOpacity(0.1)
+                  : context.currentRoleCardBackground,
               borderRadius: BorderRadius.circular(15.r),
               border: Border.all(
-                color: isSelected ? primaryBlue : Colors.grey.shade300,
+                color: isSelected
+                    ? context.primary
+                    : context.currentRoleCardBorder,
                 width: 2.w,
               ),
             ),
@@ -35,7 +39,9 @@ class FirstRegisterPage extends StatelessWidget {
                 Icon(
                   icon,
                   size: 40.w,
-                  color: isSelected ? primaryBlue : Colors.grey.shade600,
+                  color: isSelected
+                      ? context.primary
+                      : context.currentRoleCardIcon,
                 ),
                 SizedBox(height: 5.h),
                 Text(
@@ -45,7 +51,9 @@ class FirstRegisterPage extends StatelessWidget {
                     fontWeight: isSelected
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    color: isSelected ? primaryBlue : Colors.black,
+                    color: isSelected
+                        ? context.primary
+                        : context.currentRoleCardText,
                   ),
                 ),
               ],
@@ -56,13 +64,13 @@ class FirstRegisterPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.currentBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: context.currentAppBarBackground,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Create Account",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: context.currentAppBarTitleColor),
         ),
         centerTitle: true,
       ),
@@ -72,15 +80,18 @@ class FirstRegisterPage extends StatelessWidget {
           children: [
             LinearProgressIndicator(
               value: 0.5,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(primaryBlue),
+              backgroundColor: context.currentDividerColor,
+              valueColor: AlwaysStoppedAnimation<Color>(context.primary),
               minHeight: 5.h,
             ),
             Text(
               "1/2",
-              style: TextStyle(fontSize: 12.sp, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: context.currentTextSecondary,
+              ),
             ),
-            Image.asset("assets/images/imageForFirstRegisterPage.png"),
+            Image.asset("assets/images/applogo.png"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -103,7 +114,7 @@ class FirstRegisterPage extends StatelessWidget {
                       padding: EdgeInsets.only(left: 15.w, top: 5.h),
                       child: Text(
                         controller.phoneErrorMessage.value,
-                        style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                        style: TextStyle(color: context.error, fontSize: 12.sp),
                       ),
                     )
                   : SizedBox(height: 5.h);
@@ -124,7 +135,7 @@ class FirstRegisterPage extends StatelessWidget {
                       padding: EdgeInsets.only(left: 15.w, top: 5.h),
                       child: Text(
                         controller.passwordErrorMessage.value,
-                        style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                        style: TextStyle(color: context.error, fontSize: 12.sp),
                       ),
                     )
                   : SizedBox(height: 5.h);
@@ -154,7 +165,7 @@ class FirstRegisterPage extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: primaryBlue,
+                backgroundColor: context.currentButtonPrimary,
                 minimumSize: Size(double.infinity, 55.h),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.r),
@@ -162,7 +173,10 @@ class FirstRegisterPage extends StatelessWidget {
               ),
               child: Text(
                 "Next",
-                style: TextStyle(color: Colors.white, fontSize: 16.sp),
+                style: TextStyle(
+                  color: context.currentButtonPrimaryText,
+                  fontSize: 16.sp,
+                ),
               ),
             ),
           ],

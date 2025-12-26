@@ -134,7 +134,7 @@ class BookingService {
     required String rating,
   }) async {
     try {
-      final response = await _dio.post(
+      await _dio.post(
         '/reviews',
         data: {
           'apartment_id': apartmentId,

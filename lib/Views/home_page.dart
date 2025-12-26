@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,7 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final Color primaryBlue = const Color(0xFF1E88E5);
   final HomeController ctrl = Get.find<HomeController>();
 
   // TextEditingControllers for form fields
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
             height: ctrl.isFiltersVisible.value ? null : 0,
             child: Container(
               padding: EdgeInsets.all(10.w),
-              color: Colors.grey.shade100,
+              color: context.currentCardColor,
               child: Column(
                 children: [
                   Row(
@@ -58,7 +59,9 @@ class _HomePageState extends State<HomePage> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   gov,
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                    color: context.currentTextPrimary,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -87,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                                   overflow: TextOverflow.ellipsis,
                                   city,
                                   style: TextStyle(
-                                    color: Colors.black,
+                                    color: context.currentTextPrimary,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -108,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
                           ],
-                          style: const TextStyle(color: Colors.black),
+                          style: TextStyle(color: context.currentTextPrimary),
                           decoration: InputDecoration(
                             labelText: 'Min Price',
                             border: OutlineInputBorder(),
@@ -129,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
                           ],
-                          style: const TextStyle(color: Colors.black),
+                          style: TextStyle(color: context.currentTextPrimary),
                           decoration: InputDecoration(
                             labelText: 'Max Price',
                             border: OutlineInputBorder(),
@@ -154,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
                           ],
-                          style: const TextStyle(color: Colors.black),
+                          style: TextStyle(color: context.currentTextPrimary),
                           decoration: InputDecoration(
                             labelText: 'Min Rooms',
                             border: OutlineInputBorder(),
@@ -175,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
                           ],
-                          style: const TextStyle(color: Colors.black),
+                          style: TextStyle(color: context.currentTextPrimary),
                           decoration: InputDecoration(
                             labelText: 'Min Area (m²)',
                             border: OutlineInputBorder(),
@@ -194,7 +197,10 @@ class _HomePageState extends State<HomePage> {
                   // Visual separator
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.h),
-                    child: Divider(color: Colors.grey.shade400, thickness: 1),
+                    child: Divider(
+                      color: context.currentDividerColor,
+                      thickness: 1,
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -205,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                       minAreaController.clear();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryBlue,
+                      // backgroundColor: context.currentPrimaryBlue,
                       foregroundColor: Colors.white,
                     ),
                     child: Text('Clear Filters'),
@@ -227,10 +233,10 @@ class _HomePageState extends State<HomePage> {
               );
             }
             if (filteredList.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
                   'No apartments found matching filters.',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: context.currentTextPrimary),
                 ),
               );
             }
@@ -249,8 +255,11 @@ class _HomePageState extends State<HomePage> {
                         arguments: apartment,
                       );
                     },
-
                     child: Card(
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.r),
+                      ),
                       elevation: 4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,30 +275,29 @@ class _HomePageState extends State<HomePage> {
                                 (context, url, downloadProgress) => Container(
                                   height: 160.h,
                                   width: double.infinity,
-                                  color: Colors.grey.shade100,
+                                  color: context.currentCardColor,
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       value: downloadProgress.progress,
-                                      color: primaryBlue,
                                     ),
                                   ),
                                 ),
                             memCacheHeight: 400,
                             maxWidthDiskCache: 800,
                             errorWidget: (context, url, error) => Container(
-                              color: Colors.grey.shade200,
+                              color: context.currentCardColor,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.image_not_supported,
-                                    color: Colors.grey,
+                                    color: context.currentTextSecondary,
                                   ),
                                   SizedBox(height: 4.h),
                                   Text(
                                     "No Image",
                                     style: TextStyle(
-                                      color: Colors.grey,
+                                      color: context.currentTextSecondary,
                                       fontSize: 12.sp,
                                     ),
                                   ),
@@ -341,7 +349,7 @@ class _HomePageState extends State<HomePage> {
                                       '${attr.location.city}, ${attr.location.governorate}',
                                       style: TextStyle(
                                         fontSize: 13.sp,
-                                        color: Colors.grey.shade600,
+                                        color: context.currentTextSecondary,
                                       ),
                                     ),
                                   ],
@@ -359,7 +367,7 @@ class _HomePageState extends State<HomePage> {
                                       '${attr.specs.rooms} rooms',
                                       style: TextStyle(
                                         fontSize: 13.sp,
-                                        color: Colors.black,
+                                        color: context.currentTextPrimary,
                                       ),
                                     ),
                                     SizedBox(width: 15.w),
@@ -373,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                                       '${attr.specs.area} m²',
                                       style: TextStyle(
                                         fontSize: 13.sp,
-                                        color: Colors.black,
+                                        color: context.currentTextPrimary,
                                       ),
                                     ),
                                   ],

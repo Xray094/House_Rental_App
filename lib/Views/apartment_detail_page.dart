@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Models/review_model.dart';
-import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
 import 'package:house_rental_app/core/controllers/favorites_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
   const ApartmentDetailsPage({super.key});
@@ -46,7 +46,7 @@ class ApartmentDetailsPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Loading...'),
-            backgroundColor: primaryBlue,
+            backgroundColor: context.primary,
           ),
           body: const Center(child: CircularProgressIndicator()),
         );
@@ -58,16 +58,17 @@ class ApartmentDetailsPage extends StatelessWidget {
       return Scaffold(
         appBar: AppBar(
           title: Text(attr.title),
-          backgroundColor: primaryBlue,
+          backgroundColor: context.primary,
           actions: [
             if (authController.isTenant)
               Obx(
                 () => IconButton(
                   icon: Icon(
+                    size: 24.h,
                     ctrl.isFavorite.value
                         ? Icons.favorite
                         : Icons.favorite_border,
-                    color: ctrl.isFavorite.value ? Colors.red : Colors.white,
+                    color: context.error,
                   ),
                   onPressed: () async {
                     final isNowFavorite = await favoritesController
@@ -84,9 +85,9 @@ class ApartmentDetailsPage extends StatelessWidget {
                           : 'Apartment removed from favorites',
                       snackPosition: SnackPosition.BOTTOM,
                       backgroundColor: isNowFavorite
-                          ? Colors.green
-                          : Colors.red,
-                      colorText: Colors.white,
+                          ? context.primary
+                          : context.error,
+                      colorText: context.currentButtonPrimaryText,
                     );
                   },
                 ),
@@ -97,7 +98,7 @@ class ApartmentDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildGallerySlider(attr.galleryUrls),
+              _buildGallerySlider(context, attr.galleryUrls),
               Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Column(
@@ -106,7 +107,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                     Text(
                       attr.title,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: context.currentTextPrimary,
                         fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                       ),
@@ -115,7 +116,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                     Text(
                       attr.formattedPrice,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: context.currentTextPrimary,
                         fontSize: 20.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -123,13 +124,17 @@ class ApartmentDetailsPage extends StatelessWidget {
                     SizedBox(height: 4.h),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 16.h, color: primaryBlue),
+                        Icon(
+                          Icons.location_on,
+                          size: 16.h,
+                          color: context.primary,
+                        ),
                         SizedBox(width: 4.w),
                         Expanded(
                           child: Text(
                             '${attr.location.city}, ${attr.location.governorate}',
                             style: TextStyle(
-                              color: Colors.black,
+                              color: context.currentTextPrimary,
                               fontSize: 20.sp,
                               fontWeight: FontWeight.w600,
                             ),
@@ -149,7 +154,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                 child: Text(
                   attr.description,
                   style: TextStyle(
-                    color: Colors.black,
+                    color: context.currentTextPrimary,
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w400,
                   ),
@@ -165,7 +170,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                 child: Text(
                   '${attr.location.address}\n${attr.location.city}, ${attr.location.governorate}',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: context.currentTextPrimary,
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                   ),
@@ -183,7 +188,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                           contentPadding: EdgeInsets.zero,
                           leading: Icon(
                             Icons.calendar_today,
-                            color: primaryBlue,
+                            color: context.primary,
                             size: 24.w,
                           ),
                           title: Text(
@@ -194,7 +199,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                                   ).format(ctrl.startDate.value!),
                             style: TextStyle(
                               fontSize: 16.sp,
-                              color: Colors.black87,
+                              color: context.currentTextPrimary,
                             ),
                           ),
                           subtitle: Text(
@@ -220,7 +225,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                           contentPadding: EdgeInsets.zero,
                           leading: Icon(
                             Icons.event_available,
-                            color: primaryBlue,
+                            color: context.primary,
                             size: 24.w,
                           ),
                           title: Text(
@@ -231,7 +236,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                                   ).format(ctrl.endDate.value!),
                             style: TextStyle(
                               fontSize: 16.sp,
-                              color: Colors.black87,
+                              color: context.currentTextPrimary,
                             ),
                           ),
                           subtitle: Text(
@@ -272,10 +277,10 @@ class ApartmentDetailsPage extends StatelessWidget {
           return Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: context.currentSurfaceColor,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
+                  color: context.currentDividerColor.withOpacity(0.2),
                   spreadRadius: 2,
                   blurRadius: 5,
                 ),
@@ -307,9 +312,9 @@ class ApartmentDetailsPage extends StatelessWidget {
 
                           'Your request was sent successfully.',
 
-                          backgroundColor: Colors.green,
+                          backgroundColor: context.primary,
 
-                          colorText: Colors.white,
+                          colorText: context.currentButtonPrimaryText,
 
                           snackPosition: SnackPosition.BOTTOM,
                         );
@@ -323,9 +328,9 @@ class ApartmentDetailsPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: Size.fromHeight(50.h),
 
-                backgroundColor: primaryBlue,
+                backgroundColor: context.currentButtonPrimary,
 
-                foregroundColor: Colors.white,
+                foregroundColor: context.currentButtonPrimaryText,
               ),
             ),
           );
@@ -368,6 +373,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                       Text(
                         review.reviewerName,
                         style: TextStyle(
+                          color: context.currentTextPrimary,
                           fontWeight: FontWeight.bold,
                           fontSize: 16.sp,
                         ),
@@ -379,7 +385,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                             size: 14.sp,
                             color: starIndex < review.rating
                                 ? Colors.amber
-                                : Colors.grey.shade300,
+                                : context.currentDividerColor,
                           );
                         }),
                       ),
@@ -388,7 +394,10 @@ class ApartmentDetailsPage extends StatelessWidget {
                 ),
                 Text(
                   review.createdAt,
-                  style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                  style: TextStyle(
+                    color: context.currentTextSecondary,
+                    fontSize: 12.sp,
+                  ),
                 ),
               ],
             ),
@@ -397,7 +406,7 @@ class ApartmentDetailsPage extends StatelessWidget {
               review.comment,
               style: TextStyle(
                 fontSize: 14.sp,
-                color: Colors.black87,
+                color: context.currentTextPrimary,
                 height: 1.4,
               ),
             ),
@@ -428,13 +437,16 @@ class ApartmentDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGallerySlider(List<String> galleryUrls) {
+  Widget _buildGallerySlider(BuildContext context, List<String> galleryUrls) {
     if (galleryUrls.isEmpty) {
       return Container(
         height: 250,
-        color: Colors.grey[300],
+        color: context.currentSurfaceColor,
         alignment: Alignment.center,
-        child: const Text('No Images Available'),
+        child: Text(
+          'No Images Available',
+          style: TextStyle(color: context.currentTextSecondary),
+        ),
       );
     }
     return SizedBox(
@@ -451,26 +463,32 @@ class ApartmentDetailsPage extends StatelessWidget {
                 Container(
                   height: 250.h,
                   width: double.infinity,
-                  color: Colors.grey.shade100,
+                  color: context.currentSurfaceColor,
                   child: Center(
                     child: CircularProgressIndicator(
                       value: downloadProgress.progress,
-                      color: primaryBlue,
+                      color: context.primary,
                     ),
                   ),
                 ),
             memCacheHeight: 500,
             maxWidthDiskCache: 800,
             errorWidget: (context, url, error) => Container(
-              color: Colors.grey.shade200,
+              color: context.currentSurfaceColor,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.image_not_supported, color: Colors.grey),
+                  Icon(
+                    Icons.image_not_supported,
+                    color: context.currentTextSecondary,
+                  ),
                   SizedBox(height: 4.h),
                   Text(
                     "No Image",
-                    style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                    style: TextStyle(
+                      color: context.currentTextSecondary,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ],
               ),
@@ -487,7 +505,7 @@ class ApartmentDetailsPage extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          color: primaryBlue,
+          color: context.primary,
           fontSize: 20.sp,
           fontWeight: FontWeight.bold,
         ),
@@ -503,12 +521,12 @@ class ApartmentDetailsPage extends StatelessWidget {
   ) {
     return Column(
       children: [
-        Icon(icon, size: 28.0, color: primaryBlue),
+        Icon(icon, size: 28.0, color: context.primary),
         const SizedBox(height: 4.0),
         Text(
           value,
           style: TextStyle(
-            color: Colors.black,
+            color: context.currentTextPrimary,
             fontSize: 20.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -516,7 +534,7 @@ class ApartmentDetailsPage extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: Colors.black,
+            color: context.currentTextSecondary,
             fontSize: 20.sp,
             fontWeight: FontWeight.w400,
           ),
@@ -535,9 +553,13 @@ class ApartmentDetailsPage extends StatelessWidget {
             .map(
               (feature) => Chip(
                 label: Text(feature),
-                avatar: const Icon(Icons.check_circle, size: 18),
-                backgroundColor: primaryBlue.withOpacity(0.1),
-                labelStyle: const TextStyle(color: Colors.black),
+                avatar: Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: context.primary,
+                ),
+                backgroundColor: context.primary.withOpacity(0.1),
+                labelStyle: TextStyle(color: context.currentTextPrimary),
               ),
             )
             .toList(),

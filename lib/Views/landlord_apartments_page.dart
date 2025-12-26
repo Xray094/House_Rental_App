@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Views/apartment_booking_page.dart';
-import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/landlord_aparments_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
 class LandlordApartmentsPage extends StatelessWidget {
@@ -15,7 +15,7 @@ class LandlordApartmentsPage extends StatelessWidget {
     final ctrl = Get.find<LandlordApartmentsController>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.currentBackgroundColor,
       body: Obx(() {
         if (ctrl.isLoading.value && ctrl.myApartments.isEmpty) {
           return const Center(child: CircularProgressIndicator());
@@ -68,30 +68,30 @@ class LandlordApartmentsPage extends StatelessWidget {
                               (context, url, downloadProgress) => Container(
                                 height: 180.h,
                                 width: double.infinity,
-                                color: Colors.grey.shade100,
+                                color: context.currentSurfaceColor,
                                 child: Center(
                                   child: CircularProgressIndicator(
                                     value: downloadProgress.progress,
-                                    color: primaryBlue,
+                                    color: context.primary,
                                   ),
                                 ),
                               ),
                           memCacheHeight: 360,
                           maxWidthDiskCache: 800,
                           errorWidget: (context, url, error) => Container(
-                            color: Colors.grey.shade200,
+                            color: context.currentSurfaceColor,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.image_not_supported,
-                                  color: Colors.grey,
+                                  color: context.currentTextSecondary,
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
                                   "No Image",
                                   style: TextStyle(
-                                    color: Colors.grey,
+                                    color: context.currentTextSecondary,
                                     fontSize: 12.sp,
                                   ),
                                 ),
@@ -110,11 +110,11 @@ class LandlordApartmentsPage extends StatelessWidget {
                               ),
                               child: CircleAvatar(
                                 radius: 15.r,
-                                backgroundColor: Colors.red,
+                                backgroundColor: context.error,
                                 child: Text(
                                   bookingCount.toString(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: context.currentButtonPrimaryText,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -136,16 +136,16 @@ class LandlordApartmentsPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.sp,
-                                    color: primaryBlue,
+                                    color: context.primary,
                                   ),
                                 ),
                               ),
                               Row(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.edit,
-                                      color: Colors.blueGrey,
+                                      color: context.currentTextSecondary,
                                     ),
                                     onPressed: () => Get.toNamed(
                                       Routes.editApartment,
@@ -153,9 +153,9 @@ class LandlordApartmentsPage extends StatelessWidget {
                                     ),
                                   ),
                                   IconButton(
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.delete,
-                                      color: Colors.redAccent,
+                                      color: context.error,
                                     ),
                                     onPressed: () =>
                                         ctrl.deleteApartment(apartment.id),
@@ -169,12 +169,12 @@ class LandlordApartmentsPage extends StatelessWidget {
                               Icon(
                                 Icons.location_on,
                                 size: 16.sp,
-                                color: Colors.grey,
+                                color: context.currentTextSecondary,
                               ),
                               Text(
                                 "${attr.location.city}, ${attr.location.governorate}",
                                 style: TextStyle(
-                                  color: Colors.grey,
+                                  color: context.currentTextSecondary,
                                   fontSize: 14.sp,
                                 ),
                               ),
@@ -194,10 +194,14 @@ class LandlordApartmentsPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(16.r),
         ),
-        backgroundColor: primaryBlue,
+        backgroundColor: context.currentButtonPrimary,
         elevation: 5,
         onPressed: () => Get.toNamed(Routes.createApartment),
-        child: Icon(Icons.add_home_outlined, size: 30.sp, color: Colors.white),
+        child: Icon(
+          Icons.add_home_outlined,
+          size: 30.sp,
+          color: context.currentButtonPrimaryText,
+        ),
       ),
     );
   }
