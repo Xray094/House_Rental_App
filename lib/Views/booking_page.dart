@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:house_rental_app/Views/Login&Register/login_page.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/booking_controller.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
@@ -16,16 +15,12 @@ class BookingPage extends StatelessWidget {
     final ctrl = Get.put(BookingController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("My Bookings"),
-        backgroundColor: primaryBlue,
-      ),
       body: Obx(() {
         if (ctrl.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
         if (ctrl.myBookings.isEmpty) {
-          return const Center(child: Text("No bookings found."));
+          return _buildEmptyState();
         }
 
         return ListView.builder(
@@ -154,6 +149,35 @@ class BookingPage extends StatelessWidget {
           },
         );
       }),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(32.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.calendar_month, size: 80.sp, color: Colors.grey),
+            SizedBox(height: 24.h),
+            Text(
+              'No Bookings Yet',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              'Browse apartments and book your first stay!',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16.sp, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

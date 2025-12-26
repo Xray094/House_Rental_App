@@ -5,10 +5,9 @@ import 'package:house_rental_app/Views/home_page.dart';
 import 'package:house_rental_app/Views/landlord_apartments_page.dart';
 import 'package:house_rental_app/Views/settings_page.dart';
 import 'package:house_rental_app/Views/booking_page.dart';
-import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/Views/favorites_page.dart';
 import 'package:house_rental_app/core/controllers/home_controller.dart';
 import 'package:house_rental_app/core/controllers/navigation_controller.dart';
-import 'package:house_rental_app/routes/app_routes.dart';
 
 class MainNavigationPage extends StatelessWidget {
   MainNavigationPage({super.key});
@@ -16,6 +15,7 @@ class MainNavigationPage extends StatelessWidget {
   final List<Widget> tenantPages = [
     HomePage(),
     BookingPage(),
+    FavoritesPage(),
     const SettingsPage(),
   ];
 
@@ -27,6 +27,7 @@ class MainNavigationPage extends StatelessWidget {
   final List<Widget> tenantAppBars = [
     const HomeAppBar(),
     const BookingAppBar(),
+    const FavoritesAppBar(),
     const SettingsAppBar(),
   ];
 
@@ -72,13 +73,21 @@ class MainNavigationPage extends StatelessWidget {
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                controller.isTenant ? Icons.calendar_month : Icons.apartment,
+            if (controller.isTenant) ...[
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_month),
+                label: 'Bookings',
               ),
-              label: controller.isTenant ? 'Bookings' : 'Apartments',
-            ),
-
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Favorites',
+              ),
+            ] else ...[
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.apartment),
+                label: 'Apartments',
+              ),
+            ],
             const BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
@@ -195,27 +204,25 @@ class LandlordApartmentAppBar extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-      // actions: [
-      //   Padding(
-      //     padding: EdgeInsets.only(right: 12.w),
-      //     child: FilledButton(
-      //       style: FilledButton.styleFrom(
-      //         backgroundColor: primaryBlue,
-      //         foregroundColor: Colors.white,
-      //         shape: RoundedRectangleBorder(
-      //           borderRadius: BorderRadius.circular(13.r),
-      //         ),
-      //       ),
-      //       onPressed: () {
-      //         Get.toNamed(Routes.createApartment);
-      //       },
-      //       child: Text(
-      //         "Create",
-      //         style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-      //       ),
-      //     ),
-      //   ),
-      // ],
+    );
+  }
+}
+
+class FavoritesAppBar extends StatelessWidget {
+  const FavoritesAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        'Favorites',
+        style: TextStyle(
+          color: Color(0xFF1E88E5),
+          fontSize: 30.sp,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

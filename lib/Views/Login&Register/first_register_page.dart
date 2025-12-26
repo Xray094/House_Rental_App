@@ -96,32 +96,59 @@ class FirstRegisterPage extends StatelessWidget {
               inputType: TextInputType.phone,
               controller: controller.mobileController,
             ),
+            Obx(() {
+              return controller.phoneErrorMessage.value.isNotEmpty
+                  ? Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(left: 15.w, top: 5.h),
+                      child: Text(
+                        controller.phoneErrorMessage.value,
+                        style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                      ),
+                    )
+                  : SizedBox(height: 5.h);
+            }),
             SizedBox(height: 20.h),
             CustomTextField(
               name: 'Password',
-              hint: 'Enter your password',
+              hint: 'Enter your password (min 8 characters)',
               prefixIcon: Icons.lock_outline,
               obscureText: true,
               controller: controller.passwordController,
               inputType: TextInputType.visiblePassword,
             ),
+            Obx(() {
+              return controller.passwordErrorMessage.value.isNotEmpty
+                  ? Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(left: 15.w, top: 5.h),
+                      child: Text(
+                        controller.passwordErrorMessage.value,
+                        style: TextStyle(color: Colors.red, fontSize: 12.sp),
+                      ),
+                    )
+                  : SizedBox(height: 5.h);
+            }),
             SizedBox(height: 40.h),
             ElevatedButton(
               onPressed: () {
-                if (controller.selectedRole.value == null ||
-                    controller.mobileController.text.isEmpty ||
-                    controller.passwordController.text.isEmpty) {
+                // Trigger validation
+                controller.validatePhoneNumber();
+                controller.validatePassword();
+
+                if (!controller.isFormValid) {
                   Get.snackbar(
                     "Error",
-                    "Please select a role and fill in credentials.",
+                    "Please select a role and ensure all fields are valid.",
                   );
                   return;
                 }
+
                 Get.toNamed(
                   Routes.secondRegister,
                   arguments: {
                     'role': controller.selectedRole.value,
-                    'mobile': controller.mobileController.text,
+                    'mobile': controller.mobileController.text.trim(),
                     'password': controller.passwordController.text,
                   },
                 );

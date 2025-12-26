@@ -13,6 +13,12 @@ class RegisterController extends GetxController {
   final passwordController = TextEditingController();
   var selectedRole = Rxn<String>();
 
+  // Validation state variables
+  var isPhoneValid = false.obs;
+  var isPasswordValid = false.obs;
+  var phoneErrorMessage = ''.obs;
+  var passwordErrorMessage = ''.obs;
+
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
 
@@ -22,6 +28,66 @@ class RegisterController extends GetxController {
   var isLoading = false.obs;
 
   final picker = ImagePicker();
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Add listeners for real-time validation
+    mobileController.addListener(validatePhoneNumber);
+    passwordController.addListener(validatePassword);
+  }
+
+  @override
+  void onClose() {
+    // Remove listeners when controller is disposed
+    mobileController.removeListener(validatePhoneNumber);
+    passwordController.removeListener(validatePassword);
+    mobileController.dispose();
+    passwordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    super.onClose();
+  }
+
+  // Validation methods
+  void validatePhoneNumber() {
+    String phone = mobileController.text.trim();
+
+    // Remove all non-digit characters for validation
+    String digitsOnly = phone.replaceAll(RegExp(r'[^\d]'), '');
+
+    if (digitsOnly.isEmpty) {
+      isPhoneValid.value = false;
+      phoneErrorMessage.value = '';
+    } else if (digitsOnly.length != 10) {
+      isPhoneValid.value = false;
+      phoneErrorMessage.value = 'Phone number must be exactly 10 digits';
+    } else {
+      isPhoneValid.value = true;
+      phoneErrorMessage.value = '';
+    }
+  }
+
+  void validatePassword() {
+    String password = passwordController.text;
+
+    if (password.isEmpty) {
+      isPasswordValid.value = false;
+      passwordErrorMessage.value = '';
+    } else if (password.length < 8) {
+      isPasswordValid.value = false;
+      passwordErrorMessage.value = 'Password must be at least 8 characters';
+    } else {
+      isPasswordValid.value = true;
+      passwordErrorMessage.value = '';
+    }
+  }
+
+  bool get isFormValid {
+    return selectedRole.value != null &&
+        isPhoneValid.value &&
+        isPasswordValid.value;
+  }
 
   Future<void> pickImage(bool isProfile) async {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);

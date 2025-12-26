@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
+import 'package:house_rental_app/core/controllers/favorites_controller.dart';
 
 class ApartmentController extends GetxController {
   final ApartmentModel? initialApt;
@@ -56,6 +57,11 @@ class ApartmentController extends GetxController {
     isLoading(true);
     final result = await apartmentService.getApartmentById(id);
     apartment.value = result;
+
+    // Check if this apartment is in favorites
+    final favoritesController = Get.find<FavoritesController>();
+    isFavorite.value = await favoritesController.isFavorite(id);
+
     isLoading(false);
   }
 
