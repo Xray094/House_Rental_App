@@ -14,6 +14,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authC = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
       body: SingleChildScrollView(
@@ -72,7 +73,6 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 40.h),
               ElevatedButton(
                 onPressed: () async {
-                  final authC = Get.find<AuthController>();
                   Get.dialog(
                     const Center(child: CircularProgressIndicator()),
                     barrierDismissible: false,

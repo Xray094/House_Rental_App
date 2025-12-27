@@ -8,47 +8,38 @@ class ThemeController extends GetxController {
 
   final _box = GetStorage();
   final _themeKey = 'isDarkMode';
-
-  // Observable for theme mode
   RxBool isDarkMode = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Load theme preference from storage
     isDarkMode.value = _box.read(_themeKey) ?? false;
   }
 
-  // Toggle theme mode
   void toggleTheme() {
     isDarkMode.value = !isDarkMode.value;
     _saveThemeToStorage();
     update();
   }
 
-  // Set specific theme mode
   void setThemeMode(bool isDark) {
     isDarkMode.value = isDark;
     _saveThemeToStorage();
     update();
   }
 
-  // Save theme preference to local storage
   void _saveThemeToStorage() {
     _box.write(_themeKey, isDarkMode.value);
   }
 
-  // Get current theme mode
   ThemeMode get themeMode {
     return isDarkMode.value ? ThemeMode.dark : ThemeMode.light;
   }
 
-  // Get current theme data
   ThemeData get theme {
     return isDarkMode.value ? darkTheme : lightTheme;
   }
 
-  // Light theme configuration
   ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: false,

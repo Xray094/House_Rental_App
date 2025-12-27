@@ -15,6 +15,17 @@ class UserModel {
       attributes: UserAttributes.fromJson(userData['attributes']),
     );
   }
+  factory UserModel.fromJsonForTokenCheck(
+    Map<String, dynamic> json,
+    String token,
+  ) {
+    final userData = json['data'];
+    return UserModel(
+      id: userData['id'],
+      token: token,
+      attributes: UserAttributes.fromJson(userData['attributes']),
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {'id': id, 'token': token, 'attributes': attributes.toJson()};

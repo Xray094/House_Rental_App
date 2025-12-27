@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide FormData;
+import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/login_model.dart';
 import 'package:house_rental_app/Models/register_model.dart';
 import 'package:house_rental_app/Models/user_model.dart';
@@ -56,6 +57,27 @@ class AuthService extends GetxService {
       }
     } catch (e) {
       return {'success': false, 'message': 'Unexpected error: $e'};
+    }
+  }
+
+  Future<UserModel?> validateToken() async {
+    try {
+      final response = await _dio.get('/auth/me');
+
+      if (response.statusCode == 200) {
+        final box = GetStorage();
+        return UserModel.fromJsonForTokenCheck(
+          response.data,
+          box.read('token'),
+        );
+      }
+      return null;
+    } on DioException catch (e) {
+      print('Token validation Dio Error: ${e.response?.data ?? e.message}');
+      return null;
+    } catch (e) {
+      print('Token validation Unexpected Error: $e');
+      return null;
     }
   }
 }
