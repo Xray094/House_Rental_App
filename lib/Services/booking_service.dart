@@ -108,13 +108,7 @@ class BookingService {
       final msg = (data is Map && data['message'] != null)
           ? data['message']
           : 'Booking approved';
-      return {
-        'success':
-            response.statusCode == 200 ||
-            response.statusCode == 201 ||
-            response.statusCode == 204,
-        'message': msg,
-      };
+      return {'success': response.statusCode == 200, 'message': msg};
     } on DioException catch (e) {
       final data = e.response?.data;
       final msg = (data is Map && data['message'] != null)

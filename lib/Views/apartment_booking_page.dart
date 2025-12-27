@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Models/booking_model.dart';
-import 'package:house_rental_app/Services/booking_service.dart';
 import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/core/controllers/apartment_booking_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
@@ -15,7 +15,8 @@ class ApartmentBookingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ApartmentModel apartment = Get.arguments;
     final List<BookingModel> bookings = apartment.bookings;
-    final BookingService bookingService = Get.find<BookingService>();
+    final ApartmentBookingController controller =
+        Get.find<ApartmentBookingController>();
 
     return Scaffold(
       appBar: AppBar(
@@ -118,10 +119,9 @@ class ApartmentBookingsPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 ElevatedButton.icon(
-                                  onPressed: () => _handleApprove(
-                                    context,
+                                  onPressed: () => controller.approveBooking(
                                     booking.id,
-                                    bookingService,
+                                    context,
                                   ),
                                   icon: Icon(
                                     Icons.check_circle,
@@ -148,10 +148,9 @@ class ApartmentBookingsPage extends StatelessWidget {
                                 ),
                                 SizedBox(width: 12.w),
                                 ElevatedButton.icon(
-                                  onPressed: () => _handleReject(
-                                    context,
+                                  onPressed: () => controller.rejectBooking(
                                     booking.id,
-                                    bookingService,
+                                    context,
                                   ),
                                   icon: Icon(
                                     Icons.cancel,
@@ -202,122 +201,6 @@ class ApartmentBookingsPage extends StatelessWidget {
         return LightThemeColors.info;
       default:
         return LightThemeColors.textSecondary;
-    }
-  }
-
-  static void _handleApprove(
-    BuildContext context,
-    String bookingId,
-    BookingService bookingService,
-  ) async {
-    final confirmed = await Get.defaultDialog<bool>(
-      title: "Approve Booking",
-      titleStyle: TextStyle(
-        color: context.currentTextPrimary,
-        fontWeight: FontWeight.bold,
-      ),
-      middleText: "Are you sure you want to approve this booking?",
-      middleTextStyle: TextStyle(color: context.currentTextSecondary),
-      textConfirm: "Yes, Approve",
-      confirmTextColor: context.currentButtonPrimaryText,
-      textCancel: "No",
-      onConfirm: () => Get.back(result: true),
-      onCancel: () => Get.back(result: false),
-    );
-
-    if (confirmed == true) {
-      Get.dialog(
-        const Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      final Map<String, dynamic> res = await bookingService.approveBooking(
-        bookingId,
-      );
-
-      Get.back();
-
-      if (res['success'] == true) {
-        Get.snackbar(
-          'Success',
-          res['message'] ?? 'Booking approved',
-          backgroundColor: LightThemeColors.success,
-          colorText: context.currentButtonPrimaryText,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        // Refresh the page by popping and navigating back
-        Get.back();
-        Get.to(() => const ApartmentBookingsPage());
-      } else {
-        final msg = (res['message'] ?? 'Failed to approve booking').toString();
-        Get.dialog(
-          AlertDialog(
-            title: const Text('Approve Failed'),
-            content: Text(msg),
-            actions: [
-              TextButton(onPressed: () => Get.back(), child: const Text('OK')),
-            ],
-          ),
-        );
-      }
-    }
-  }
-
-  static void _handleReject(
-    BuildContext context,
-    String bookingId,
-    BookingService bookingService,
-  ) async {
-    final confirmed = await Get.defaultDialog<bool>(
-      title: "Reject Booking",
-      titleStyle: TextStyle(
-        color: context.currentTextPrimary,
-        fontWeight: FontWeight.bold,
-      ),
-      middleText: "Are you sure you want to reject this booking?",
-      middleTextStyle: TextStyle(color: context.currentTextSecondary),
-      textConfirm: "Yes, Reject",
-      confirmTextColor: context.currentButtonPrimaryText,
-      textCancel: "No",
-      onConfirm: () => Get.back(result: true),
-      onCancel: () => Get.back(result: false),
-    );
-
-    if (confirmed == true) {
-      Get.dialog(
-        const Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
-
-      final Map<String, dynamic> res = await bookingService.cancelBooking(
-        bookingId,
-      );
-
-      Get.back();
-
-      if (res['success'] == true) {
-        Get.snackbar(
-          'Success',
-          res['message'] ?? 'Booking rejected',
-          backgroundColor: LightThemeColors.error,
-          colorText: context.currentButtonPrimaryText,
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        // Refresh the page by popping and navigating back
-        Get.back();
-        Get.to(() => const ApartmentBookingsPage());
-      } else {
-        final msg = (res['message'] ?? 'Failed to reject booking').toString();
-        Get.dialog(
-          AlertDialog(
-            title: const Text('Reject Failed'),
-            content: Text(msg),
-            actions: [
-              TextButton(onPressed: () => Get.back(), child: const Text('OK')),
-            ],
-          ),
-        );
-      }
     }
   }
 }
