@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Models/review_model.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
-import 'package:house_rental_app/core/controllers/favorites_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
@@ -17,39 +16,13 @@ class ApartmentDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ApartmentController ctrl = Get.find<ApartmentController>();
     final AuthController authController = Get.find<AuthController>();
-    final FavoritesController favoritesController = Get.put(
-      FavoritesController(),
-    );
-    final arg = Get.arguments;
-    if (arg is String) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ctrl.loadDetails(arg);
-      });
-    } else if (arg is ApartmentModel) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final current = ctrl.apartment.value;
-        if (current != null && (current.reviews.isEmpty)) {
-          ctrl.loadDetails(current.id);
-        }
-      });
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final current = ctrl.apartment.value;
-        if (current != null && current.reviews.isEmpty) {
-          ctrl.loadDetails(current.id);
-        }
-      });
-    }
-
+    // final FavoritesController favoritesController = Get.put(
+    //   FavoritesController(),
+    // );
+    ctrl.loadDetails(ctrl.apartment.value!.id);
     return Obx(() {
       if (ctrl.isLoading.value || ctrl.apartment.value == null) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Loading...'),
-            backgroundColor: context.primary,
-          ),
-          body: const Center(child: CircularProgressIndicator()),
-        );
+        return Scaffold(body: const Center(child: CircularProgressIndicator()));
       }
 
       final apt = ctrl.apartment.value!;
@@ -71,24 +44,8 @@ class ApartmentDetailsPage extends StatelessWidget {
                     color: context.error,
                   ),
                   onPressed: () async {
-                    final isNowFavorite = await favoritesController
-                        .toggleFavorite(apt.id);
+                    final isNowFavorite = await ctrl.toggleFavorite(apt.id);
                     ctrl.isFavorite.value = isNowFavorite;
-
-                    // Show snackbar feedback
-                    Get.snackbar(
-                      isNowFavorite
-                          ? 'Added to Favorites'
-                          : 'Removed from Favorites',
-                      isNowFavorite
-                          ? 'Apartment saved to your favorites'
-                          : 'Apartment removed from favorites',
-                      snackPosition: SnackPosition.BOTTOM,
-                      backgroundColor: isNowFavorite
-                          ? context.primary
-                          : context.error,
-                      colorText: context.currentButtonPrimaryText,
-                    );
                   },
                 ),
               ),

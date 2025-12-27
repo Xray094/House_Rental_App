@@ -9,17 +9,11 @@ import 'package:house_rental_app/routes/app_routes.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   final HomeController ctrl = Get.find<HomeController>();
 
-  // TextEditingControllers for form fields
   final TextEditingController minPriceController = TextEditingController();
   final TextEditingController maxPriceController = TextEditingController();
   final TextEditingController minRoomsController = TextEditingController();
@@ -194,7 +188,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                  // Visual separator
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 10.h),
                     child: Divider(
@@ -211,7 +204,6 @@ class _HomePageState extends State<HomePage> {
                       minAreaController.clear();
                     },
                     style: ElevatedButton.styleFrom(
-                      // backgroundColor: context.currentPrimaryBlue,
                       foregroundColor: Colors.white,
                     ),
                     child: Text('Clear Filters'),

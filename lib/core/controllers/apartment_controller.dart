@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
+import 'package:house_rental_app/Services/favorites_service.dart';
 import 'package:intl/intl.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
-import 'package:house_rental_app/core/controllers/favorites_controller.dart';
 
 class ApartmentController extends GetxController {
   final ApartmentModel? initialApt;
@@ -23,6 +23,9 @@ class ApartmentController extends GetxController {
   var endDate = Rxn<DateTime>();
   final isLoading = false.obs;
 
+  final FavoritesService _favoritesService = Get.put(FavoritesService());
+  var favoriteApartments = <ApartmentModel>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -33,9 +36,59 @@ class ApartmentController extends GetxController {
 
   bool get isTenant => _box.read('role') == 'tenant';
 
-  void toggleFavorite() {
-    isFavorite.value = !isFavorite.value;
+  Future<void> loadFavorites() async {
+    isLoading(true);
+    try {
+      final favorites = await _favoritesService.getFavorites();
+      favoriteApartments.assignAll(favorites);
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to load favorites',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading(false);
+    }
   }
+
+  Future<bool> toggleFavorite(String apartmentId) async {
+    try {
+      final result = await _favoritesService.toggleFavorite(apartmentId);
+
+      return result;
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to update favorite status',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.black,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> checkFavorite(String apartmentId) async {
+    return await _favoritesService.isFavorite(apartmentId);
+  }
+
+  // Future<void> removeFromFavorites(String apartmentId) async {
+  //   try {
+  //     await _favoritesService.toggleFavorite(apartmentId);
+  //     await loadFavorites();
+  //   } catch (e) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Failed to remove from favorites',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.black,
+  //     );
+  //   }
+  // }
 
   Future<void> pickDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
@@ -58,10 +111,8 @@ class ApartmentController extends GetxController {
     final result = await apartmentService.getApartmentById(id);
     apartment.value = result;
 
-    // Check if this apartment is in favorites
-    final favoritesController = Get.find<FavoritesController>();
-    isFavorite.value = await favoritesController.isFavorite(id);
-
+    isFavorite.value = await _favoritesService.isFavorite(id);
+    print(isFavorite.value);
     isLoading(false);
   }
 

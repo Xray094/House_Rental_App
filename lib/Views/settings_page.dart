@@ -20,25 +20,14 @@ class SettingsPage extends StatelessWidget {
           },
         ),
         ListTile(
-          leading: Icon(
-            ThemeControllerExtensions(context).isDarkMode
-                ? Icons.light_mode
-                : Icons.dark_mode,
-          ),
-          title: Text(
-            ThemeControllerExtensions(context).isDarkMode
-                ? 'Light Mode'
-                : 'Dark Mode',
-          ),
+          leading: Icon(Icons.dark_mode),
+          title: Text('Dark Mode'),
           trailing: Switch(
             value: ThemeControllerExtensions(context).isDarkMode,
             onChanged: (value) {
               ThemeControllerExtensions(context).toggleTheme();
             },
           ),
-          onTap: () {
-            ThemeControllerExtensions(context).toggleTheme();
-          },
         ),
         const Divider(),
         ListTile(

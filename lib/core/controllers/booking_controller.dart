@@ -83,30 +83,42 @@ class BookingController extends GetxController {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
       builder: (context, child) {
+        final ThemeData theme = Theme.of(context);
+        final bool isDark = theme.brightness == Brightness.dark;
+        final ColorScheme scheme = isDark
+            ? ColorScheme.dark(
+                primary: primaryBlue,
+                onPrimary: Colors.white,
+                surface: theme.colorScheme.surface,
+                onSurface: Colors.white,
+              )
+            : ColorScheme.light(
+                primary: primaryBlue,
+                onPrimary: Colors.white,
+                surface: Colors.white,
+                onSurface: Colors.black87,
+              );
+        final DatePickerThemeData datePickerTheme = DatePickerThemeData(
+          headerBackgroundColor: primaryBlue,
+          headerForegroundColor: Colors.white,
+          backgroundColor: isDark ? theme.dialogBackgroundColor : Colors.white,
+          dayShape: WidgetStateProperty.all(const CircleBorder()),
+          rangeSelectionBackgroundColor: primaryBlue.withOpacity(0.12),
+          rangeSelectionOverlayColor: WidgetStateProperty.all(
+            primaryBlue.withOpacity(0.1),
+          ),
+          confirmButtonStyle: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all(primaryBlue),
+            textStyle: WidgetStateProperty.all(
+              TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+            ),
+          ),
+        );
+
         return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: primaryBlue,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black87,
-            ),
-            datePickerTheme: DatePickerThemeData(
-              headerBackgroundColor: primaryBlue,
-              headerForegroundColor: Colors.white,
-              backgroundColor: Colors.white,
-              dayShape: WidgetStateProperty.all(const CircleBorder()),
-              rangeSelectionBackgroundColor: primaryBlue.withOpacity(0.12),
-              rangeSelectionOverlayColor: WidgetStateProperty.all(
-                primaryBlue.withOpacity(0.1),
-              ),
-              confirmButtonStyle: ButtonStyle(
-                foregroundColor: WidgetStateProperty.all(primaryBlue),
-                textStyle: WidgetStateProperty.all(
-                  TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
-                ),
-              ),
-            ),
+          data: theme.copyWith(
+            colorScheme: scheme,
+            datePickerTheme: datePickerTheme,
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(foregroundColor: primaryBlue),
             ),

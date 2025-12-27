@@ -40,7 +40,6 @@ class BookingPage extends StatelessWidget {
                 statusColor = LightThemeColors.warning;
                 break;
               case 'cancelled':
-              case 'canceled':
                 statusColor = LightThemeColors.error;
                 break;
               default:
@@ -51,15 +50,10 @@ class BookingPage extends StatelessWidget {
               elevation: 5,
               child: ListTile(
                 minTileHeight: 20,
-                onTap:
-                    (booking.status.toLowerCase() == 'cancelled' ||
-                        (booking.apartmentId.isEmpty &&
-                            booking.apartment == null))
-                    ? null
-                    : () => Get.toNamed(
-                        Routes.apartmentDetails,
-                        arguments: booking.apartment ?? booking.apartmentId,
-                      ),
+                onTap: () => Get.toNamed(
+                  Routes.apartmentDetails,
+                  arguments: booking.apartment,
+                ),
                 title: Row(
                   children: [
                     Expanded(

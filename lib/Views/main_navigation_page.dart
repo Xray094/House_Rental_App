@@ -89,8 +89,8 @@ class MainNavigationPage extends StatelessWidget {
               ),
             ],
             const BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
+              icon: Icon(Icons.settings),
+              label: 'Settings',
             ),
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/core/config/di.dart';
@@ -14,6 +15,7 @@ class ApiService extends GetxService {
         baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
+        responseType: ResponseType.json,
         headers: {
           'accept': 'application/json',
           'content-type': 'application/json',
@@ -39,6 +41,22 @@ class ApiService extends GetxService {
       ),
     );
     dio.interceptors.add(LoggingInterceptor());
+    dio.interceptors.add(
+      RetryInterceptor(
+        dio: dio,
+        logPrint: print,
+        retries: 3,
+        retryEvaluator: (error, attempt) {
+          return error.type == DioExceptionType.unknown ||
+              error.message?.contains('Format') == true;
+        },
+        retryDelays: const [
+          Duration(seconds: 2),
+          Duration(seconds: 4),
+          Duration(seconds: 6),
+        ],
+      ),
+    );
   }
 }
 
