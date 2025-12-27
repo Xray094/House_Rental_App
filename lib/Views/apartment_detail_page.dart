@@ -16,9 +16,6 @@ class ApartmentDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ApartmentController ctrl = Get.find<ApartmentController>();
     final AuthController authController = Get.find<AuthController>();
-    // final FavoritesController favoritesController = Get.put(
-    //   FavoritesController(),
-    // );
     ctrl.loadDetails(ctrl.apartment.value!.id);
     return Obx(() {
       if (ctrl.isLoading.value || ctrl.apartment.value == null) {
@@ -385,8 +382,8 @@ class ApartmentDetailsPage extends StatelessWidget {
           specItem(context, Icons.layers, '${specs.floor}', 'Floor'),
           specItem(
             context,
-            specs.hasBalcony ? Icons.balcony : Icons.window,
-            specs.hasBalcony ? 'One' : 'No',
+            Icons.balcony,
+            specs.hasBalcony ? 'Has' : 'No',
             'Balcony',
           ),
         ],

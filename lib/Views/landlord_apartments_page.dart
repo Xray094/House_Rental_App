@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Views/apartment_booking_page.dart';
+import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/landlord_aparments_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
@@ -103,13 +104,13 @@ class LandlordApartmentsPage extends StatelessWidget {
                           Positioned(
                             top: 10,
                             right: 10,
-                            child: GestureDetector(
+                            child: InkWell(
                               onTap: () => Get.to(
                                 () => ApartmentBookingsPage(),
                                 arguments: apartment,
                               ),
                               child: CircleAvatar(
-                                radius: 15.r,
+                                radius: 24.r,
                                 backgroundColor: context.error,
                                 child: Text(
                                   bookingCount.toString(),
@@ -169,13 +170,45 @@ class LandlordApartmentsPage extends StatelessWidget {
                               Icon(
                                 Icons.location_on,
                                 size: 16.sp,
-                                color: context.currentTextSecondary,
+                                color: primaryBlue,
                               ),
                               Text(
                                 "${attr.location.city}, ${attr.location.governorate}",
                                 style: TextStyle(
                                   color: context.currentTextSecondary,
                                   fontSize: 14.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.king_bed_outlined,
+                                color: primaryBlue,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '${attr.specs.rooms} rooms',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: context.currentTextPrimary,
+                                ),
+                              ),
+                              SizedBox(width: 15.w),
+                              Icon(
+                                Icons.square_foot,
+                                color: primaryBlue,
+                                size: 16.sp,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '${attr.specs.area} m²',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: context.currentTextPrimary,
                                 ),
                               ),
                             ],

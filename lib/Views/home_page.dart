@@ -395,7 +395,6 @@ class HomePage extends StatelessWidget {
   }
 
   List<String> _getGovernorates() {
-    // Extract unique governorates from apartments
     return ctrl.apartments
         .map((a) => a.attributes.location.governorate)
         .where((g) => g.isNotEmpty)
@@ -405,7 +404,6 @@ class HomePage extends StatelessWidget {
   }
 
   List<String> _getCities() {
-    // Extract unique cities from apartments
     return ctrl.apartments
         .map((a) => a.attributes.location.city)
         .where((c) => c.isNotEmpty)
