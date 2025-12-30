@@ -27,10 +27,9 @@ class LandlordApartmentsPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("No apartments found."),
-                TextButton(
-                  onPressed: () => ctrl.fetchMyApartments(),
-                  child: const Text("Refresh"),
+                Text(
+                  "Add a Aparmtment to see it here.",
+                  style: TextStyle(fontSize: 20.sp),
                 ),
               ],
             ),
@@ -128,42 +127,48 @@ class LandlordApartmentsPage extends StatelessWidget {
                       padding: EdgeInsets.all(12.w),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  attr.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18.sp,
-                                    color: context.primary,
+                          InkWell(
+                            onTap: () => Get.toNamed(
+                              Routes.apartmentDetails,
+                              arguments: apartment,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    attr.title,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.sp,
+                                      color: context.primary,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.edit,
-                                      color: context.currentTextSecondary,
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: context.currentTextSecondary,
+                                      ),
+                                      onPressed: () => Get.toNamed(
+                                        Routes.editApartment,
+                                        arguments: apartment,
+                                      ),
                                     ),
-                                    onPressed: () => Get.toNamed(
-                                      Routes.editApartment,
-                                      arguments: apartment,
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: context.error,
+                                      ),
+                                      onPressed: () =>
+                                          ctrl.deleteApartment(apartment.id),
                                     ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: context.error,
-                                    ),
-                                    onPressed: () =>
-                                        ctrl.deleteApartment(apartment.id),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                           Row(
                             children: [

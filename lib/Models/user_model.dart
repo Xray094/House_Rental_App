@@ -68,8 +68,8 @@ class UserAttributes {
     return UserAttributes(
       fullName: json['full_name'] ?? '',
       role: json['role'] ?? '',
-      avatarUrl: json['avatar_url'] != null
-          ? json['avatar_url'].toString().replaceAll(
+      avatarUrl: json['avatar'] != null
+          ? json['avatar']['url'].toString().replaceAll(
               '127.0.0.1:8000',
               '10.0.2.2:8000',
             )
@@ -84,7 +84,7 @@ class UserAttributes {
     return {
       'full_name': fullName,
       'role': role,
-      'avatar_url': avatarUrl,
+      'avatar': avatarUrl,
       'phone_number': phoneNumber,
       'is_verified': isVerified,
       'birth_date': birthDate,

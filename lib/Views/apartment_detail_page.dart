@@ -68,7 +68,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      attr.formattedPrice,
+                      "${attr.formattedPrice} /Night",
                       style: TextStyle(
                         color: context.currentTextPrimary,
                         fontSize: 20.sp,

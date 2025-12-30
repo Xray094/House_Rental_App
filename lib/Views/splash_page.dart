@@ -10,9 +10,6 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.put(AuthController());
-
-    // Validate token on splash screen
     _checkTokenAndNavigate();
 
     return Scaffold(

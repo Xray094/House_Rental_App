@@ -91,7 +91,8 @@ class FirstRegisterPage extends StatelessWidget {
                 color: context.currentTextSecondary,
               ),
             ),
-            Image.asset("assets/images/applogo.png"),
+            SizedBox(height: 20.h),
+            Image.asset('assets/images/appLogo.png', height: 160.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
