@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
-import 'package:house_rental_app/Services/apartment_repository.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
 
 class HomeController extends GetxController {
@@ -10,7 +9,7 @@ class HomeController extends GetxController {
   final isLoading = false.obs;
   final error = Rxn<String>();
 
-  // Filter variables
+  //filter variables
   final selectedGovernorate = Rxn<String>();
   final selectedCity = Rxn<String>();
   final minPrice = Rxn<double>();
@@ -107,7 +106,6 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadApartments() async {
-    // 1. Prevent overlapping calls
     if (isLoading.value) return;
 
     try {

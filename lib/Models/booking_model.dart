@@ -8,11 +8,9 @@ class BookingModel {
   final DateTime startDate;
   final DateTime endDate;
   final int nightsCount;
-  final double totalPrice;
   final String totalPriceFormatted;
   final String status;
   final String createdAtHuman;
-  final List<String> gallery;
   final ApartmentModel? apartment;
 
   BookingModel({
@@ -22,15 +20,13 @@ class BookingModel {
     required this.startDate,
     required this.endDate,
     required this.nightsCount,
-    required this.totalPrice,
     required this.totalPriceFormatted,
     required this.status,
     required this.createdAtHuman,
-    required this.gallery,
     this.apartment,
   });
 
-  factory BookingModel.fromApiJson(Map<String, dynamic> json) {
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
     final id = json['id']?.toString() ?? '';
     final attributes = json['attributes'] ?? {};
     final relationships = json['relationships'] ?? {};
@@ -48,7 +44,6 @@ class BookingModel {
     final endDate = parseDate(attributes['end_date']?.toString());
     String apartmentId = '';
     String apartmentTitle = '';
-    List<String> gallery = [];
 
     final apartmentRel = relationships['apartment'];
     ApartmentModel? apartment;
@@ -57,16 +52,6 @@ class BookingModel {
       apartmentId = apartmentRel['id']?.toString() ?? '';
       final aptAttr = apartmentRel['attributes'] ?? {};
       apartmentTitle = aptAttr['title'] ?? '';
-      final galleryList = aptAttr['gallery'] as List<dynamic>?;
-      if (galleryList != null) {
-        gallery = galleryList
-            .map(
-              (g) => (g is Map && g['url'] != null)
-                  ? g['url'].toString()
-                  : g.toString(),
-            )
-            .toList();
-      }
 
       try {
         apartment = ApartmentModel.fromJson(
@@ -83,19 +68,10 @@ class BookingModel {
       apartmentTitle: apartmentTitle,
       startDate: startDate,
       endDate: endDate,
-      nightsCount: (attributes['nights_count'] ?? 0) is int
-          ? (attributes['nights_count'] ?? 0) as int
-          : int.tryParse((attributes['nights_count'] ?? '0').toString()) ?? 0,
-      totalPrice: (attributes['total_price'] ?? 0) is double
-          ? (attributes['total_price'] ?? 0) as double
-          : double.tryParse((attributes['total_price'] ?? '0').toString()) ??
-                0.0,
-
-      totalPriceFormatted:
-          attributes['total_price_formatted']?.toString() ?? '',
-      status: attributes['status']?.toString() ?? '',
-      createdAtHuman: attributes['created_at_human']?.toString() ?? '',
-      gallery: gallery,
+      nightsCount: attributes['nights_count'] ?? 0,
+      totalPriceFormatted: attributes['total_price_formatted'] ?? '',
+      status: attributes['status'] ?? '',
+      createdAtHuman: attributes['created_at_human'] ?? '',
       apartment: apartment,
     );
   }

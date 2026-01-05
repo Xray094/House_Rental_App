@@ -24,7 +24,7 @@ class BookingController extends GetxController {
     final parsed = raw
         .where((e) => e != null)
         .map<BookingModel>(
-          (e) => BookingModel.fromApiJson(e as Map<String, dynamic>),
+          (e) => BookingModel.fromJson(e as Map<String, dynamic>),
         )
         .toList();
     myBookings.value = parsed;

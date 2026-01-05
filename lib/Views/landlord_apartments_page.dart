@@ -104,6 +104,7 @@ class LandlordApartmentsPage extends StatelessWidget {
                             top: 10,
                             right: 10,
                             child: InkWell(
+                              // make it toNamed
                               onTap: () => Get.to(
                                 () => ApartmentBookingsPage(),
                                 arguments: apartment,

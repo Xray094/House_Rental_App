@@ -16,7 +16,6 @@ class EditApartment extends StatelessWidget {
     final controller = Get.put(EditApartmentController());
     final formKey = GlobalKey<FormState>();
 
-    // Load apartment data when the widget initializes
     controller.loadApartmentData(apartment);
 
     return Scaffold(

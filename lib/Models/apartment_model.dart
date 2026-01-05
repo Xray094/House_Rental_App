@@ -35,7 +35,7 @@ class ApartmentModel {
     List<BookingModel> bookingList = [];
     if (rel['bookings'] != null && rel['bookings'] is List) {
       bookingList = (rel['bookings'] as List)
-          .map((b) => BookingModel.fromApiJson(b))
+          .map((b) => BookingModel.fromJson(b))
           .toList();
     }
 

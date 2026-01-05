@@ -89,6 +89,15 @@ class ApartmentBookingsPage extends StatelessWidget {
                         ),
                         SizedBox(height: 8.h),
                         Text(
+                          "Name: ",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: LightThemeColors.success,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
                           "Dates: ${DateFormat('MMM d, yyyy').format(booking.startDate)} to ${DateFormat('MMM d, yyyy').format(booking.endDate)}",
                           style: TextStyle(
                             fontSize: 14.sp,
