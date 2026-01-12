@@ -113,7 +113,7 @@ class RegisterController extends GetxController {
       Get.snackbar(
         "Error",
         "All fields are required",
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
       return;
     }
@@ -138,13 +138,13 @@ class RegisterController extends GetxController {
         Get.snackbar(
           "Success",
           res['message'] ?? "Waiting for admin approval.",
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
       } else {
         Get.snackbar(
           "Registration Failed",
           res['message'] ?? "resgistration failed.",
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
       }
     } finally {

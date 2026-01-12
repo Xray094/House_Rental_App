@@ -71,7 +71,11 @@ class SettingsPage extends StatelessWidget {
                       if (success) {
                         Get.offAllNamed(Routes.login);
                       } else {
-                        Get.snackbar('Error', 'Logout failed');
+                        Get.snackbar(
+                          'Error',
+                          'Logout failed',
+                          snackPosition: SnackPosition.TOP,
+                        );
                       }
                     },
                     child: Text(

@@ -55,7 +55,7 @@ class BookingController extends GetxController {
           result['message'],
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
         fetchMyBookings();
       } else {
@@ -64,7 +64,7 @@ class BookingController extends GetxController {
           result['message'],
           backgroundColor: Colors.redAccent,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           duration: const Duration(seconds: 5),
         );
       }
@@ -149,7 +149,7 @@ class BookingController extends GetxController {
         Get.snackbar(
           'Success',
           res['message'] ?? 'Booking updated',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
         fetchMyBookings();
       } else {
@@ -193,7 +193,7 @@ class BookingController extends GetxController {
         Get.snackbar(
           'Success',
           res['message'] ?? 'Booking cancelled',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
         );
         fetchMyBookings();
       } else {

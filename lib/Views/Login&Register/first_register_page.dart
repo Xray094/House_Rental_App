@@ -152,6 +152,7 @@ class FirstRegisterPage extends StatelessWidget {
                   Get.snackbar(
                     "Error",
                     "Please select a role and ensure all fields are valid.",
+                    snackPosition: SnackPosition.TOP,
                   );
                   return;
                 }

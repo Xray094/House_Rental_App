@@ -51,7 +51,11 @@ class CreateApartmentController extends GetxController {
 
   Future<void> submitApartment() async {
     if (gallery.isEmpty) {
-      Get.snackbar("Error", "Please add at least one photo");
+      Get.snackbar(
+        "Error",
+        "Please add at least one photo",
+        snackPosition: SnackPosition.TOP,
+      );
       return;
     }
     if (selectedFeatures.isEmpty) {
@@ -60,7 +64,7 @@ class CreateApartmentController extends GetxController {
         "Please select at least one feature (e.g., Wifi, Elevator)",
         backgroundColor: Colors.orange.shade800,
         colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
       return;
     }
@@ -91,6 +95,7 @@ class CreateApartmentController extends GetxController {
         result['message'],
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
       );
       Get.find<LandlordApartmentsController>().fetchMyApartments();
     } else {
@@ -99,6 +104,7 @@ class CreateApartmentController extends GetxController {
         result['message'],
         backgroundColor: Colors.red,
         colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
       );
     }
   }

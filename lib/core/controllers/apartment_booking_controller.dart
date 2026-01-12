@@ -45,7 +45,7 @@ class ApartmentBookingController extends GetxController {
         res['message'] ?? 'Booking rejected',
         backgroundColor: LightThemeColors.success,
         colorText: context.currentButtonPrimaryText,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
       );
     } else {
       final msg = (res['message'] ?? 'Failed to reject booking').toString();

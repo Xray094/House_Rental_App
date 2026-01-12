@@ -22,11 +22,7 @@ class BookingService {
       return response.statusCode == 200 || response.statusCode == 201;
     } on DioException catch (e) {
       String errorMsg = e.response?.data['message'] ?? "Booking failed";
-      Get.snackbar(
-        "Booking Error",
-        errorMsg,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar("Booking Error", errorMsg, snackPosition: SnackPosition.TOP);
       return false;
     } catch (e) {
       return false;

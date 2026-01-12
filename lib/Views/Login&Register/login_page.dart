@@ -88,7 +88,7 @@ class LoginPage extends StatelessWidget {
                     Get.snackbar(
                       'Login Failed',
                       'Invalid mobile or password, or Account not approved.',
-                      snackPosition: SnackPosition.BOTTOM,
+                      snackPosition: SnackPosition.TOP,
                     );
                   }
                 },

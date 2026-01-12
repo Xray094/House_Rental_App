@@ -270,7 +270,7 @@ class ApartmentDetailsPage extends StatelessWidget {
 
                           colorText: context.currentButtonPrimaryText,
 
-                          snackPosition: SnackPosition.BOTTOM,
+                          snackPosition: SnackPosition.TOP,
                         );
                       }
                     },

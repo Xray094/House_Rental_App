@@ -45,7 +45,7 @@ class ApartmentController extends GetxController {
       Get.snackbar(
         'Error',
         'Failed to load favorites',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

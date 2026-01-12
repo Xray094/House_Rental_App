@@ -231,7 +231,11 @@ void _showReviewDialog(BuildContext context, String bookingId) {
           ),
           onPressed: () {
             if (reviewController.text.trim().isEmpty) {
-              Get.snackbar("Required", "Please write a comment.");
+              Get.snackbar(
+                "Required",
+                "Please write a comment.",
+                snackPosition: SnackPosition.TOP,
+              );
               return;
             }
 

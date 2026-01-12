@@ -47,7 +47,7 @@ class LandlordApartmentsController extends GetxController {
             "Apartment removed successfully",
             backgroundColor: Colors.green,
             colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
           );
         } else {
           Get.snackbar(
@@ -55,6 +55,7 @@ class LandlordApartmentsController extends GetxController {
             result['message'],
             backgroundColor: Colors.red,
             colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
           );
         }
       },
