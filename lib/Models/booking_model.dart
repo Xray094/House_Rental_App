@@ -12,6 +12,8 @@ class BookingModel {
   final String status;
   final String createdAtHuman;
   final ApartmentModel? apartment;
+  final String tenantFullName;
+  final String tenantPhoneNumber;
 
   BookingModel({
     required this.id,
@@ -24,6 +26,8 @@ class BookingModel {
     required this.status,
     required this.createdAtHuman,
     this.apartment,
+    required this.tenantFullName,
+    required this.tenantPhoneNumber,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) {
@@ -62,6 +66,15 @@ class BookingModel {
       }
     }
 
+    String tenantFullName = '';
+    String tenantPhoneNumber = '';
+    final tenantRel = relationships['tenant'];
+    if (tenantRel != null) {
+      final tenantAttr = tenantRel['attributes'] ?? {};
+      tenantFullName = tenantAttr['full_name'] ?? '';
+      tenantPhoneNumber = tenantAttr['phone_number'] ?? '';
+    }
+
     return BookingModel(
       id: id,
       apartmentId: apartmentId,
@@ -73,6 +86,8 @@ class BookingModel {
       status: attributes['status'] ?? '',
       createdAtHuman: attributes['created_at_human'] ?? '',
       apartment: apartment,
+      tenantFullName: tenantFullName,
+      tenantPhoneNumber: tenantPhoneNumber,
     );
   }
 }

@@ -89,11 +89,19 @@ class ApartmentBookingsPage extends StatelessWidget {
                         ),
                         SizedBox(height: 8.h),
                         Text(
-                          "Name: ",
+                          "Name: ${booking.tenantFullName}",
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
-                            color: LightThemeColors.success,
+                            color: context.currentTextSecondary,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          "Phone: ${booking.tenantPhoneNumber}",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: context.currentTextSecondary,
                           ),
                         ),
                         SizedBox(height: 4.h),
