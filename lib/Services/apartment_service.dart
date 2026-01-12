@@ -248,19 +248,19 @@ class ApartmentService {
 
   Future<Map<String, List<String>>> getFilterOptions() async {
     try {
-      final response = await _dio.get('/filter-options');
+      final response = await _dio.get('/apartments/filters');
       final governorates = <String>[];
       final cities = <String>[];
 
-      if (response.data['governorates'] != null) {
-        final govData = response.data['governorates'];
+      if (response.data['data']['governorates'] != null) {
+        final govData = response.data['data']['governorates'];
         if (govData is List) {
           governorates.addAll(List<String>.from(govData.whereType<String>()));
         }
       }
 
-      if (response.data['cities'] != null) {
-        final cityData = response.data['cities'];
+      if (response.data['data']['cities'] != null) {
+        final cityData = response.data['data']['cities'];
         if (cityData is List) {
           cities.addAll(List<String>.from(cityData.whereType<String>()));
         }
