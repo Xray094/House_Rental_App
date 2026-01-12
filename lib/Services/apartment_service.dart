@@ -20,6 +20,79 @@ class ApartmentService {
     }
   }
 
+  Future<Map<String, dynamic>> getApartmentsWithPagination({
+    int page = 1,
+    String? governorate,
+    String? city,
+    double? minPrice,
+    double? maxPrice,
+    int? minRooms,
+    int? minArea,
+    int perPage = 10,
+  }) async {
+    try {
+      // Build query parameters
+      Map<String, dynamic> queryParams = {'page': page, 'per_page': perPage};
+
+      // Add filter parameters
+      if (governorate != null && governorate.isNotEmpty) {
+        queryParams['governorate'] = governorate;
+      }
+      if (city != null && city.isNotEmpty) {
+        queryParams['city'] = city;
+      }
+      if (minPrice != null && minPrice > 0) {
+        queryParams['min_price'] = minPrice.toStringAsFixed(2);
+      }
+      if (maxPrice != null && maxPrice > 0) {
+        queryParams['max_price'] = maxPrice.toStringAsFixed(2);
+      }
+      if (minRooms != null && minRooms > 0) {
+        queryParams['min_rooms'] = minRooms;
+      }
+      if (minArea != null && minArea > 0) {
+        queryParams['min_area'] = minArea;
+      }
+
+      final response = await _dio.get(
+        '/apartments',
+        queryParameters: queryParams,
+      );
+
+      // Parse response
+      final List<dynamic> data = response.data['data'] ?? [];
+      final meta = response.data['meta'] as Map<String, dynamic>? ?? {};
+      final links = response.data['links'] as Map<String, dynamic>? ?? {};
+
+      final currentPage = meta['current_page'] as int? ?? 1;
+      final lastPage = meta['last_page'] as int? ?? 1;
+      final nextPageUrl = links['next'] as String?;
+
+      final apartments = data
+          .map((json) => ApartmentModel.fromJson(json))
+          .toList();
+
+      return {
+        'apartments': apartments,
+        'hasMore': nextPageUrl != null && nextPageUrl.isNotEmpty,
+        'currentPage': currentPage,
+        'lastPage': lastPage,
+        'nextPageUrl': nextPageUrl,
+        'total': meta['total'] as int? ?? apartments.length,
+      };
+    } catch (e) {
+      print("Apartment Pagination Fetch Error: $e");
+      return {
+        'apartments': <ApartmentModel>[],
+        'hasMore': false,
+        'currentPage': 1,
+        'lastPage': 1,
+        'nextPageUrl': null,
+        'total': 0,
+      };
+    }
+  }
+
   Future<ApartmentModel?> getApartmentById(String id) async {
     try {
       final response = await _dio.get('/apartments/$id');

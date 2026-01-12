@@ -263,13 +263,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                       if (errorMessage == null) {
                         Get.snackbar(
                           'Success',
-
                           'Your request was sent successfully.',
-
-                          backgroundColor: context.primary,
-
-                          colorText: context.currentButtonPrimaryText,
-
                           snackPosition: SnackPosition.TOP,
                         );
                       }

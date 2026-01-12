@@ -9,7 +9,11 @@ class HomeController extends GetxController {
   final isLoading = false.obs;
   final error = Rxn<String>();
 
-  //filter variables
+  final currentPage = 1.obs;
+  final hasMorePages = true.obs;
+  final isLoadingMore = false.obs;
+  final totalApartments = 0.obs;
+
   final selectedGovernorate = Rxn<String>();
   final selectedCity = Rxn<String>();
   final minPrice = Rxn<double>();
@@ -64,26 +68,38 @@ class HomeController extends GetxController {
     if (governorate != selectedGovernorate.value) {
       selectedCity.value = null;
     }
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void setCity(String? city) {
     selectedCity.value = city;
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void setMinPrice(double? price) {
     minPrice.value = price;
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void setMaxPrice(double? price) {
     maxPrice.value = price;
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void setMinRooms(int? rooms) {
     minRooms.value = rooms;
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void setMinArea(int? area) {
     minArea.value = area;
+    // Reload apartments with new filter
+    loadApartments();
   }
 
   void clearFilters() {
@@ -93,6 +109,8 @@ class HomeController extends GetxController {
     maxPrice.value = null;
     minRooms.value = null;
     minArea.value = null;
+    // Reload apartments after clearing filters
+    loadApartments();
   }
 
   void toggleFilters() {
@@ -111,13 +129,69 @@ class HomeController extends GetxController {
     try {
       isLoading.value = true;
       error.value = null;
-      final list = await service.getApartments();
-      apartments.assignAll(list);
+
+      // Reset pagination state
+      currentPage.value = 1;
+      hasMorePages.value = true;
+      apartments.clear();
+
+      // Fetch with pagination and filters
+      final result = await service.getApartmentsWithPagination(
+        page: 1,
+        governorate: selectedGovernorate.value,
+        city: selectedCity.value,
+        minPrice: minPrice.value,
+        maxPrice: maxPrice.value,
+        minRooms: minRooms.value,
+        minArea: minArea.value,
+        perPage: 10,
+      );
+
+      final List<ApartmentModel> fetchedApartments =
+          result['apartments'] as List<ApartmentModel>;
+      apartments.assignAll(fetchedApartments);
+      hasMorePages.value = result['hasMore'] as bool;
+      totalApartments.value = result['total'] as int;
     } catch (e) {
       error.value =
           "Connection is unstable. Please check your internet and pull to refresh.";
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> loadMoreApartments() async {
+    // Prevent multiple simultaneous loads
+    if (isLoadingMore.value || !hasMorePages.value) return;
+
+    try {
+      isLoadingMore.value = true;
+
+      final nextPage = currentPage.value + 1;
+      final result = await service.getApartmentsWithPagination(
+        page: nextPage,
+        governorate: selectedGovernorate.value,
+        city: selectedCity.value,
+        minPrice: minPrice.value,
+        maxPrice: maxPrice.value,
+        minRooms: minRooms.value,
+        minArea: minArea.value,
+        perPage: 10,
+      );
+
+      final List<ApartmentModel> fetchedApartments =
+          result['apartments'] as List<ApartmentModel>;
+
+      // Append new apartments to the list
+      apartments.addAll(fetchedApartments);
+      hasMorePages.value = result['hasMore'] as bool;
+      currentPage.value = nextPage;
+      totalApartments.value = result['total'] as int;
+    } catch (e) {
+      // Silent fail for load more - don't show error for pagination failures
+      print("Error loading more apartments: $e");
+    } finally {
+      isLoadingMore.value = false;
     }
   }
 }

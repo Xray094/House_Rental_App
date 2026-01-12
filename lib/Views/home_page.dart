@@ -19,6 +19,8 @@ class HomePage extends StatelessWidget {
   final TextEditingController minRoomsController = TextEditingController();
   final TextEditingController minAreaController = TextEditingController();
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -216,182 +218,253 @@ class HomePage extends StatelessWidget {
         Expanded(
           child: Obx(() {
             final filteredList = ctrl.filteredApartments;
-            if (ctrl.isLoading.value) {
+            if (ctrl.isLoading.value && ctrl.apartments.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            if (ctrl.error.value != null) {
+            if (ctrl.error.value != null && ctrl.apartments.isEmpty) {
               return Center(
-                child: Text('Error loading apartments: ${ctrl.error.value}'),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Error loading apartments: ${ctrl.error.value}'),
+                    SizedBox(height: 16.h),
+                    ElevatedButton(
+                      onPressed: () => ctrl.loadApartments(),
+                      child: Text('Retry'),
+                    ),
+                  ],
+                ),
               );
             }
-            if (filteredList.isEmpty) {
+            if (filteredList.isEmpty && ctrl.apartments.isEmpty) {
               return Center(
                 child: Text(
-                  'No apartments found matching filters.',
+                  'No apartments found.',
                   style: TextStyle(color: context.currentTextPrimary),
                 ),
               );
             }
-            return RefreshIndicator(
-              onRefresh: () => ctrl.loadApartments(),
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final ApartmentModel apartment = filteredList[index];
-                  final attr = apartment.attributes;
-                  return InkWell(
-                    onTap: () {
-                      Get.toNamed(
-                        Routes.apartmentDetails,
-                        arguments: apartment,
-                      );
-                    },
-                    child: Card(
-                      margin: EdgeInsets.only(bottom: 20.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                      elevation: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: attr.galleryUrls.isNotEmpty
-                                ? attr.galleryUrls.first
-                                : "",
-                            height: 160.h,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            progressIndicatorBuilder:
-                                (context, url, downloadProgress) => Container(
-                                  height: 160.h,
-                                  width: double.infinity,
-                                  color: context.currentCardColor,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      value: downloadProgress.progress,
+
+            return NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollInfo) {
+                // Trigger load more when near bottom
+                if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200 &&
+                    !ctrl.isLoadingMore.value &&
+                    ctrl.hasMorePages.value &&
+                    filteredList.isNotEmpty) {
+                  ctrl.loadMoreApartments();
+                }
+                return false;
+              },
+              child: RefreshIndicator(
+                onRefresh: () => ctrl.loadApartments(),
+                child: ListView.builder(
+                  controller: scrollController,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.w,
+                    vertical: 10.h,
+                  ),
+                  itemCount:
+                      filteredList.length + 1, // +1 for loading indicator
+                  itemBuilder: (context, index) {
+                    // Show loading indicator at the end
+                    if (index >= filteredList.length) {
+                      return _buildLoadingIndicator();
+                    }
+
+                    final ApartmentModel apartment = filteredList[index];
+                    final attr = apartment.attributes;
+                    return InkWell(
+                      onTap: () {
+                        Get.toNamed(
+                          Routes.apartmentDetails,
+                          arguments: apartment,
+                        );
+                      },
+                      child: Card(
+                        margin: EdgeInsets.only(bottom: 20.h),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.r),
+                        ),
+                        elevation: 4,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: attr.galleryUrls.isNotEmpty
+                                  ? attr.galleryUrls.first
+                                  : "",
+                              height: 160.h,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) => Container(
+                                    height: 160.h,
+                                    width: double.infinity,
+                                    color: context.currentCardColor,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        value: downloadProgress.progress,
+                                      ),
                                     ),
                                   ),
-                                ),
-                            memCacheHeight: 400,
-                            maxWidthDiskCache: 800,
-                            errorWidget: (context, url, error) => Container(
-                              color: context.currentCardColor,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.image_not_supported,
-                                    color: context.currentTextSecondary,
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    "No Image",
-                                    style: TextStyle(
+                              memCacheHeight: 400,
+                              maxWidthDiskCache: 800,
+                              errorWidget: (context, url, error) => Container(
+                                color: context.currentCardColor,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.image_not_supported,
                                       color: context.currentTextSecondary,
-                                      fontSize: 12.sp,
                                     ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      "No Image",
+                                      style: TextStyle(
+                                        color: context.currentTextSecondary,
+                                        fontSize: 12.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(12.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          attr.title,
+                                          style: TextStyle(
+                                            color: primaryBlue,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16.sp,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      Text(
+                                        attr.formattedPrice,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.sp,
+                                          color: primaryBlue,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.location_on,
+                                        color: primaryBlue,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        '${attr.location.city}, ${attr.location.governorate}',
+                                        style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: context.currentTextSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.h),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.king_bed_outlined,
+                                        color: primaryBlue,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        '${attr.specs.rooms} rooms',
+                                        style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: context.currentTextPrimary,
+                                        ),
+                                      ),
+                                      SizedBox(width: 15.w),
+                                      Icon(
+                                        Icons.square_foot,
+                                        color: primaryBlue,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(width: 4.w),
+                                      Text(
+                                        '${attr.specs.area} m²',
+                                        style: TextStyle(
+                                          fontSize: 13.sp,
+                                          color: context.currentTextPrimary,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(12.w),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        attr.title,
-                                        style: TextStyle(
-                                          color: primaryBlue,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.sp,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Text(
-                                      attr.formattedPrice,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16.sp,
-                                        color: primaryBlue,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8.h),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      color: primaryBlue,
-                                      size: 16.sp,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      '${attr.location.city}, ${attr.location.governorate}',
-                                      style: TextStyle(
-                                        fontSize: 13.sp,
-                                        color: context.currentTextSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8.h),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.king_bed_outlined,
-                                      color: primaryBlue,
-                                      size: 16.sp,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      '${attr.specs.rooms} rooms',
-                                      style: TextStyle(
-                                        fontSize: 13.sp,
-                                        color: context.currentTextPrimary,
-                                      ),
-                                    ),
-                                    SizedBox(width: 15.w),
-                                    Icon(
-                                      Icons.square_foot,
-                                      color: primaryBlue,
-                                      size: 16.sp,
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      '${attr.specs.area} m²',
-                                      style: TextStyle(
-                                        fontSize: 13.sp,
-                                        color: context.currentTextPrimary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             );
           }),
         ),
       ],
     );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Obx(() {
+      if (ctrl.isLoadingMore.value) {
+        return Container(
+          padding: EdgeInsets.all(16.h),
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 20.w,
+                height: 20.h,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              SizedBox(width: 10.w),
+              Text(
+                'Loading more apartments...',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+            ],
+          ),
+        );
+      }
+      if (!ctrl.hasMorePages.value && ctrl.apartments.isNotEmpty) {
+        return Container(
+          padding: EdgeInsets.all(16.h),
+          alignment: Alignment.center,
+          child: Text(
+            'No more apartments to load',
+            style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+          ),
+        );
+      }
+      return SizedBox.shrink();
+    });
   }
 
   List<String> _getGovernorates() {
