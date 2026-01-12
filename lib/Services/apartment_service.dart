@@ -245,4 +245,33 @@ class ApartmentService {
       };
     }
   }
+
+  Future<Map<String, List<String>>> getFilterOptions() async {
+    try {
+      final response = await _dio.get('/filter-options');
+      final governorates = <String>[];
+      final cities = <String>[];
+
+      if (response.data['governorates'] != null) {
+        final govData = response.data['governorates'];
+        if (govData is List) {
+          governorates.addAll(List<String>.from(govData.whereType<String>()));
+        }
+      }
+
+      if (response.data['cities'] != null) {
+        final cityData = response.data['cities'];
+        if (cityData is List) {
+          cities.addAll(List<String>.from(cityData.whereType<String>()));
+        }
+      }
+      governorates.sort();
+      cities.sort();
+
+      return {'governorates': governorates, 'cities': cities};
+    } catch (e) {
+      print("Filter Options Fetch Error: $e");
+      return {'governorates': <String>[], 'cities': <String>[]};
+    }
+  }
 }

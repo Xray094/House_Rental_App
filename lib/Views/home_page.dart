@@ -468,20 +468,28 @@ class HomePage extends StatelessWidget {
   }
 
   List<String> _getGovernorates() {
-    return ctrl.apartments
-        .map((a) => a.attributes.location.governorate)
-        .where((g) => g.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
+    // if (ctrl.availableGovernorates.isNotEmpty) {
+    return ctrl.availableGovernorates;
+    // }
+    // // Fallback: extract from loaded apartments if filter options not loaded yet
+    // return ctrl.apartments
+    //     .map((a) => a.attributes.location.governorate)
+    //     .where((g) => g.isNotEmpty)
+    //     .toSet()
+    //     .toList()
+    //   ..sort();
   }
 
   List<String> _getCities() {
-    return ctrl.apartments
-        .map((a) => a.attributes.location.city)
-        .where((c) => c.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
+    // if (ctrl.availableCities.isNotEmpty) {
+    return ctrl.availableCities;
+    // }
+    // // Fallback: extract from loaded apartments if filter options not loaded yet
+    // return ctrl.apartments
+    //     .map((a) => a.attributes.location.city)
+    //     .where((c) => c.isNotEmpty)
+    //     .toSet()
+    //     .toList()
+    //   ..sort();
   }
 }

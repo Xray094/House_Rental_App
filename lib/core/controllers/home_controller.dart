@@ -22,6 +22,11 @@ class HomeController extends GetxController {
   final minArea = Rxn<int>();
   final isFiltersVisible = false.obs;
 
+  // Filter options from server
+  final availableGovernorates = <String>[].obs;
+  final availableCities = <String>[].obs;
+  final isLoadingFilters = false.obs;
+
   // Computed property for filtered apartments
   List<ApartmentModel> get filteredApartments {
     return apartments.where((apartment) {
@@ -120,7 +125,22 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    loadFilterOptions();
     loadApartments();
+  }
+
+  Future<void> loadFilterOptions() async {
+    try {
+      isLoadingFilters.value = true;
+      final result = await service.getFilterOptions();
+
+      availableGovernorates.assignAll(result['governorates'] as List<String>);
+      availableCities.assignAll(result['cities'] as List<String>);
+    } catch (e) {
+      print("Error loading filter options: $e");
+    } finally {
+      isLoadingFilters.value = false;
+    }
   }
 
   Future<void> loadApartments() async {
@@ -134,6 +154,9 @@ class HomeController extends GetxController {
       currentPage.value = 1;
       hasMorePages.value = true;
       apartments.clear();
+
+      // Also reload filter options to get any new locations from added apartments
+      await loadFilterOptions();
 
       // Fetch with pagination and filters
       final result = await service.getApartmentsWithPagination(
