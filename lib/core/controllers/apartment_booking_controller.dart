@@ -12,7 +12,7 @@ class ApartmentBookingController extends GetxController {
       bookingId,
     );
     if (res['success'] == true) {
-      Get.back();
+      Get.back(result: true);
       Get.snackbar(
         'Success',
         res['message'] ?? 'Booking approved',
@@ -34,12 +34,12 @@ class ApartmentBookingController extends GetxController {
     }
   }
 
-  rejectBooking(String bookingId, BuildContext context) async {
+  void rejectBooking(String bookingId, BuildContext context) async {
     final Map<String, dynamic> res = await bookingService.cancelBooking(
       bookingId,
     );
     if (res['success'] == true) {
-      Get.back();
+      Get.back(result: true);
       Get.snackbar(
         'Success',
         res['message'] ?? 'Booking rejected',

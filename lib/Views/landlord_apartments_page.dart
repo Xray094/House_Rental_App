@@ -105,10 +105,15 @@ class LandlordApartmentsPage extends StatelessWidget {
                             right: 10,
                             child: InkWell(
                               // make it toNamed
-                              onTap: () => Get.to(
-                                () => ApartmentBookingsPage(),
-                                arguments: apartment,
-                              ),
+                              onTap: () =>
+                                  Get.to(
+                                    () => ApartmentBookingsPage(),
+                                    arguments: apartment,
+                                  )?.then((shouldRefresh) {
+                                    if (shouldRefresh == true) {
+                                      ctrl.fetchMyApartments();
+                                    }
+                                  }),
                               child: CircleAvatar(
                                 radius: 24.r,
                                 backgroundColor: context.error,
