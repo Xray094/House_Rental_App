@@ -116,6 +116,12 @@ class ApartmentController extends GetxController {
     isLoading(false);
   }
 
+  double get totalPrice {
+    if (startDate.value == null || endDate.value == null) return 0.0;
+    int nights = endDate.value!.difference(startDate.value!).inDays;
+    return nights * (apartment.value?.attributes.price ?? 0.0);
+  }
+
   Future<String?> book() async {
     if (startDate.value == null || endDate.value == null) {
       return "Please select rental dates first";

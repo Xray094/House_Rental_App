@@ -214,6 +214,45 @@ class ApartmentDetailsPage extends StatelessWidget {
                           },
                         ),
                       ),
+                      Obx(() {
+                        if (ctrl.startDate.value != null &&
+                            ctrl.endDate.value != null) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: 16.h),
+                            child: Container(
+                              padding: EdgeInsets.all(16.w),
+                              decoration: BoxDecoration(
+                                color: context.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Total Price:',
+                                    style: TextStyle(
+                                      color: context.currentTextPrimary,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${ctrl.totalPrice.toStringAsFixed(2)} USD',
+                                    style: TextStyle(
+                                      color: context.primary,
+                                      fontSize: 18.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      }),
                     ],
                   ),
                 ),
