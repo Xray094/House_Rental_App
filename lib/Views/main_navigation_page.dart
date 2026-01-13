@@ -111,20 +111,24 @@ class HomeAppBar extends StatelessWidget {
       automaticallyImplyLeading: false,
       centerTitle: true,
       elevation: 0,
+      leadingWidth: 62.w,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 3),
+        padding: const EdgeInsets.only(left: 10, top: 8),
         child: SizedBox(
           height: 30.h,
           width: 30.w,
           child: Image.asset('assets/images/appLogo.png'),
         ),
       ),
-      title: Text(
-        'Home',
-        style: TextStyle(
-          color: context.currentAppBarTitleColor,
-          fontSize: 30.sp,
-          fontWeight: FontWeight.bold,
+      title: Padding(
+        padding: const EdgeInsets.only(top: 14),
+        child: Text(
+          'Home',
+          style: TextStyle(
+            color: context.currentAppBarTitleColor,
+            fontSize: 30.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       actions: [

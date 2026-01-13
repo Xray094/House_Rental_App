@@ -75,21 +75,6 @@ class ApartmentController extends GetxController {
     return await _favoritesService.isFavorite(apartmentId);
   }
 
-  // Future<void> removeFromFavorites(String apartmentId) async {
-  //   try {
-  //     await _favoritesService.toggleFavorite(apartmentId);
-  //     await loadFavorites();
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       'Error',
-  //       'Failed to remove from favorites',
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.red,
-  //       colorText: Colors.black,
-  //     );
-  //   }
-  // }
-
   Future<void> pickDateRange(BuildContext context) async {
     final DateTimeRange? picked = await showDateRangePicker(
       context: context,

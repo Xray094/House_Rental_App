@@ -41,7 +41,7 @@ class AuthController extends GetxController {
     user.value = null;
 
     final themeController = Get.find<ThemeController>();
-    themeController.setThemeMode(false);
+    themeController.setThemeMode(true);
   }
 
   Future<bool> validateCurrentToken() async {
