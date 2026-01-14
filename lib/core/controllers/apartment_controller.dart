@@ -72,8 +72,9 @@ class ApartmentController extends GetxController {
     final result = await apartmentService.getApartmentById(id);
     apartment.value = result;
 
-    isFavorite.value = await _favoritesService.isFavorite(id);
-    print(isFavorite.value);
+    if (isTenant) {
+      isFavorite.value = await _favoritesService.isFavorite(id);
+    }
     isLoading(false);
   }
 
