@@ -54,7 +54,7 @@ class CreateApartment extends StatelessWidget {
                     Obx(
                       () => CustomTextField(
                         name: 'Description',
-                        hint: 'Enter description (min 10 characters)',
+                        hint: 'Enter description (min 20 characters)',
                         prefixIcon: Icons.description,
                         controller: controller.descCtrl,
                         inputType: TextInputType.multiline,
