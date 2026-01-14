@@ -66,12 +66,12 @@ class ApartmentBookingsPage extends StatelessWidget {
                                 vertical: 4.h,
                               ),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(
+                                color: getStatusColor(
                                   booking.status,
                                 ).withOpacity(0.15),
                                 borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
-                                  color: _getStatusColor(
+                                  color: getStatusColor(
                                     booking.status,
                                   ).withOpacity(0.4),
                                 ),
@@ -79,7 +79,7 @@ class ApartmentBookingsPage extends StatelessWidget {
                               child: Text(
                                 booking.status.toUpperCase(),
                                 style: TextStyle(
-                                  color: _getStatusColor(booking.status),
+                                  color: getStatusColor(booking.status),
                                   fontSize: 10.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -204,7 +204,7 @@ class ApartmentBookingsPage extends StatelessWidget {
     );
   }
 
-  static Color _getStatusColor(String status) {
+  static Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'approved':
         return LightThemeColors.success;

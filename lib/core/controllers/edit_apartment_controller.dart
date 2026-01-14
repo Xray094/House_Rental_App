@@ -21,7 +21,7 @@ class EditApartmentController extends GetxController {
   final ApartmentService _apartmentService = ApartmentService();
 
   var gallery = <File>[].obs;
-  var existingImageUrls = <String>[].obs; // URLs of existing images
+  var existingImageUrls = <String>[].obs;
   var hasBalcony = false.obs;
   var isLoading = false.obs;
   var isUpdating = false.obs;
@@ -64,7 +64,6 @@ class EditApartmentController extends GetxController {
     final location = attr.location;
     final specs = attr.specs;
 
-    // Populate form fields
     titleCtrl.text = attr.title;
     descCtrl.text = attr.description;
     priceCtrl.text = attr.price.toString();
@@ -76,10 +75,8 @@ class EditApartmentController extends GetxController {
     floorCtrl.text = specs.floor.toString();
     hasBalcony.value = specs.hasBalcony;
 
-    // Load existing images
     existingImageUrls.value = attr.galleryUrls;
 
-    // Load existing features
     selectedFeatures.value = List.from(attr.features);
   }
 

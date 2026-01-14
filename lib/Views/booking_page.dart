@@ -21,7 +21,7 @@ class BookingPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (ctrl.myBookings.isEmpty) {
-          return _buildEmptyState(context);
+          return buildEmptyState(context);
         }
 
         return ListView.builder(
@@ -101,7 +101,7 @@ class BookingPage extends StatelessWidget {
                       Expanded(
                         child: TextButton.icon(
                           onPressed: () =>
-                              _showReviewDialog(context, booking.id),
+                              showReviewDialog(context, booking.id),
                           icon: Icon(
                             Icons.star_rate,
                             size: 16.sp,
@@ -148,7 +148,7 @@ class BookingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),
@@ -185,7 +185,7 @@ class BookingPage extends StatelessWidget {
   }
 }
 
-void _showReviewDialog(BuildContext context, String bookingId) {
+void showReviewDialog(BuildContext context, String bookingId) {
   final TextEditingController reviewController = TextEditingController();
   final RxDouble selectedRating = 5.0.obs;
 

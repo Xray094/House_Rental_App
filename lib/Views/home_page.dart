@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             value: ctrl.selectedGovernorate.value,
-                            items: _getGovernorates().map((gov) {
+                            items: getGovernorates().map((gov) {
                               return DropdownMenuItem(
                                 value: gov,
                                 child: Text(
@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             value: ctrl.selectedCity.value,
-                            items: _getCities().map((city) {
+                            items: getCities().map((city) {
                               return DropdownMenuItem(
                                 value: city,
                                 child: Text(
@@ -247,7 +247,6 @@ class HomePage extends StatelessWidget {
 
             return NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                // Trigger load more when near bottom
                 if (scrollInfo.metrics.pixels >=
                         scrollInfo.metrics.maxScrollExtent - 200 &&
                     !ctrl.isLoadingMore.value &&
@@ -265,12 +264,10 @@ class HomePage extends StatelessWidget {
                     horizontal: 15.w,
                     vertical: 10.h,
                   ),
-                  itemCount:
-                      filteredList.length + 1, // +1 for loading indicator
+                  itemCount: filteredList.length + 1,
                   itemBuilder: (context, index) {
-                    // Show loading indicator at the end
                     if (index >= filteredList.length) {
-                      return _buildLoadingIndicator();
+                      return buildLoadingIndicator();
                     }
 
                     final ApartmentModel apartment = filteredList[index];
@@ -430,7 +427,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingIndicator() {
+  Widget buildLoadingIndicator() {
     return Obx(() {
       if (ctrl.isLoadingMore.value) {
         return Container(
@@ -467,29 +464,11 @@ class HomePage extends StatelessWidget {
     });
   }
 
-  List<String> _getGovernorates() {
-    // if (ctrl.availableGovernorates.isNotEmpty) {
+  List<String> getGovernorates() {
     return ctrl.availableGovernorates;
-    // }
-    // // Fallback: extract from loaded apartments if filter options not loaded yet
-    // return ctrl.apartments
-    //     .map((a) => a.attributes.location.governorate)
-    //     .where((g) => g.isNotEmpty)
-    //     .toSet()
-    //     .toList()
-    //   ..sort();
   }
 
-  List<String> _getCities() {
-    // if (ctrl.availableCities.isNotEmpty) {
+  List<String> getCities() {
     return ctrl.availableCities;
-    // }
-    // // Fallback: extract from loaded apartments if filter options not loaded yet
-    // return ctrl.apartments
-    //     .map((a) => a.attributes.location.city)
-    //     .where((c) => c.isNotEmpty)
-    //     .toSet()
-    //     .toList()
-    //   ..sort();
   }
 }

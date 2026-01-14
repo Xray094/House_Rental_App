@@ -53,7 +53,7 @@ class ApartmentDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildGallerySlider(context, attr.galleryUrls),
+              buildGallerySlider(context, attr.galleryUrls),
               Padding(
                 padding: EdgeInsets.all(16.w),
                 child: Column(
@@ -101,7 +101,7 @@ class ApartmentDetailsPage extends StatelessWidget {
                 ),
               ),
               const Divider(),
-              _buildSpecifications(context, apt),
+              buildSpecifications(context, apt),
               const Divider(),
               buildSectionTitle(context, 'Description'),
               Padding(
@@ -261,7 +261,7 @@ class ApartmentDetailsPage extends StatelessWidget {
               ],
               const Divider(),
               buildSectionTitle(context, 'Reviews (${apt.reviews.length})'),
-              _buildReviewsList(apt.reviews),
+              buildReviewsList(apt.reviews),
             ],
           ),
         ),
@@ -327,7 +327,7 @@ class ApartmentDetailsPage extends StatelessWidget {
     });
   }
 
-  Widget _buildReviewsList(List<ReviewModel> reviews) {
+  Widget buildReviewsList(List<ReviewModel> reviews) {
     if (reviews.isEmpty) {
       return Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -404,7 +404,7 @@ class ApartmentDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecifications(BuildContext context, ApartmentModel apartment) {
+  Widget buildSpecifications(BuildContext context, ApartmentModel apartment) {
     final specs = apartment.attributes.specs;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -425,7 +425,7 @@ class ApartmentDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildGallerySlider(BuildContext context, List<String> galleryUrls) {
+  Widget buildGallerySlider(BuildContext context, List<String> galleryUrls) {
     if (galleryUrls.isEmpty) {
       return Container(
         height: 250,

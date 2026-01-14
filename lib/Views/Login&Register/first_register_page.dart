@@ -144,7 +144,6 @@ class FirstRegisterPage extends StatelessWidget {
             SizedBox(height: 40.h),
             ElevatedButton(
               onPressed: () {
-                // Trigger validation
                 controller.validatePhoneNumber();
                 controller.validatePassword();
 

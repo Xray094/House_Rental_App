@@ -19,10 +19,7 @@ class ApartmentService {
     int perPage = 10,
   }) async {
     try {
-      // Build query parameters
       Map<String, dynamic> queryParams = {'page': page, 'per_page': perPage};
-
-      // Add filter parameters
       if (governorate != null && governorate.isNotEmpty) {
         queryParams['governorate'] = governorate;
       }
@@ -47,7 +44,6 @@ class ApartmentService {
         queryParameters: queryParams,
       );
 
-      // Parse response
       final List<dynamic> data = response.data['data'] ?? [];
       final meta = response.data['meta'] as Map<String, dynamic>? ?? {};
       final links = response.data['links'] as Map<String, dynamic>? ?? {};

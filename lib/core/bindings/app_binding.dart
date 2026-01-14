@@ -13,14 +13,12 @@ import 'package:house_rental_app/Services/logout_service.dart';
 class AppBinding extends Bindings {
   @override
   void dependencies() {
-    //Services
     Get.put(ApiService());
     Get.put(ApartmentService());
     Get.lazyPut(() => BookingService(), fenix: true);
     Get.lazyPut(() => AuthService(), fenix: true);
     Get.lazyPut(() => LogoutService(), fenix: true);
 
-    //Controllers
     Get.put(AuthController(), permanent: true);
     Get.lazyPut(() => SettingsController(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);

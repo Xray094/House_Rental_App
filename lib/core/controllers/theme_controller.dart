@@ -157,7 +157,6 @@ class ThemeController extends GetxController {
     );
   }
 
-  // Dark theme configuration
   ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: false,

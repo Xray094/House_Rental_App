@@ -34,21 +34,21 @@ class CreateApartment extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSectionTitle("Basic Details", context),
-                      _buildField(
+                      buildSectionTitle("Basic Details", context),
+                      buildField(
                         controller.titleCtrl,
                         "Title",
                         Icons.title,
                         context,
                       ),
-                      _buildField(
+                      buildField(
                         controller.descCtrl,
                         "Description",
                         Icons.description,
                         context,
                         maxLines: 3,
                       ),
-                      _buildField(
+                      buildField(
                         controller.priceCtrl,
                         "Price per Night",
                         Icons.attach_money,
@@ -57,20 +57,20 @@ class CreateApartment extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Location", context),
-                      _buildField(
+                      buildSectionTitle("Location", context),
+                      buildField(
                         controller.govCtrl,
                         "Governorate",
                         Icons.map,
                         context,
                       ),
-                      _buildField(
+                      buildField(
                         controller.cityCtrl,
                         "City",
                         Icons.location_city,
                         context,
                       ),
-                      _buildField(
+                      buildField(
                         controller.addressCtrl,
                         "Exact Address",
                         Icons.home,
@@ -78,11 +78,11 @@ class CreateApartment extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Specifications", context),
+                      buildSectionTitle("Specifications", context),
                       Row(
                         children: [
                           Expanded(
-                            child: _buildField(
+                            child: buildField(
                               controller.areaCtrl,
                               "Area (m²)",
                               Icons.square_foot,
@@ -92,7 +92,7 @@ class CreateApartment extends StatelessWidget {
                           ),
                           SizedBox(width: 10.w),
                           Expanded(
-                            child: _buildField(
+                            child: buildField(
                               controller.roomsCtrl,
                               "Rooms",
                               Icons.bed,
@@ -102,7 +102,7 @@ class CreateApartment extends StatelessWidget {
                           ),
                         ],
                       ),
-                      _buildField(
+                      buildField(
                         controller.floorCtrl,
                         "Floor",
                         Icons.layers,
@@ -120,7 +120,7 @@ class CreateApartment extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Features", context),
+                      buildSectionTitle("Features", context),
                       Obx(
                         () => Wrap(
                           spacing: 8.w,
@@ -157,8 +157,8 @@ class CreateApartment extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      _buildSectionTitle("Gallery", context),
-                      _buildImagePicker(controller, context),
+                      buildSectionTitle("Gallery", context),
+                      buildImagePicker(controller, context),
                       const SizedBox(height: 32),
                       SizedBox(
                         width: double.infinity,
@@ -194,7 +194,7 @@ class CreateApartment extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title, BuildContext context) {
+  Widget buildSectionTitle(String title, BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: Text(
@@ -208,7 +208,7 @@ class CreateApartment extends StatelessWidget {
     );
   }
 
-  Widget _buildField(
+  Widget buildField(
     TextEditingController ctrl,
     String label,
     IconData icon,
@@ -244,7 +244,7 @@ class CreateApartment extends StatelessWidget {
     );
   }
 
-  Widget _buildImagePicker(
+  Widget buildImagePicker(
     CreateApartmentController controller,
     BuildContext context,
   ) {

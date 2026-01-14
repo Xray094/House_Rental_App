@@ -10,7 +10,7 @@ class SplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _checkTokenAndNavigate();
+    checkTokenAndNavigate();
 
     return Scaffold(
       backgroundColor: context.currentBackgroundColor,
@@ -24,7 +24,7 @@ class SplashPage extends StatelessWidget {
     );
   }
 
-  void _checkTokenAndNavigate() async {
+  void checkTokenAndNavigate() async {
     await Future.delayed(const Duration(seconds: 1));
 
     final authController = Get.find<AuthController>();

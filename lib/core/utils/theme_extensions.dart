@@ -4,7 +4,6 @@ import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/controllers/theme_controller.dart';
 
 extension ThemeExtensions on BuildContext {
-  // Helper getters for theme colors
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
 
   Color get primaryColor => Theme.of(this).primaryColor;
@@ -17,7 +16,6 @@ extension ThemeExtensions on BuildContext {
   BottomNavigationBarThemeData get bottomNavigationBarTheme =>
       Theme.of(this).bottomNavigationBarTheme;
 
-  // Color scheme getters
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
   Color get primary => colorScheme.primary;
   Color get secondary => colorScheme.secondary;
@@ -32,7 +30,6 @@ extension ThemeExtensions on BuildContext {
 }
 
 extension AppColors on BuildContext {
-  // Helper methods to get current theme colors
   Color get currentBackgroundColor => isDark
       ? DarkThemeColors.backgroundColor
       : LightThemeColors.backgroundColor;
@@ -101,7 +98,6 @@ extension AppColors on BuildContext {
   Color get currentDividerColor =>
       isDark ? DarkThemeColors.dividerColor : LightThemeColors.dividerColor;
 
-  // Role card specific colors
   Color get currentRoleCardBackground => isDark
       ? DarkThemeColors.roleCardBackground
       : LightThemeColors.roleCardBackground;
@@ -117,7 +113,6 @@ extension AppColors on BuildContext {
 }
 
 extension ThemeControllerExtensions on BuildContext {
-  // Helper methods to interact with theme controller
   void toggleTheme() {
     if (Get.isRegistered<ThemeController>()) {
       ThemeController.to.toggleTheme();

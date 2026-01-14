@@ -27,7 +27,7 @@ class FavoritesPage extends StatelessWidget {
         }
 
         if (controller.favoriteApartments.isEmpty) {
-          return _buildEmptyState(context);
+          return buildEmptyState(context);
         }
 
         return RefreshIndicator(
@@ -187,7 +187,7 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState(BuildContext context) {
+  Widget buildEmptyState(BuildContext context) {
     return Center(
       child: Padding(
         padding: EdgeInsets.all(32.w),

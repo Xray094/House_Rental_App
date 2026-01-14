@@ -22,29 +22,24 @@ class HomeController extends GetxController {
   final minArea = Rxn<int>();
   final isFiltersVisible = false.obs;
 
-  // Filter options from server
   final availableGovernorates = <String>[].obs;
   final availableCities = <String>[].obs;
   final isLoadingFilters = false.obs;
 
-  // Computed property for filtered apartments
   List<ApartmentModel> get filteredApartments {
     return apartments.where((apartment) {
       final attr = apartment.attributes;
 
-      // Governorate filter
       if (selectedGovernorate.value != null &&
           attr.location.governorate != selectedGovernorate.value) {
         return false;
       }
 
-      // City filter
       if (selectedCity.value != null &&
           attr.location.city != selectedCity.value) {
         return false;
       }
 
-      // Price filters
       if (minPrice.value != null && attr.price < minPrice.value!) {
         return false;
       }
@@ -52,12 +47,10 @@ class HomeController extends GetxController {
         return false;
       }
 
-      // Room filter
       if (minRooms.value != null && attr.specs.rooms < minRooms.value!) {
         return false;
       }
 
-      // Area filter
       if (minArea.value != null && attr.specs.area < minArea.value!) {
         return false;
       }
@@ -66,44 +59,36 @@ class HomeController extends GetxController {
     }).toList();
   }
 
-  // Filter methods
   void setGovernorate(String? governorate) {
     selectedGovernorate.value = governorate;
-    // Reset city when governorate changes
     if (governorate != selectedGovernorate.value) {
       selectedCity.value = null;
     }
-    // Reload apartments with new filter
     loadApartments();
   }
 
   void setCity(String? city) {
     selectedCity.value = city;
-    // Reload apartments with new filter
     loadApartments();
   }
 
   void setMinPrice(double? price) {
     minPrice.value = price;
-    // Reload apartments with new filter
     loadApartments();
   }
 
   void setMaxPrice(double? price) {
     maxPrice.value = price;
-    // Reload apartments with new filter
     loadApartments();
   }
 
   void setMinRooms(int? rooms) {
     minRooms.value = rooms;
-    // Reload apartments with new filter
     loadApartments();
   }
 
   void setMinArea(int? area) {
     minArea.value = area;
-    // Reload apartments with new filter
     loadApartments();
   }
 
@@ -114,7 +99,6 @@ class HomeController extends GetxController {
     maxPrice.value = null;
     minRooms.value = null;
     minArea.value = null;
-    // Reload apartments after clearing filters
     loadApartments();
   }
 
@@ -150,15 +134,12 @@ class HomeController extends GetxController {
       isLoading.value = true;
       error.value = null;
 
-      // Reset pagination state
       currentPage.value = 1;
       hasMorePages.value = true;
       apartments.clear();
 
-      // Also reload filter options to get any new locations from added apartments
       await loadFilterOptions();
 
-      // Fetch with pagination and filters
       final result = await service.getApartmentsWithPagination(
         page: 1,
         governorate: selectedGovernorate.value,
@@ -184,7 +165,6 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadMoreApartments() async {
-    // Prevent multiple simultaneous loads
     if (isLoadingMore.value || !hasMorePages.value) return;
 
     try {
@@ -205,13 +185,11 @@ class HomeController extends GetxController {
       final List<ApartmentModel> fetchedApartments =
           result['apartments'] as List<ApartmentModel>;
 
-      // Append new apartments to the list
       apartments.addAll(fetchedApartments);
       hasMorePages.value = result['hasMore'] as bool;
       currentPage.value = nextPage;
       totalApartments.value = result['total'] as int;
     } catch (e) {
-      // Silent fail for load more - don't show error for pagination failures
       print("Error loading more apartments: $e");
     } finally {
       isLoadingMore.value = false;

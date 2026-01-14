@@ -12,8 +12,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final box = await setup();
   Get.put<GetStorage>(box, permanent: true);
-
-  // Initialize theme controller
   Get.put<ThemeController>(ThemeController(), permanent: true);
 
   runApp(const MyApp());

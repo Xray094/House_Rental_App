@@ -4,15 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/core/colors/color.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
-/// A reusable avatar widget that shows the user's photo or initials.
-///
-/// If the image URL is provided and loads successfully, shows the photo.
-/// If the image fails to load or URL is empty, shows the initials (first letter
-/// of first name + first letter of last name) in a styled circle.
-///
-/// Example:
-/// - "John Doe" → Shows "JD" in a circle when no photo
-/// - "Alice Johnson" → Shows "AJ" in a circle when no photo
 class UserAvatar extends StatelessWidget {
   final String name;
   final String? imageUrl;
@@ -20,7 +11,7 @@ class UserAvatar extends StatelessWidget {
 
   UserAvatar({super.key, required this.name, this.imageUrl, this.radius = 40});
 
-  String _getInitials() {
+  String getInitials() {
     if (name.trim().isEmpty) return "";
 
     final parts = name
@@ -64,16 +55,15 @@ class UserAvatar extends StatelessWidget {
                     ),
                 memCacheHeight: (radius * 4).toInt(),
                 maxWidthDiskCache: (radius * 4).toInt(),
-                errorWidget: (_, __, ___) => _buildInitialsAvatar(context),
+                errorWidget: (_, __, ___) => buildInitialsAvatar(context),
               )
-            : _buildInitialsAvatar(context),
+            : buildInitialsAvatar(context),
       ),
     );
   }
 
-  /// Builds the initials avatar with styling.
-  Widget _buildInitialsAvatar(BuildContext context) {
-    final initials = _getInitials();
+  Widget buildInitialsAvatar(BuildContext context) {
+    final initials = getInitials();
 
     return Container(
       height: radius * 2,

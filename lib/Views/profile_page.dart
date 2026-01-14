@@ -40,10 +40,10 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-              _infoTile('Full Name', attr.fullName, context),
-              _infoTile('Phone Number', attr.phoneNumber, context),
-              _infoTile('Role', attr.role, context),
-              _infoTile('Birthday', attr.birthDate, context),
+              infoTile('Full Name', attr.fullName, context),
+              infoTile('Phone Number', attr.phoneNumber, context),
+              infoTile('Role', attr.role, context),
+              infoTile('Birthday', attr.birthDate, context),
             ],
           );
         }),
@@ -52,7 +52,7 @@ class ProfilePage extends StatelessWidget {
   }
 }
 
-Widget _infoTile(String label, String value, BuildContext context) {
+Widget infoTile(String label, String value, BuildContext context) {
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 10.h),
     child: Row(
