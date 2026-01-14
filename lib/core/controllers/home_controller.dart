@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
@@ -28,16 +30,27 @@ class HomeController extends GetxController {
   final availableCities = <String>[].obs;
   final isLoadingFilters = false.obs;
 
+  Timer? debounceTimer;
+
   List<ApartmentModel> get filteredApartments => apartments;
+
+  void debouncedLoadApartments() {
+    if (debounceTimer?.isActive ?? false) {
+      debounceTimer?.cancel();
+    }
+    debounceTimer = Timer(const Duration(milliseconds: 700), () {
+      loadApartments();
+    });
+  }
 
   void setMaxArea(int? area) {
     maxArea.value = area;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setFloor(int? floorNumber) {
     floor.value = floorNumber;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setGovernorate(String? governorate) {
@@ -55,25 +68,28 @@ class HomeController extends GetxController {
 
   void setMinPrice(double? price) {
     minPrice.value = price;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setMaxPrice(double? price) {
     maxPrice.value = price;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setMinRooms(int? rooms) {
     numberOfRooms.value = rooms;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setMinArea(int? area) {
     minArea.value = area;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void clearFilters() {
+    if (debounceTimer?.isActive ?? false) {
+      debounceTimer?.cancel();
+    }
     selectedGovernorate.value = null;
     selectedCity.value = null;
     minPrice.value = null;
@@ -87,6 +103,12 @@ class HomeController extends GetxController {
 
   void toggleFilters() {
     isFiltersVisible.value = !isFiltersVisible.value;
+  }
+
+  @override
+  void onClose() {
+    debounceTimer?.cancel();
+    super.onClose();
   }
 
   @override
