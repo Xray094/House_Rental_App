@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:house_rental_app/Services/apartment_service.dart';
 import 'package:house_rental_app/Services/favorites_service.dart';
 import 'package:intl/intl.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/Services/booking_service.dart';
+import 'package:house_rental_app/core/controllers/auth_controller.dart';
 
 class ApartmentController extends GetxController {
   final ApartmentModel? initialApt;
   ApartmentController(this.initialApt);
 
-  final BookingService _bookingService = Get.find<BookingService>();
-  final GetStorage _box = GetStorage();
+  final BookingService bookingService = Get.find<BookingService>();
+  final AuthController authController = Get.find<AuthController>();
 
   var apartment = Rxn<ApartmentModel>();
   var isFavorite = false.obs;
@@ -33,7 +33,7 @@ class ApartmentController extends GetxController {
     }
   }
 
-  bool get isTenant => _box.read('role') == 'tenant';
+  bool get isTenant => authController.isTenant;
 
   Future<bool> toggleFavorite(String apartmentId) async {
     try {
@@ -71,7 +71,6 @@ class ApartmentController extends GetxController {
     isLoading(true);
     final result = await apartmentService.getApartmentById(id);
     apartment.value = result;
-
     if (isTenant) {
       isFavorite.value = await _favoritesService.isFavorite(id);
     }
@@ -91,7 +90,7 @@ class ApartmentController extends GetxController {
 
     isBooking.value = true;
     try {
-      final result = await _bookingService.storeBooking(
+      final result = await bookingService.storeBooking(
         apartmentId: apartment.value!.id,
         startDate: DateFormat('yyyy-MM-dd').format(startDate.value!),
         endDate: DateFormat('yyyy-MM-dd').format(endDate.value!),

@@ -29,8 +29,7 @@ class LandlordApartmentsController extends GetxController {
         fontWeight: FontWeight.bold,
       ),
       middleTextStyle: TextStyle(color: Colors.black),
-      middleText:
-          "Are you sure you want to remove this listing? This cannot be undone.",
+      middleText: "Are you sure you want to remove this listing?",
       textConfirm: "Delete",
       textCancel: "Cancel",
       confirmTextColor: Colors.black,
