@@ -1,13 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:house_rental_app/Components/user_avatar.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Models/review_model.dart';
 import 'package:house_rental_app/core/controllers/apartment_controller.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
-import 'package:intl/intl.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
+import 'package:intl/intl.dart';
 
 class ApartmentDetailsPage extends StatelessWidget {
   const ApartmentDetailsPage({super.key});
@@ -347,10 +348,10 @@ class ApartmentDetailsPage extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
+                UserAvatar(
+                  name: review.reviewerName,
+                  imageUrl: review.reviewerAvatar,
                   radius: 20.r,
-                  backgroundImage: NetworkImage(review.reviewerAvatar),
-                  onBackgroundImageError: (_, __) => const Icon(Icons.person),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(

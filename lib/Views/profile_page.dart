@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:house_rental_app/core/colors/color.dart';
+import 'package:house_rental_app/Components/user_avatar.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,51 +33,10 @@ class ProfilePage extends StatelessWidget {
           return Column(
             children: [
               Center(
-                child: SizedBox(
-                  height: 150.r,
-                  width: 150.r,
-                  child: ClipOval(
-                    child: CachedNetworkImage(
-                      imageUrl: attr.avatarUrl,
-                      height: 160.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) => Container(
-                            height: 160.h,
-                            width: double.infinity,
-                            color: context.currentCardColor,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: downloadProgress.progress,
-                                color: primaryBlue,
-                              ),
-                            ),
-                          ),
-                      memCacheHeight: 400,
-                      maxWidthDiskCache: 800,
-                      errorWidget: (context, url, error) => Container(
-                        color: context.currentCardColor,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image_not_supported,
-                              color: context.currentTextSecondary,
-                            ),
-                            SizedBox(height: 4.h),
-                            Text(
-                              "No Image",
-                              style: TextStyle(
-                                color: context.currentTextSecondary,
-                                fontSize: 12.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                child: UserAvatar(
+                  name: attr.fullName,
+                  imageUrl: attr.avatarUrl,
+                  radius: 75,
                 ),
               ),
               SizedBox(height: 20.h),
