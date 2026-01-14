@@ -3,18 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/Models/apartment_model.dart';
 import 'package:house_rental_app/core/controllers/edit_apartment_controller.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class EditApartment extends StatelessWidget {
   final ApartmentModel apartment;
-  const EditApartment({super.key, required this.apartment});
+  EditApartment({super.key, required this.apartment});
+  final FilteringTextInputFormatter lettersOnlyFormatter =
+      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'));
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(EditApartmentController());
-    final formKey = GlobalKey<FormState>();
 
     controller.loadApartmentData(apartment);
 
@@ -34,171 +36,261 @@ class EditApartment extends StatelessWidget {
             ? const Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
                 padding: EdgeInsets.all(16.w),
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buildSectionTitle("Basic Details", context),
-                      buildField(
-                        controller.titleCtrl,
-                        "Title",
-                        Icons.title,
-                        context,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildSectionTitle("Basic Details", context),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Title',
+                        hint: 'Enter apartment title',
+                        prefixIcon: Icons.title,
+                        controller: controller.titleCtrl,
+                        inputType: TextInputType.text,
+                        errorText: controller.titleError.value.isEmpty
+                            ? null
+                            : controller.titleError.value,
                       ),
-                      buildField(
-                        controller.descCtrl,
-                        "Description",
-                        Icons.description,
-                        context,
-                        maxLines: 3,
+                    ),
+                    SizedBox(height: 12.h),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Description',
+                        hint: 'Enter description (min 20 characters)',
+                        prefixIcon: Icons.description,
+                        controller: controller.descCtrl,
+                        inputType: TextInputType.multiline,
+                        errorText: controller.descError.value.isEmpty
+                            ? null
+                            : controller.descError.value,
                       ),
-                      buildField(
-                        controller.priceCtrl,
-                        "Price per Night",
-                        Icons.attach_money,
-                        context,
-                        isNum: true,
-                      ),
-
-                      const SizedBox(height: 16),
-                      buildSectionTitle("Location", context),
-                      buildField(
-                        controller.govCtrl,
-                        "Governorate",
-                        Icons.map,
-                        context,
-                      ),
-                      buildField(
-                        controller.cityCtrl,
-                        "City",
-                        Icons.location_city,
-                        context,
-                      ),
-                      buildField(
-                        controller.addressCtrl,
-                        "Exact Address",
-                        Icons.home,
-                        context,
-                      ),
-
-                      const SizedBox(height: 16),
-                      buildSectionTitle("Specifications", context),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: buildField(
-                              controller.areaCtrl,
-                              "Area (m²)",
-                              Icons.square_foot,
-                              context,
-                              isNum: true,
-                            ),
-                          ),
-                          SizedBox(width: 10.w),
-                          Expanded(
-                            child: buildField(
-                              controller.roomsCtrl,
-                              "Rooms",
-                              Icons.bed,
-                              context,
-                              isNum: true,
-                            ),
-                          ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Price per Night',
+                        hint: 'Between 1 and 10000',
+                        prefixIcon: Icons.attach_money,
+                        controller: controller.priceCtrl,
+                        inputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
+                        errorText: controller.priceError.value.isEmpty
+                            ? null
+                            : controller.priceError.value,
                       ),
-                      buildField(
-                        controller.floorCtrl,
-                        "Floor",
-                        Icons.layers,
-                        context,
-                        isNum: true,
-                      ),
-                      Obx(
-                        () => CheckboxListTile(
-                          title: const Text("Has Balcony"),
-                          value: controller.hasBalcony.value,
-                          activeColor: context.primary,
-                          onChanged: controller.toggleBalcony,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                      ),
+                    ),
 
-                      const SizedBox(height: 16),
-                      buildSectionTitle("Features", context),
-                      Obx(
-                        () => Wrap(
-                          spacing: 8.w,
-                          runSpacing: 0,
-                          children: controller.availableFeatures.map((feature) {
-                            final isSelected = controller.selectedFeatures
-                                .contains(feature);
-                            return FilterChip(
-                              label: Text(feature),
-                              selected: isSelected,
-                              selectedColor: context.primary.withOpacity(0.2),
-                              checkmarkColor: context.primary,
-                              labelStyle: TextStyle(
+                    SizedBox(height: 16.h),
+                    buildSectionTitle("Location", context),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Governorate',
+                        hint: 'Enter governorate',
+                        prefixIcon: Icons.map,
+                        controller: controller.govCtrl,
+                        inputType: TextInputType.text,
+                        inputFormatters: [lettersOnlyFormatter],
+                        errorText: controller.govError.value.isEmpty
+                            ? null
+                            : controller.govError.value,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'City',
+                        hint: 'Enter city',
+                        prefixIcon: Icons.location_city,
+                        controller: controller.cityCtrl,
+                        inputType: TextInputType.text,
+                        inputFormatters: [lettersOnlyFormatter],
+                        errorText: controller.cityError.value.isEmpty
+                            ? null
+                            : controller.cityError.value,
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Exact Address',
+                        hint: 'Enter full address',
+                        prefixIcon: Icons.home,
+                        controller: controller.addressCtrl,
+                        inputType: TextInputType.text,
+                        errorText: controller.addressError.value.isEmpty
+                            ? null
+                            : controller.addressError.value,
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+                    buildSectionTitle("Specifications", context),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Obx(
+                            () => CustomTextField(
+                              name: 'Area (m²)',
+                              hint: 'Max 10000',
+                              prefixIcon: Icons.square_foot,
+                              controller: controller.areaCtrl,
+                              inputType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              errorText: controller.areaError.value.isEmpty
+                                  ? null
+                                  : controller.areaError.value,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Expanded(
+                          child: Obx(
+                            () => CustomTextField(
+                              name: 'Rooms',
+                              hint: '1-100',
+                              prefixIcon: Icons.bed,
+                              controller: controller.roomsCtrl,
+                              inputType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              errorText: controller.roomsError.value.isEmpty
+                                  ? null
+                                  : controller.roomsError.value,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Obx(
+                      () => CustomTextField(
+                        name: 'Floor',
+                        hint: '0-200',
+                        prefixIcon: Icons.layers,
+                        controller: controller.floorCtrl,
+                        inputType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        errorText: controller.floorError.value.isEmpty
+                            ? null
+                            : controller.floorError.value,
+                      ),
+                    ),
+                    Obx(
+                      () => CheckboxListTile(
+                        title: const Text("Has Balcony"),
+                        value: controller.hasBalcony.value,
+                        activeColor: context.primary,
+                        onChanged: controller.toggleBalcony,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+                    buildSectionTitle("Features", context),
+                    Obx(
+                      () => Wrap(
+                        spacing: 8.w,
+                        runSpacing: 0,
+                        children: controller.availableFeatures.map((feature) {
+                          final isSelected = controller.selectedFeatures
+                              .contains(feature);
+                          return FilterChip(
+                            label: Text(feature),
+                            selected: isSelected,
+                            selectedColor: context.primary.withOpacity(0.2),
+                            checkmarkColor: context.primary,
+                            labelStyle: TextStyle(
+                              color: isSelected
+                                  ? context.primary
+                                  : context.currentTextSecondary,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                            onSelected: (bool value) =>
+                                controller.toggleFeature(feature),
+                            backgroundColor: context.currentInputFillColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.r),
+                              side: BorderSide(
                                 color: isSelected
                                     ? context.primary
-                                    : context.currentTextSecondary,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
+                                    : Colors.transparent,
                               ),
-                              onSelected: (bool value) =>
-                                  controller.toggleFeature(feature),
-                              backgroundColor: context.currentInputFillColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.r),
-                                side: BorderSide(
-                                  color: isSelected
-                                      ? context.primary
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      buildSectionTitle("Gallery", context),
-                      buildImagePicker(controller, context),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50.h,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: context.currentButtonPrimary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
                             ),
-                          ),
-                          onPressed: controller.isUpdating.value
-                              ? null
-                              : () {
-                                  if (formKey.currentState!.validate()) {
-                                    controller.updateApartment();
-                                  }
-                                },
-                          child: controller.isUpdating.value
-                              ? CircularProgressIndicator(
-                                  color: context.currentButtonPrimaryText,
-                                )
-                              : Text(
-                                  "Update Apartment",
-                                  style: TextStyle(
-                                    color: context.currentButtonPrimaryText,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                        ),
+                          );
+                        }).toList(),
                       ),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
+                    ),
+                    Obx(
+                      () => controller.featuresError.value.isNotEmpty
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 5.h, left: 12.w),
+                              child: Text(
+                                controller.featuresError.value,
+                                style: TextStyle(
+                                  color: context.error,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    SizedBox(height: 16.h),
+                    buildSectionTitle("Gallery", context),
+                    buildImagePicker(controller, context),
+                    Obx(
+                      () => controller.imagesError.value.isNotEmpty
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 5.h, left: 12.w),
+                              child: Text(
+                                controller.imagesError.value,
+                                style: TextStyle(
+                                  color: context.error,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50.h,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: context.currentButtonPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                        ),
+                        onPressed: controller.isUpdating.value
+                            ? null
+                            : () {
+                                controller.validateFields();
+                              },
+                        child: controller.isUpdating.value
+                            ? CircularProgressIndicator(
+                                color: context.currentButtonPrimaryText,
+                              )
+                            : Text(
+                                "Update Apartment",
+                                style: TextStyle(
+                                  color: context.currentButtonPrimaryText,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                      ),
+                    ),
+                    SizedBox(height: 20.h),
+                  ],
                 ),
               ),
       ),
@@ -215,42 +307,6 @@ class EditApartment extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: context.primary,
         ),
-      ),
-    );
-  }
-
-  Widget buildField(
-    TextEditingController ctrl,
-    String label,
-    IconData icon,
-    BuildContext context, {
-    bool isNum = false,
-    int maxLines = 1,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
-      child: TextFormField(
-        controller: ctrl,
-        maxLines: maxLines,
-        keyboardType: isNum ? TextInputType.number : TextInputType.text,
-        inputFormatters: isNum
-            ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
-            : null,
-        style: TextStyle(color: context.currentTextPrimary),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: context.primary),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.r)),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide(color: context.currentDividerColor),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide(color: context.primary),
-          ),
-        ),
-        validator: (v) => (v == null || v.isEmpty) ? "Required" : null,
       ),
     );
   }

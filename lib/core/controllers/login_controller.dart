@@ -27,11 +27,4 @@ class LoginController extends GetxController {
       passwordError.value = 'Password must be at least 8 characters';
     }
   }
-
-  @override
-  void onClose() {
-    mobileController.dispose();
-    passwordController.dispose();
-    super.onClose();
-  }
 }

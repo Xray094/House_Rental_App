@@ -53,17 +53,15 @@ class HomeController extends GetxController {
     debouncedLoadApartments();
   }
 
-  void setGovernorate(String? governorate) {
+  void setGovernorateText(String governorate) {
     selectedGovernorate.value = governorate;
-    if (governorate != selectedGovernorate.value) {
-      selectedCity.value = null;
-    }
-    loadApartments();
+    selectedCity.value = null;
+    debouncedLoadApartments();
   }
 
-  void setCity(String? city) {
+  void setCityText(String city) {
     selectedCity.value = city;
-    loadApartments();
+    debouncedLoadApartments();
   }
 
   void setMinPrice(double? price) {
@@ -143,7 +141,7 @@ class HomeController extends GetxController {
       hasMorePages.value = true;
       apartments.clear();
 
-      await loadFilterOptions();
+      // await loadFilterOptions();
 
       final result = await service.getApartmentsWithPagination(
         page: 1,

@@ -191,23 +191,24 @@ class ApartmentService {
         );
       }
 
-      FormData formData = FormData.fromMap({
-        'title': title,
-        'description': description,
-        'price': price,
-        'governorate': governorate,
-        'city': city,
-        'address': address,
-        'area_in_square_meters': area,
-        'rooms_count': roomsCount,
-        'floor': floor,
-        'has_balcony': hasBalcony ? 1 : 0,
-        'features[]': features,
-        'existing_images[]': existingImageUrls,
-        'new_images[]': imageFiles,
-      });
-
-      final response = await _dio.patch('/apartments/$id', data: formData);
+      final response = await _dio.patch(
+        '/apartments/$id',
+        data: {
+          'title': title,
+          'description': description,
+          'price': price,
+          'governorate': governorate,
+          'city': city,
+          'address': address,
+          'area_in_square_meters': area,
+          'rooms_count': roomsCount,
+          'floor': floor,
+          'has_balcony': hasBalcony ? 1 : 0,
+          'features[]': features,
+          // 'existing_images[]': existingImageUrls,
+          'images': newImages,
+        },
+      );
 
       return {
         'success': true,

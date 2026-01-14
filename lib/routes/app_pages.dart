@@ -21,7 +21,7 @@ class AppPages {
     GetPage(name: Routes.main, page: () => MainNavigationPage()),
     GetPage(name: Routes.profile, page: () => const ProfilePage()),
     GetPage(name: Routes.firstRegister, page: () => const FirstRegisterPage()),
-    GetPage(name: Routes.createApartment, page: () => const CreateApartment()),
+    GetPage(name: Routes.createApartment, page: () => CreateApartment()),
     GetPage(
       name: Routes.editApartment,
       page: () => EditApartment(apartment: Get.arguments as ApartmentModel),

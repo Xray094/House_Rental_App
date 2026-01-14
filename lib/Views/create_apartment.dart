@@ -6,12 +6,10 @@ import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/core/controllers/create_apartment_controller.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
-final FilteringTextInputFormatter lettersOnlyFormatter =
-    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'));
-
 class CreateApartment extends StatelessWidget {
-  const CreateApartment({super.key});
-
+  CreateApartment({super.key});
+  final FilteringTextInputFormatter lettersOnlyFormatter =
+      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'));
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CreateApartmentController());

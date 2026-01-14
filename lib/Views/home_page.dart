@@ -20,6 +20,8 @@ class HomePage extends StatelessWidget {
   final TextEditingController minAreaController = TextEditingController();
   final TextEditingController maxAreaController = TextEditingController();
   final TextEditingController floorController = TextEditingController();
+  final TextEditingController governorateController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
 
   final ScrollController scrollController = ScrollController();
 
@@ -39,63 +41,36 @@ class HomePage extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Obx(
-                          () => DropdownButtonFormField<String>(
-                            isExpanded: true,
-                            decoration: InputDecoration(
-                              labelText: 'Governorate',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                              ),
+                        child: TextFormField(
+                          controller: governorateController,
+                          style: TextStyle(color: context.currentTextPrimary),
+                          decoration: InputDecoration(
+                            labelText: 'Governorate',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
                             ),
-                            value: ctrl.selectedGovernorate.value,
-                            items: getGovernorates().map((gov) {
-                              return DropdownMenuItem(
-                                value: gov,
-                                child: Text(
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  gov,
-                                  style: TextStyle(
-                                    color: context.currentTextPrimary,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: ctrl.setGovernorate,
                           ),
+                          onChanged: (value) {
+                            ctrl.setGovernorateText(value);
+                          },
                         ),
                       ),
                       SizedBox(width: 10.w),
                       Expanded(
-                        child: Obx(
-                          () => DropdownButtonFormField<String>(
-                            isExpanded: true,
-                            decoration: InputDecoration(
-                              labelText: 'City',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                              ),
+                        child: TextFormField(
+                          controller: cityController,
+                          style: TextStyle(color: context.currentTextPrimary),
+                          decoration: InputDecoration(
+                            labelText: 'City',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
                             ),
-                            value: ctrl.selectedCity.value,
-                            items: getCities().map((city) {
-                              return DropdownMenuItem(
-                                value: city,
-                                child: Text(
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  city,
-                                  style: TextStyle(
-                                    color: context.currentTextPrimary,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: ctrl.setCity,
                           ),
+                          onChanged: (value) {
+                            ctrl.setCityText(value);
+                          },
                         ),
                       ),
                     ],
@@ -254,6 +229,8 @@ class HomePage extends StatelessWidget {
                       minAreaController.clear();
                       maxAreaController.clear();
                       floorController.clear();
+                      governorateController.clear();
+                      cityController.clear();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
