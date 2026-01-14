@@ -31,19 +31,33 @@ class RegisterController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    mobileController.addListener(validatePhoneNumber);
-    passwordController.addListener(validatePassword);
   }
 
   @override
   void onClose() {
-    mobileController.removeListener(validatePhoneNumber);
-    passwordController.removeListener(validatePassword);
     mobileController.dispose();
     passwordController.dispose();
     firstNameController.dispose();
     lastNameController.dispose();
     super.onClose();
+  }
+
+  void validateFields() {
+    validatePhoneNumber();
+    validatePassword();
+  }
+
+  void clearPhoneError() {
+    phoneErrorMessage.value = '';
+  }
+
+  void clearPasswordError() {
+    passwordErrorMessage.value = '';
+  }
+
+  void clearAllErrors() {
+    phoneErrorMessage.value = '';
+    passwordErrorMessage.value = '';
   }
 
   void validatePhoneNumber() {
@@ -53,7 +67,7 @@ class RegisterController extends GetxController {
 
     if (digitsOnly.isEmpty) {
       isPhoneValid.value = false;
-      phoneErrorMessage.value = 'Phone number must be exactly 10 digits';
+      phoneErrorMessage.value = 'Please enter your phone number';
     } else if (digitsOnly.length != 10) {
       isPhoneValid.value = false;
       phoneErrorMessage.value = 'Phone number must be exactly 10 digits';
@@ -68,7 +82,7 @@ class RegisterController extends GetxController {
 
     if (password.isEmpty) {
       isPasswordValid.value = false;
-      passwordErrorMessage.value = '';
+      passwordErrorMessage.value = 'Please enter your password';
     } else if (password.length < 8) {
       isPasswordValid.value = false;
       passwordErrorMessage.value = 'Password must be at least 8 characters';

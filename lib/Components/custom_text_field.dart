@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -9,6 +10,9 @@ class CustomTextField extends StatelessWidget {
   final TextCapitalization textCapitalization;
   final TextInputType inputType;
   final TextEditingController controller;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
+  final String? errorText;
   const CustomTextField({
     super.key,
 
@@ -19,6 +23,9 @@ class CustomTextField extends StatelessWidget {
     this.hint = "",
     required this.inputType,
     required this.controller,
+    this.inputFormatters,
+    this.maxLength,
+    this.errorText,
   });
 
   @override
@@ -31,6 +38,8 @@ class CustomTextField extends StatelessWidget {
         textCapitalization: textCapitalization,
         obscureText: obscureText,
         keyboardType: inputType,
+        inputFormatters: inputFormatters,
+        maxLength: maxLength,
         textAlign: TextAlign.start,
         style: TextStyle(color: context.currentTextPrimary, fontSize: 16),
         cursorColor: context.currentTextPrimary,
@@ -44,6 +53,8 @@ class CustomTextField extends StatelessWidget {
           hintStyle: TextStyle(color: context.currentTextHint, fontSize: 16),
           counterText: "",
           labelStyle: TextStyle(color: context.currentTextPrimary),
+          errorText: errorText,
+          errorStyle: TextStyle(color: context.error, fontSize: 12),
           filled: true,
           fillColor: context.currentInputFillColor,
           border: OutlineInputBorder(
@@ -65,6 +76,10 @@ class CustomTextField extends StatelessWidget {
               color: context.currentInputBorderColor,
               width: 2,
             ),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: context.error, width: 2),
             borderRadius: BorderRadius.circular(10),
           ),
         ),

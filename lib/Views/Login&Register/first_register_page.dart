@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
@@ -100,60 +101,59 @@ class FirstRegisterPage extends StatelessWidget {
                 roleCard('landlord', Icons.home_outlined, "Landlord"),
               ],
             ),
-            SizedBox(height: 40.h),
-            CustomTextField(
-              name: 'Phone Number',
-              hint: 'Ex: 9xx xxx xxx',
-              prefixIcon: Icons.phone_android,
-              inputType: TextInputType.phone,
-              controller: controller.mobileController,
-            ),
             Obx(() {
-              return controller.phoneErrorMessage.value.isNotEmpty
+              return controller.selectedRole.value == null &&
+                      (controller.phoneErrorMessage.value.isNotEmpty ||
+                          controller.passwordErrorMessage.value.isNotEmpty)
                   ? Container(
                       width: double.infinity,
                       padding: EdgeInsets.only(left: 15.w, top: 5.h),
                       child: Text(
-                        controller.phoneErrorMessage.value,
+                        'Please select a role',
                         style: TextStyle(color: context.error, fontSize: 12.sp),
                       ),
                     )
-                  : SizedBox(height: 5.h);
+                  : const SizedBox.shrink();
             }),
             SizedBox(height: 20.h),
-            CustomTextField(
-              name: 'Password',
-              hint: 'Enter your password (min 8 characters)',
-              prefixIcon: Icons.lock_outline,
-              obscureText: true,
-              controller: controller.passwordController,
-              inputType: TextInputType.visiblePassword,
+            Obx(
+              () => CustomTextField(
+                name: 'Phone Number',
+                hint: 'Ex: 9xx xxx xxx',
+                prefixIcon: Icons.phone_android,
+                inputType: TextInputType.phone,
+                controller: controller.mobileController,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                maxLength: 10,
+                errorText: controller.phoneErrorMessage.value.isEmpty
+                    ? null
+                    : controller.phoneErrorMessage.value,
+              ),
             ),
-            Obx(() {
-              return controller.passwordErrorMessage.value.isNotEmpty
-                  ? Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.only(left: 15.w, top: 5.h),
-                      child: Text(
-                        controller.passwordErrorMessage.value,
-                        style: TextStyle(color: context.error, fontSize: 12.sp),
-                      ),
-                    )
-                  : SizedBox(height: 5.h);
-            }),
+            SizedBox(height: 20.h),
+            Obx(
+              () => CustomTextField(
+                name: 'Password',
+                hint: 'Enter your password (min 8 characters)',
+                prefixIcon: Icons.lock_outline,
+                obscureText: true,
+                controller: controller.passwordController,
+                inputType: TextInputType.visiblePassword,
+                errorText: controller.passwordErrorMessage.value.isEmpty
+                    ? null
+                    : controller.passwordErrorMessage.value,
+              ),
+            ),
             SizedBox(height: 40.h),
             ElevatedButton(
               onPressed: () {
-                controller.validatePhoneNumber();
-                controller.validatePassword();
+                controller.validateFields();
 
-                if (!controller.isFormValid) {
-                  Get.snackbar(
-                    "Error",
-                    "Please select a role and ensure all fields are valid.",
-                    snackPosition: SnackPosition.TOP,
-                  );
-                  return;
+                // Check if all validations passed
+                if (controller.selectedRole.value == null ||
+                    !controller.isPhoneValid.value ||
+                    !controller.isPasswordValid.value) {
+                  return; // Errors will be shown under fields
                 }
 
                 Get.toNamed(

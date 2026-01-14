@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:get/get.dart';
 import 'package:house_rental_app/core/controllers/auth_controller.dart';
+import 'package:house_rental_app/core/controllers/login_controller.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 import 'package:house_rental_app/routes/app_routes.dart';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    final loginController = Get.put(LoginController());
     final authC = Get.find<AuthController>();
+
     return Scaffold(
       backgroundColor: context.scaffoldBackgroundColor,
       body: SingleChildScrollView(
@@ -54,33 +55,51 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 40.h),
-              CustomTextField(
-                name: 'Phone Number',
-                hint: 'Ex: 9xx xxx xxx',
-                prefixIcon: Icons.phone_android,
-                inputType: TextInputType.phone,
-                controller: mobileController,
+              Obx(
+                () => CustomTextField(
+                  name: 'Phone Number',
+                  hint: 'Ex: 9xx xxx xxx',
+                  prefixIcon: Icons.phone_android,
+                  inputType: TextInputType.phone,
+                  controller: loginController.mobileController,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  maxLength: 10,
+                  errorText: loginController.phoneError.value.isEmpty
+                      ? null
+                      : loginController.phoneError.value,
+                ),
               ),
-              SizedBox(height: 20.h),
-              CustomTextField(
-                name: 'Password',
-                hint: 'Enter your password',
-                prefixIcon: Icons.lock_outline,
-                inputType: TextInputType.text,
-                obscureText: true,
-                controller: passwordController,
+              Obx(
+                () => CustomTextField(
+                  name: 'Password',
+                  hint: 'Enter your password',
+                  prefixIcon: Icons.lock_outline,
+                  inputType: TextInputType.text,
+                  obscureText: true,
+                  controller: loginController.passwordController,
+                  errorText: loginController.passwordError.value.isEmpty
+                      ? null
+                      : loginController.passwordError.value,
+                ),
               ),
               SizedBox(height: 40.h),
               ElevatedButton(
                 onPressed: () async {
+                  loginController.validateFields();
+
+                  if (loginController.phoneError.value.isNotEmpty ||
+                      loginController.passwordError.value.isNotEmpty) {
+                    return;
+                  }
+
+                  String phone = loginController.mobileController.text.trim();
+                  String password = loginController.passwordController.text;
+
                   Get.dialog(
                     const Center(child: CircularProgressIndicator()),
                     barrierDismissible: false,
                   );
-                  bool success = await authC.login(
-                    mobileController.text,
-                    passwordController.text,
-                  );
+                  bool success = await authC.login(phone, password);
                   Get.back();
                   if (success) {
                     Get.offAllNamed(Routes.main);
