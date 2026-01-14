@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,7 +6,6 @@ import 'package:house_rental_app/Components/custom_text_field.dart';
 import 'package:house_rental_app/core/controllers/create_apartment_controller.dart';
 import 'package:house_rental_app/core/utils/theme_extensions.dart';
 
-// Input formatter that only allows letters and spaces (no numbers, no special chars)
 final FilteringTextInputFormatter lettersOnlyFormatter =
     FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]'));
 

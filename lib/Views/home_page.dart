@@ -18,6 +18,8 @@ class HomePage extends StatelessWidget {
   final TextEditingController maxPriceController = TextEditingController();
   final TextEditingController minRoomsController = TextEditingController();
   final TextEditingController minAreaController = TextEditingController();
+  final TextEditingController maxAreaController = TextEditingController();
+  final TextEditingController floorController = TextEditingController();
 
   final ScrollController scrollController = ScrollController();
 
@@ -149,27 +151,6 @@ class HomePage extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextFormField(
-                          controller: minRoomsController,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          style: TextStyle(color: context.currentTextPrimary),
-                          decoration: InputDecoration(
-                            labelText: 'Min Rooms',
-                            border: OutlineInputBorder(),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            ctrl.setMinRooms(int.tryParse(value));
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 10.w),
-                      Expanded(
-                        child: TextFormField(
                           controller: minAreaController,
                           inputFormatters: <TextInputFormatter>[
                             FilteringTextInputFormatter.digitsOnly,
@@ -185,6 +166,73 @@ class HomePage extends StatelessWidget {
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             ctrl.setMinArea(int.tryParse(value));
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: TextFormField(
+                          controller: maxAreaController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: TextStyle(color: context.currentTextPrimary),
+                          decoration: InputDecoration(
+                            labelText: 'Max Area (m²)',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMaxArea(int.tryParse(value));
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: minRoomsController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: TextStyle(color: context.currentTextPrimary),
+                          decoration: InputDecoration(
+                            labelText: 'Number of Rooms',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setMinRooms(int.tryParse(value));
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10.w),
+                      Expanded(
+                        child: TextFormField(
+                          controller: floorController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          style: TextStyle(color: context.currentTextPrimary),
+                          decoration: InputDecoration(
+                            labelText: 'Floor',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            ctrl.setFloor(int.tryParse(value));
                           },
                         ),
                       ),
@@ -204,6 +252,8 @@ class HomePage extends StatelessWidget {
                       maxPriceController.clear();
                       minRoomsController.clear();
                       minAreaController.clear();
+                      maxAreaController.clear();
+                      floorController.clear();
                     },
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,

@@ -16,10 +16,12 @@ class ApartmentService {
     double? maxPrice,
     int? minRooms,
     int? minArea,
+    int? maxArea,
+    int? floor,
     int perPage = 10,
   }) async {
     try {
-      Map<String, dynamic> queryParams = {'page': page, 'per_page': perPage};
+      Map<String, dynamic> queryParams = {'page': page, 'perPage': perPage};
       if (governorate != null && governorate.isNotEmpty) {
         queryParams['governorate'] = governorate;
       }
@@ -27,16 +29,22 @@ class ApartmentService {
         queryParams['city'] = city;
       }
       if (minPrice != null && minPrice > 0) {
-        queryParams['min_price'] = minPrice.toStringAsFixed(2);
+        queryParams['minPrice'] = minPrice.toStringAsFixed(2);
       }
       if (maxPrice != null && maxPrice > 0) {
-        queryParams['max_price'] = maxPrice.toStringAsFixed(2);
+        queryParams['maxPrice'] = maxPrice.toStringAsFixed(2);
       }
       if (minRooms != null && minRooms > 0) {
-        queryParams['min_rooms'] = minRooms;
+        queryParams['rooms'] = minRooms;
       }
       if (minArea != null && minArea > 0) {
-        queryParams['min_area'] = minArea;
+        queryParams['minArea'] = minArea;
+      }
+      if (maxArea != null && maxArea > 0) {
+        queryParams['maxArea'] = maxArea;
+      }
+      if (floor != null && floor >= 0) {
+        queryParams['floor'] = floor;
       }
 
       final response = await _dio.get(

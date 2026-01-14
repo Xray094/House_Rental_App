@@ -18,45 +18,26 @@ class HomeController extends GetxController {
   final selectedCity = Rxn<String>();
   final minPrice = Rxn<double>();
   final maxPrice = Rxn<double>();
-  final minRooms = Rxn<int>();
+  final numberOfRooms = Rxn<int>();
   final minArea = Rxn<int>();
+  final maxArea = Rxn<int>();
+  final floor = Rxn<int>();
   final isFiltersVisible = false.obs;
 
   final availableGovernorates = <String>[].obs;
   final availableCities = <String>[].obs;
   final isLoadingFilters = false.obs;
 
-  List<ApartmentModel> get filteredApartments {
-    return apartments.where((apartment) {
-      final attr = apartment.attributes;
+  List<ApartmentModel> get filteredApartments => apartments;
 
-      if (selectedGovernorate.value != null &&
-          attr.location.governorate != selectedGovernorate.value) {
-        return false;
-      }
+  void setMaxArea(int? area) {
+    maxArea.value = area;
+    loadApartments();
+  }
 
-      if (selectedCity.value != null &&
-          attr.location.city != selectedCity.value) {
-        return false;
-      }
-
-      if (minPrice.value != null && attr.price < minPrice.value!) {
-        return false;
-      }
-      if (maxPrice.value != null && attr.price > maxPrice.value!) {
-        return false;
-      }
-
-      if (minRooms.value != null && attr.specs.rooms < minRooms.value!) {
-        return false;
-      }
-
-      if (minArea.value != null && attr.specs.area < minArea.value!) {
-        return false;
-      }
-
-      return true;
-    }).toList();
+  void setFloor(int? floorNumber) {
+    floor.value = floorNumber;
+    loadApartments();
   }
 
   void setGovernorate(String? governorate) {
@@ -83,7 +64,7 @@ class HomeController extends GetxController {
   }
 
   void setMinRooms(int? rooms) {
-    minRooms.value = rooms;
+    numberOfRooms.value = rooms;
     loadApartments();
   }
 
@@ -97,8 +78,10 @@ class HomeController extends GetxController {
     selectedCity.value = null;
     minPrice.value = null;
     maxPrice.value = null;
-    minRooms.value = null;
+    numberOfRooms.value = null;
     minArea.value = null;
+    maxArea.value = null;
+    floor.value = null;
     loadApartments();
   }
 
@@ -146,8 +129,10 @@ class HomeController extends GetxController {
         city: selectedCity.value,
         minPrice: minPrice.value,
         maxPrice: maxPrice.value,
-        minRooms: minRooms.value,
+        minRooms: numberOfRooms.value,
         minArea: minArea.value,
+        maxArea: maxArea.value,
+        floor: floor.value,
         perPage: 10,
       );
 
@@ -177,8 +162,10 @@ class HomeController extends GetxController {
         city: selectedCity.value,
         minPrice: minPrice.value,
         maxPrice: maxPrice.value,
-        minRooms: minRooms.value,
+        minRooms: numberOfRooms.value,
         minArea: minArea.value,
+        maxArea: maxArea.value,
+        floor: floor.value,
         perPage: 10,
       );
 
