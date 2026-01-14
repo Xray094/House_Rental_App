@@ -8,18 +8,6 @@ import 'package:house_rental_app/Services/api_service.dart';
 class ApartmentService {
   final Dio _dio = Get.find<ApiService>().dio;
 
-  Future<List<ApartmentModel>> getApartments() async {
-    try {
-      final response = await _dio.get('/apartments');
-      response.data['data'];
-      final List<dynamic> data = response.data['data'];
-      return data.map((json) => ApartmentModel.fromJson(json)).toList();
-    } catch (e) {
-      print("Apartment Fetch Error: $e");
-      return [];
-    }
-  }
-
   Future<Map<String, dynamic>> getApartmentsWithPagination({
     int page = 1,
     String? governorate,

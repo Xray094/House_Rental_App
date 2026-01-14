@@ -24,7 +24,6 @@ class ApartmentController extends GetxController {
   final isLoading = false.obs;
 
   final FavoritesService _favoritesService = Get.put(FavoritesService());
-  var favoriteApartments = <ApartmentModel>[].obs;
 
   @override
   void onInit() {
@@ -36,28 +35,9 @@ class ApartmentController extends GetxController {
 
   bool get isTenant => _box.read('role') == 'tenant';
 
-  Future<void> loadFavorites() async {
-    isLoading(true);
-    try {
-      final favorites = await _favoritesService.getFavorites();
-      favoriteApartments.assignAll(favorites);
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to load favorites',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading(false);
-    }
-  }
-
   Future<bool> toggleFavorite(String apartmentId) async {
     try {
       final result = await _favoritesService.toggleFavorite(apartmentId);
-
       return result;
     } catch (e) {
       Get.snackbar(
@@ -69,10 +49,6 @@ class ApartmentController extends GetxController {
       );
       return false;
     }
-  }
-
-  Future<bool> checkFavorite(String apartmentId) async {
-    return await _favoritesService.isFavorite(apartmentId);
   }
 
   Future<void> pickDateRange(BuildContext context) async {
